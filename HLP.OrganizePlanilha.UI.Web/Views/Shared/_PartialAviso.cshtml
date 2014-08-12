@@ -1,0 +1,10 @@
+﻿@if (TempData["Aviso"] != null)
+{
+    <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        @*Resgatamos a mensagem de sucesso que esta na memoria RAM, e que veio da action*@
+        @* Para nao ficar exibindo sempre, colocamos uma condicional. *@
+        @Html.Raw(TempData["Aviso"].ToString())
+</div>
+}

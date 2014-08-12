@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>jquery-tmpl.net</id>
+    <version>0.6</version>
+    <title>jquery-tmpl.net</title>
+    <authors>awhatley</authors>
+    <owners>awhatley</owners>
+    <projectUrl>https://github.com/awhatley/jquery-tmpl.net</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A .NET rendering engine for jquery-tmpl templates</description>
+    <summary>A .NET rendering engine for jquery-tmpl templates</summary>
+    <tags>jquery templates asp.net mvc</tags>
+  </metadata>
+</package>

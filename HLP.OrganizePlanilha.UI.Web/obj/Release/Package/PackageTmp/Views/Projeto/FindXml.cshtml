@@ -1,0 +1,53 @@
+﻿@model HLP.OrganizePlanilha.UI.Web.Models.ProjetoModel
+@{
+    ViewBag.Title = "..: Buscar xml :..";
+    Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+}
+
+
+@section SCRIPTS
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#register-form').submit(function () {
+                if ($(this).valid()) {
+                    $('#carregar').attr('disabled', 'disabled');
+                    $('#loaderPlanilha').show();
+                    return true;
+                }
+            });
+        })
+    </script>
+
+}
+<fieldset>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                @using (Html.BeginForm("UploadFile", "Projeto", FormMethod.Post, new { id = "register-form", enctype = "multipart/form-data" }))
+                {
+                    <div class="form-group">
+                        <label for="selectFile">Selecione o xml para iniciar o projeto.</label>
+                        @* <input type="file" id="selectFile" name="selectFile" />*@
+                        <input type="file" id="FileUpload" class="btn-default" name="FileUpload" required data-val="true" data-val-required="Selecione o Arquivo" />
+                        @*@Html.ValidationMessageFor(m => m.PathFile)*@
+                        <p class="help-block">
+                            O sistema irá salvar as informações do xml para não precisar carrega-lo novamente no futuro.
+                        </p>
+                    </div>
+                    <div>
+                        @Html.LabelFor(c => c.xNomeAba)
+                        @Html.TextBoxFor(c => c.xNomeAba, new { @class = "form-control", placeholder = "informe o nome da aba onde se encontra os dados." })
+                        @Html.ValidationMessageFor(C => C.xNomeAba)
+                    </div>
+                    <div>
+                        <br />
+                        <input type="submit" id="carregar" name="carregar" value="Carregar" class="btn btn-primary" />
+                        <img id="loaderPlanilha" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</fieldset>

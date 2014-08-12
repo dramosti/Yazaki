@@ -1,0 +1,190 @@
+﻿@using HLP.OrganizePlanilha.UI.Web.Models
+@model ProjetoModel
+@{
+    ViewBag.Title = "Organização dos dados";
+    Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+}
+
+
+@section SCRIPTS
+{
+    <script type="text/javascript">
+        function Carrega() {
+            $.ajax({
+                type: 'POST',
+                url: "../../Projeto/_PlanilhaOriginal",
+                beforeSend: function () {
+                    $('#loaderPlanilha').show();
+                    $('#resultPlanilha').html('');
+                },
+                success: function (data) {
+                    $('#resultPlanilha').html(data);
+                },
+                complete: function () {
+                    $('#loaderPlanilha').hide();
+
+                    //$('#loaderPlanilha').attr('disabled', 'disabled');
+                    //$('#loaderPlanilha').removeAttr('disabled');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function OrganizaInformacoes() {
+            $.ajax({
+                type: "POST",
+                url: "../../Projeto/OrganizarTudo",
+                beforeSend: function () {
+                    $('#loader1').show();
+                    $('#btnOrganizar').attr('disabled', 'disabled');
+                },
+                complete: function () {
+                    $('#btnOrganizar').removeAttr('disabled');
+                    $('#btnVisualiza').removeAttr('disabled');
+                    $('#loader1').hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
+                }
+            });
+        }
+    </script>
+}
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-8 column">
+            <fieldset>
+                <legend>
+                    Ações
+                </legend>
+                <input type="button" class="btn btn-primary btn-xs" id="btnOrganizar" name="btnOrganizar" value="Organizar registros" onclick="OrganizaInformacoes()" />
+                <a class="btn btn-primary btn-xs" href="../../Projeto/Download/">Download</a>
+                <img id="loader1" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
+            </fieldset>
+            <br />
+            <fieldset>
+                <legend>Maquinas</legend>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Excluir</td>
+                            <td>MÁQUINA</td>
+                            <td>CALIBRE</td>
+                            <td>QTDE_TERM_E</td>
+                            <td>QTDE_TERM_D</td>
+                            <td>CANTIDAD</td>
+                            <td>Y-Y</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var maquina in Model.ldadosMaquina)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="/Maquina/Excluir/@maquina.xMAQUINA" onclick="return confirm('Deseja excluir ?');">
+                                        <img src="~/Content/Images/delete.png" />
+                                    </a>
+                                </td>
+                                <td>@maquina.xMAQUINA</td>
+                                <td>@maquina.CALIBRE</td>
+                                <td>@maquina.QTDE_TERM_ESQUERDO</td>
+                                <td>@maquina.QTDE_TERM_DIREITO</td>
+                                <td>@maquina.QTDE_CAPACIDADE</td>
+                                <td>@maquina.YY</td>
+                                <td>
+                                    <a href="/Projeto/Organizar/@maquina.xMAQUINA">carregar</a>
+                                </td>
+                                <td>
+                                    <a href="/Projeto/DonwloadPlanilha/@maquina.xMAQUINA">download</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="1">
+                                <a class="btn btn-primary btn-xs" href="/Maquina/Cadastrar/">
+                                    Novo
+                                </a>
+                            </td>
+                        </tr>
+
+                    </tfoot>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-6 column">
+            <div class="list-group">
+                <a href="#" class="list-group-item active">Totalizadores</a>
+                <div class="list-group-item">
+                    <span class="badge">
+                        @Model.painel.VolumeTotal
+                    </span>Volume Total
+                </div>
+                <div class="list-group-item">
+                    <span class="badge">@Model.painel.VolumeYY</span>Volume Y-Y
+                </div>
+                <div class="list-group-item">
+                    <span class="badge">@Model.painel.TerminaisD</span>Terminais Direito
+                </div>
+                <div class="list-group-item">
+                    <span class="badge">@Model.painel.SelosD</span>Selos Direito
+                </div>
+                <div class="list-group-item">
+                    <span class="badge">@Model.painel.TerminaisE</span>Terminais Esquerdo
+                </div>
+                <div class="list-group-item">
+                    <span class="badge">@Model.painel.SelosE</span>Selos Esquerdo
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 column">
+            <fieldset>
+                <legend>Relatório de Y-Y</legend>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Bitola</td>
+                            <td>Volume</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var bitola in @Model.bitolas)
+                        {
+                            <tr>
+                                <td>@bitola.CALIBRE</td>
+                                <td>@bitola.VOLUME</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </fieldset>
+
+        </div>
+    </div>
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <fieldset>
+                <legend>Mostrar dados</legend>
+            </fieldset>
+
+            <input type="button" disabled="disabled" onclick="Carrega()" id="btnVisualiza" name="btnVisualiza" value="Visualizar" class="btn btn-success btn-xs" />
+            <img id="loaderPlanilha" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
+            <div id="resultPlanilha">
+            </div>
+        </div>
+    </div>
+</div>

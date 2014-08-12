@@ -1,0 +1,106 @@
+﻿@model HLP.OrganizePlanilha.UI.Web.Models.ProjetoModel
+@{
+    ViewBag.Title = "..: Parametros iniciais :..";
+    Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+}
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script>
+
+    function SetParameter(id) {
+
+        //AlteraParametro
+        $.ajax({
+            type: "POST",
+            url: "AlteraParametro",
+            data: { id: id },
+            success: function (data) {
+                var oldValue = $('#tdCod_' + id).html();
+                if (oldValue == '2') {
+                    $('#tdCod_' + id).html('Y');
+                } else {
+                    $('#tdCod_' + id).html('2');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.status);
+                alert(thrownError);
+            }
+        });
+
+
+        //$.ajax({
+        //    type: "POST",
+        //    url: "AlteraParametro",
+        //    data: { id: id },
+        //    beforeSend: function () {
+        //        $('.loader').show();
+        //    },
+        //    success: function (data) {
+        //        $('.center').html();
+        //    },
+        //    complete: function () {
+        //        $('.loader').hide();
+        //    },
+        //    error: function (xhr, ajaxOptions, thrownError) {
+        //        alert(xhr.status);
+        //        alert(thrownError);
+        //    }
+        //});
+    }
+</script>
+
+<fieldset>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-6 column">
+                <fieldset>
+                    <legend>Parâmetros de terminais e selos.</legend>
+                </fieldset>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td></td>
+                            <td>COD_D</td>
+                            <td>TERM</td>
+                            <td>ACC_01</td>
+                            <td>COD_01</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var parametro in Model.ldadosParametroTempDistinct)
+                        {
+                            <tr>
+                                <td align="left">
+                                    <img src="~/Content/Images/invert.png" onclick="javascript:SetParameter(@parametro.id)" />
+                                </td>
+                                <td id="tdCod_@(parametro.id)">@parametro.COD_D</td>
+                                <td id="tdTerm_@(parametro.id)">@parametro.TERM</td>
+                                <td>@parametro.ACC_01</td>
+                                <td>@parametro.COD_01</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                Total de registros: @Model.ldadosParametroTempDistinct.Count()
+                            </td>
+                        </tr>
+
+                    </tfoot>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <a class="btn btn-primary" href="/Maquina/Listar/">
+                    Prosseguir
+                </a>
+            </div>
+        </div>
+    </div>
+</fieldset>
+

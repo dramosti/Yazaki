@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    @* Primeiro sempre *@
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @* Segundo sempre *@
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @* restante nao tem ordem. *@
+    <script src="~/Scripts/bootbox.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.10.4.min.js"></script>
+    <script src="~/Scripts/jquery.maskedinput-1.3.1.min.js"></script>
+
+    @* Esse dois js de validade que dispara as validações via Model. +  @Html.ValidationMessageFor(x => x.Nome); + a validacao no model *@
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    @* Estilos *@
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+    @*<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.min.css" rel="stylesheet" />*@
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/pepper-grinder/jquery-ui.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+    @RenderSection("SCRIPTS", false)
+
+
+</head>
+<body>
+    <header>
+        <div>
+            @* Tudo que for jogado no ViewBag será visivel nas paginas pais e filhas. *@
+            <h1 class="text-muted text-left">@ViewBag.Title</h1>
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container-fluid">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">.Yazaki</a>
+                    </div>
+
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projeto <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Novo Projeto", "FindXml", "Projeto")</li>
+                                    <li>@Html.ActionLink("Listar Projetos", "FindXml", "Projeto")</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div><!-- /.navbar-collapse -->
+                </div><!-- /.container-fluid -->
+            </nav>
+        </div>
+    </header>
+    <section class="container">
+        <div>
+            @Html.Partial("_PartialAviso")
+        </div>
+    </section>
+    <section>
+        <div>
+            @RenderBody()
+        </div>
+    </section>
+    <footer>
+        <div>
+            @*
+                <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+                    <div class="container">
+                        <!-- A tag strong alem de deixar em negrito Ela tem conteúdo semântico que  significa q é um texto importante. -->
+                        <p> &copy; Todos direitos reservados a <strong>HLP estratégia em sistemas.</strong> </p>
+                    </div>
+                </nav>
+            *@
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="container">
+                    <!-- A tag strong alem de deixar em negrito Ela tem conteúdo semântico que  significa q é um texto importante. -->
+                    <p> &copy; Todos direitos reservados a <strong>HLP estratégia em sistemas.</strong> </p>
+                </div>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>
