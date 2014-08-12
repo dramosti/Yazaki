@@ -94,7 +94,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                 {
                     Util.InverteLado(item);
                 }
-                return Util.GroupList(dadosAgrupados);
+                dadosAgrupados = Util.GroupList(dadosAgrupados);
+
+                int icount = 0;
+                foreach (var item in dadosAgrupados)
+                {
+                    item.idPLANILHA = icount;
+                    icount = icount + 1;
+                }
+                return dadosAgrupados;
 
             }
             catch (Exception ex)

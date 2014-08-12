@@ -150,7 +150,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             c.ACC_01_I == selo
                             && this.resultado.lseloDir.Contains(c.ACC_01_D)))
                         {
-                            // itemSelo.bUtilizado = true;
+                            itemSelo.bUtilizado = true;
                             this.lSelos.Add(itemSelo);
                         }
                     }
@@ -162,18 +162,18 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             c.ACC_01_D == selo
                             && this.resultado.lseloEsq.Where(o => o.Equals(c.ACC_01_I)).Count() > 0))
                         {
-                            //itemSelo.bUtilizado = true;
+                            itemSelo.bUtilizado = true;
                             this.lSelos.Add(itemSelo);
                         }
                 }
 
-                this.lSelos = Util.GroupList(this.lSelos);
+                //  this.lSelos = Util.GroupList(this.lSelos);
 
                 foreach (var item in this.lSelos)
                 {
                     this.resultado.Add(item);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -183,6 +183,111 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
         private void IncludeAutomaticos()
         {
+            try
+            {
+                var dadosPesquisa = new List<PlanilhaModel>();
+                foreach (var itemSelo in this.lSelos)
+                {
+
+                    var terminaisEsquerda = new List<PlanilhaModel>();
+
+                    if (itemSelo.TERM_IZQ != "")
+                        terminaisEsquerda = this._lDadosPlanilha.Where(c => c.TERM_IZQ == itemSelo.TERM_IZQ && c.bUtilizado == false).ToList();
+
+                    var terminaisDireita = new List<PlanilhaModel>();
+                    if (itemSelo.TERM_DER != "")
+                        terminaisDireita = this._lDadosPlanilha.Where(c => c.TERM_DER == itemSelo.TERM_DER && c.bUtilizado == false).ToList();
+
+                    if (terminaisEsquerda.Count() > 0)
+                    {
+
+                    }
+                    if (terminaisDireita.Count() > 0)
+                    {
+
+                    }
+
+                    dadosPesquisa = new List<PlanilhaModel>();
+                    if (this.resultado.GetTotalTerminalDireitoFaltante() > 0 && this.resultado.GetTotalTerminalEsquerdoFaltante() > 0)
+                    {
+                        // verifico primeiro o lado esquerdo.
+                        if (itemSelo.COD_DI == "2")
+                        {
+
+                            dadosPesquisa = (from c in this._lDadosPlanilha
+                                             where c.COD_DI == "2"
+                                             && c.COD_DD == "2"
+                                             && c.ACC_01_D == ""
+                                             && c.ACC_01_I == ""
+                                             && c.TERM_IZQ == itemSelo.TERM_IZQ
+                                             && c.bUtilizado == false
+                                             select c).ToList();
+                        }
+                        // se não encontrou nada, eu verifico na direita.                        
+                        if (dadosPesquisa.Count() == 0 && itemSelo.COD_DD == "2")
+                        {
+                            dadosPesquisa = (from c in this._lDadosPlanilha
+                                             where c.COD_DI == "2"
+                                             && c.COD_DD == "2"
+                                             && c.ACC_01_D == ""
+                                             && c.ACC_01_I == ""
+                                             && c.TERM_DER == itemSelo.TERM_DER
+                                             && c.bUtilizado == false
+                                             select c).ToList();
+                        }
+                    }
+
+
+                    if (dadosPesquisa.Count() == 0)
+                    {
+                        //VERIFICO MANUAL E AUTOMÁTICO. PRIMEIRO LADO ESQUERDO
+                        if (this.resultado.GetTotalTerminalEsquerdoFaltante() > 0 && itemSelo.COD_DI == "2")
+                        {
+                            dadosPesquisa = (from c in this._lDadosPlanilha
+                                             where c.COD_DI == "2"
+                                             && c.ACC_01_I == ""
+                                             && c.COD_DD == "Y"
+                                             && c.TERM_IZQ == itemSelo.TERM_IZQ
+                                             && c.bUtilizado == false
+                                             select c).ToList();
+                        }
+                    }
+
+
+                    if (dadosPesquisa.Count() == 0)
+                    {
+                        //VERIFICO MANUAL E AUTOMÁTICO. LADO DIREITO.
+                        if (this.resultado.GetTotalTerminalDireitoFaltante() > 0 && itemSelo.COD_DD == "2")
+                        {
+                            dadosPesquisa = (from c in this._lDadosPlanilha
+                                             where c.COD_DD == "2"
+                                             && c.ACC_01_D == ""
+                                             && c.COD_DI == "Y"
+                                             && c.TERM_DER == itemSelo.TERM_DER
+                                             && c.bUtilizado == false
+                                             select c).ToList();
+                        }
+                    }
+
+                    if (dadosPesquisa.Count() > 0)
+                    {
+
+                        var itemSelecionado = dadosPesquisa.FirstOrDefault();
+                        itemSelecionado.bUtilizado = true;
+                        this.resultado.Add(itemSelecionado);
+                    }
+                }
+
+
+                if (this.resultado.GetTotalTerminalDireitoFaltante() > 0 || this.resultado.GetTotalTerminalEsquerdoFaltante() > 0)
+                {
+                    this.IncludeAutomaticos();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
         }
 
@@ -208,14 +313,16 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                             && Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) <= this.resultado.bitolaMax)
                                                             && c.bUtilizado == false).ToList())
                 {
+                    item.bUtilizado = false;
                     item.id = null;
                     this._lDadosPlanilha.Add(item);
                 }
                 // SELOS
                 this.IncludeSelos();
 
-
-
+                Util.bAtivaRegraModel = true;
+                // AUTOMÁTICOS.
+                this.IncludeAutomaticos();
 
 
                 this._lDadosPlanilha = new List<PlanilhaModel>();
@@ -223,8 +330,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
 
 
-                //Util.bAtivaRegraModel = true;
-                BeginAssignacao();
+
+                // BeginAssignacao();
 
                 // metodo que escreve os dados em xls e salva.
                 this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());

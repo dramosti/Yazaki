@@ -15,9 +15,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public int idPLANILHA { get; set; }
 
-        [Coluna(isColuna = false)]
-        public int idPROJETO { get; set; }
-
         [Coluna(isColuna = true)]
         public string PLANTA { get; set; }
 
@@ -41,7 +38,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string COD_DI { get; set; }
 
 
-        public string _TERM_IZQ;
+        private string _TERM_IZQ;
         [Coluna(isColuna = true)]
         public string TERM_IZQ
         {
@@ -51,6 +48,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
 
         private string _ACC_01_I;
+        /// <summary>
+        /// SELO ESQUERDO.
+        /// </summary>
         [Coluna(isColuna = true)]
         public string ACC_01_I
         {
@@ -69,7 +69,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string COD_DD { get; set; }
 
 
-        public string _TERM_DER;
+        private string _TERM_DER;
         [Coluna(isColuna = true)]
         public string TERM_DER
         {
@@ -79,6 +79,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
 
         private string _ACC_01_D;
+        /// <summary>
+        /// SELO DIREITO
+        /// </summary>
         [Coluna(isColuna = true)]
         public string ACC_01_D
         {
@@ -92,7 +95,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
 
-        public string _COD_01_I;
+        private string _COD_01_I;
 
         [Coluna(isColuna = false)]
         public string COD_01_I
@@ -101,7 +104,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set { _COD_01_I = (value == "D" || value == "U" || value == "PU") ? value : ""; }
         }
 
-        public string _COD_01_D;
+        private string _COD_01_D;
         [Coluna(isColuna = false)]
         public string COD_01_D
         {

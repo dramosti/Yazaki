@@ -39,9 +39,24 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             return this.lista.Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace('.', ',')));
         }
+        public decimal GetVolumeAutomaticos()
+        {
+            return this.lista.Where(c => c.COD_DI == "2" || c.COD_DD == "2").Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace('.', ',')));
+        }
+        public int GetTotalTerminalEsquerdoFaltante()
+        {
+            return this.termEsqMax - this.lista.Where(c => c.COD_DI == "2").Select(c => c.TERM_IZQ.Trim()).Distinct().Count();
+        }
+        public int GetTotalTerminalDireitoFaltante()
+        {
+            return this.termDirMax - this.lista.Where(c => c.COD_DD == "2").Select(c => c.TERM_DER.Trim()).Distinct().Count();
+        }
 
 
         private List<PlanilhaModel> lista { get { return (this.ToList() as List<PlanilhaModel>); } }
+
+
+
 
 
     }

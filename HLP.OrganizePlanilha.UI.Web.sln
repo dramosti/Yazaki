@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HLP.OrganizePlanilha.UI.Web", "HLP.OrganizePlanilha.UI.Web\HLP.OrganizePlanilha.UI.Web.csproj", "{D6115755-FB58-44F5-893E-56825624FB2C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{F17AAE73-B5F1-4736-B401-D618E2525C57}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fluxograma", "Fluxograma", "{78C9E303-7356-42C3-9280-68743A49FE1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
