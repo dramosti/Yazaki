@@ -142,15 +142,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             Util.InverteLado(item);
                         }
                 }
-
-
-
-
-
-
-                var teste = this._lDadosPlanilha.Where(c => c.ACC_01_I == "7157-3035-60");
-
-
                 foreach (var selo in this.resultado.lseloEsq)
                 {
                     if (selo != "")
@@ -177,10 +168,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
 
                 this.lSelos = Util.GroupList(this.lSelos);
+
                 foreach (var item in this.lSelos)
                 {
                     this.resultado.Add(item);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -220,6 +213,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
                 // SELOS
                 this.IncludeSelos();
+
+
+
+
+
+                this._lDadosPlanilha = new List<PlanilhaModel>();
+                this._lDadosPlanilha.AddRange(this.lSelos);
+
+
 
                 //Util.bAtivaRegraModel = true;
                 BeginAssignacao();

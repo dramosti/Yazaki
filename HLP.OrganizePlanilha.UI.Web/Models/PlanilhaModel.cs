@@ -55,7 +55,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string ACC_01_I
         {
             get { return Util.bAtivaRegraModel ? (this.COD_DI != "Y" ? _ACC_01_I : "") : _ACC_01_I; }
-            set { _ACC_01_I = value; }
+            set
+            {
+                _ACC_01_I = value;
+                if (value != "")
+                    this.COD_DI = "2";
+            }
         }
 
 
@@ -78,7 +83,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string ACC_01_D
         {
             get { return Util.bAtivaRegraModel ? (this.COD_DD != "Y" ? _ACC_01_D : "") : _ACC_01_D; }
-            set { _ACC_01_D = value; }
+            set
+            {
+                _ACC_01_D = value;
+                if (value != "")
+                    this.COD_DD = "2";
+            }
         }
 
 

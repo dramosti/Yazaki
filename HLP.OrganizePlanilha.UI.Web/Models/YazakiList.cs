@@ -34,5 +34,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             this.volumeAtual += Convert.ToDecimal((item as PlanilhaModel).CANTIDAD.Replace(".", ","));
         }
 
+
+        public decimal GetVolumeTotal()
+        {
+            return this.lista.Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace('.', ',')));
+        }
+
+
+        private List<PlanilhaModel> lista { get { return (this.ToList() as List<PlanilhaModel>); } }
+
+
     }
 }
