@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Models\AtributosBases.cs" />
     <Compile Include="Models\BitolaModel.cs" />
+    <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\MaquinaModel.cs" />
     <Compile Include="Models\PainelModel.cs" />
     <Compile Include="Models\ParametrosModel.cs" />

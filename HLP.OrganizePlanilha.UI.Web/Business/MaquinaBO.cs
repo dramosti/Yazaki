@@ -22,6 +22,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         /// Lista de cabos que serão manipulados.
         /// </summary>
         private List<PlanilhaModel> _lDadosPlanilha { get; set; }
+        private List<PlanilhaModel> _lDadosParaAssignacao { get; set; }
 
         /// <summary>
         /// Contador q será convertido em Letras para separar os Grupos
@@ -47,7 +48,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         {
             try
             {
-                
+
                 this.resultado.param.bitolaMin = Convert.ToDecimal(this._maquina.CALIBRE.Split('-')[0].ToString().Replace(".", ","));
                 if (this._maquina.CALIBRE.Split('-').Count() > 1)
                     this.resultado.param.bitolaMax = Convert.ToDecimal(this._maquina.CALIBRE.Split('-')[1].ToString().Replace(".", ","));
@@ -101,11 +102,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
                 if (this._maquina.QTDE_TOLERANCIA != null)
                 {
-                    this.resultado.param.toleranciaMin = this.resultado.param.volumeTotal - Convert.ToDecimal(this._maquina.QTDE_TOLERANCIA.Split('-')[0].ToString().Replace(".", ","));
-                    if (this._maquina.QTDE_TOLERANCIA.Split('-').Count() > 1)
-                        this.resultado.param.toleranciaMax = this.resultado.param.volumeTotal + Convert.ToDecimal(this._maquina.QTDE_TOLERANCIA.Split('-')[1].ToString().Replace(".", ","));
-                    else
-                        this.resultado.param.toleranciaMax = this.resultado.param.volumeTotal;
+                    //this.resultado.param.toleranciaMin = this.resultado.param.volumeTotal - Convert.ToDecimal(this._maquina.QTDE_TOLERANCIA.Split('-')[0].ToString().Replace(".", ","));
+                    //if (this._maquina.QTDE_TOLERANCIA.Split('-').Count() > 1)
+                    //    this.resultado.param.toleranciaMax = this.resultado.param.volumeTotal + Convert.ToDecimal(this._maquina.QTDE_TOLERANCIA.Split('-')[1].ToString().Replace(".", ","));
+                    //else
+                    //    this.resultado.param.toleranciaMax = this.resultado.param.volumeTotal;
+
+                    this.resultado.param.tolerancia = this._maquina.QTDE_TOLERANCIA.ToDecimal();
                 }
 
 
@@ -350,12 +353,38 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 {
                     if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
                     {
-                        var itemEsquerdo = (from c in this._lDadosPlanilha
+                        // contador para verificar se existe cabo automático na esquerda
+                        int icountTotalAutomaticoLadoEsquerdo = (from c in this._lDadosPlanilha
+                                                                 where c.COD_DI == "2"
+                                                                 && c.COD_DD == "Y"
+                                                                 && c.bUtilizado == false
+                                                                 select c).Count();
+
+                        PlanilhaModel itemEsquerdo = null;
+                        if (icountTotalAutomaticoLadoEsquerdo > 0)
+                        {
+                            // caso exista eu busco um para inserir na maquina
+                            itemEsquerdo = (from c in this._lDadosPlanilha
                                             where c.COD_DI == "2"
                                             && c.ACC_01_I == ""
                                             && c.COD_DD == "Y"
                                             && c.bUtilizado == false
                                             select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
+                        }
+                        if (itemEsquerdo == null)
+                        {
+                            // caso não tenha cabo na esquerda, eu verifico na direita e mudo ele de lado.
+                            itemEsquerdo = (from c in this._lDadosPlanilha
+                                            where c.COD_DD == "2"
+                                            && c.ACC_01_D == ""
+                                            && c.COD_DI == "Y"
+                                            && c.bUtilizado == false
+                                            select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
+                            if (itemEsquerdo != null)
+                                itemEsquerdo = Util.InverteLado(itemEsquerdo);
+                        }
+
+
 
                         if (itemEsquerdo != null)
                         {
@@ -394,6 +423,69 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         }
 
 
+        private void IncludeSelosManuais()
+        {
+            try
+            {
+                if (this.resultado.GetVolumeTotalManualByLista() < this.resultado.param.volumeYY)
+                {
+
+                    var cabosAtuais = (from c in this.resultado
+                                       select new
+                                       {
+                                           CALIBRE = c.CALIBRE,
+                                           TIPO = c.TIPO
+                                       }).Distinct().ToList();
+
+                    var dadosYY = from c in this._lDadosPlanilha
+                                  where c.COD_DI == "Y"
+                                        && c.COD_DD == "Y"
+                                        && cabosAtuais.Contains(new { c.CALIBRE, c.TIPO })
+                                  select c;
+
+                    if (dadosYY.Count() == 0)
+                    {
+                        dadosYY = from c in this._lDadosPlanilha
+                                  where c.COD_DI == "Y"
+                                        && c.COD_DD == "Y"
+                                  select c;
+                    }
+
+                    decimal dTotalYYparaAnalise = this.resultado.GetVolumeTotalManualByLista();
+                    foreach (var item in dadosYY)
+                    {
+                        if ((item.CANTIDAD.ToDecimal() + this.resultado.GetVolumeTotalManualByLista()) > this.resultado.param.volumeYY)
+                        {
+                            decimal dvalorToRemove = (item.CANTIDAD.ToDecimal() + this.resultado.GetVolumeTotalManualByLista()) - this.resultado.param.volumeYY;
+                            item.SubtraiValor(dvalorToRemove);
+                        }
+
+                        var PosicaoItem = this.resultado.FirstOrDefault(c => c.CALIBRE == item.CALIBRE && c.TIPO == item.TIPO);
+                        if (PosicaoItem != null)
+                        {
+                            item.G = PosicaoItem.G;
+                            item.id = PosicaoItem.id;
+                        }
+                        item.bUtilizado = true;
+                        this.resultado.Add(item);
+
+                        if (this.resultado.GetVolumeTotalManualByLista() >= this.resultado.param.volumeYY)
+                        {
+                            break;
+                        }
+                    }
+
+                    if ((this.resultado.GetVolumeTotalManualByLista() < this.resultado.param.volumeYY) && (this.resultado.GetVolumeTotalManualByLista() != dTotalYYparaAnalise))
+                        this.IncludeSelosManuais();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         /// <summary>
         /// Método que irá chamar irá fazer a organização e salvar o arquivo em excel.
         /// </summary>
@@ -425,14 +517,16 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
                 Util.bAtivaRegraModel = true;
                 // AUTOMÁTICOS.
-                IncludeAutomaticosAteCompletarTerminais();
+                this.IncludeAutomaticosAteCompletarTerminais();
 
                 this.IncludeAutomaticosBySelos();
 
+                if (!this.resultado.ValidaPorcentagemGeral())
+                    this.AnalisedeQuantidade();
 
-                this._lDadosPlanilha = new List<PlanilhaModel>();
-                this._lDadosPlanilha.AddRange(this.resultado);
-                foreach (var item in this._lDadosPlanilha)
+                this._lDadosParaAssignacao = new List<PlanilhaModel>();
+                this._lDadosParaAssignacao.AddRange(this.resultado);
+                foreach (var item in this._lDadosParaAssignacao)
                 {
                     item.bUtilizado = false;
                 }
@@ -440,15 +534,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 YazakiList.ParametrosLista param = this.resultado.GetParametro();
                 this.resultado = new YazakiList();
                 this.resultado.param = param;
+                BeginAssignacao();
 
-
-
-
-                 BeginAssignacao();
+                // MANUAIS - MANUAIS
+                this.IncludeSelosManuais();
 
                 // metodo que escreve os dados em xls e salva.
                 this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
-
             }
             catch (Exception ex)
             {
@@ -457,7 +549,38 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         }
 
 
+        private void DesvinculaItemCollectionGenerica() 
+        {
+            try
+            {
 
+            }
+            catch (Exception ex)
+            {                
+                throw ex;
+            }
+        }
+
+
+        private void AnalisedeQuantidade()
+        {
+            try
+            {
+
+                var item = this.resultado.OrderByDescending(c => c.PERCENTUAL).FirstOrDefault();
+
+                item.SubtraiPercentual(1);
+                bool bValida = this.resultado.ValidaPorcentagemGeral();
+                if (bValida == false)
+                {
+                    AnalisedeQuantidade();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
 
 
@@ -470,7 +593,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             try
             {
                 // selecionamos os teminais que são automáticos pelo lado esquerdo / caso seja a vez do lado direito valerá a condição abaixo.
-                var TotalPorTerminal = (from c in this._lDadosPlanilha
+                var TotalPorTerminal = (from c in this._lDadosParaAssignacao
                                         where c.COD_DI != "Y"
                                         && c.bUtilizado == false
                                         group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
@@ -482,7 +605,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                         }).OrderBy(c => c.CALIBRE);
 
                 if (lado == Lado.DIREITO)
-                    TotalPorTerminal = (from c in this._lDadosPlanilha
+                    TotalPorTerminal = (from c in this._lDadosParaAssignacao
                                         where c.COD_DD != "Y"
                                         && c.bUtilizado == false
                                         group c by new { c.TERM_DER, c.CALIBRE } into grupoPlanilha
@@ -536,12 +659,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             {
                 iContador = iContador + 1;
 
-                var cabos = this._lDadosPlanilha.Where(c =>
+                var cabos = this._lDadosParaAssignacao.Where(c =>
                                         c.COD_DI != "Y"
                                         && c.TERM_IZQ == TERM
                                         && c.bUtilizado == false);
                 if (lado == Lado.DIREITO)
-                    cabos = this._lDadosPlanilha.Where(c =>
+                    cabos = this._lDadosParaAssignacao.Where(c =>
                                         c.COD_DD != "Y"
                                         && c.TERM_DER == TERM
                                         && c.bUtilizado == false);
@@ -565,35 +688,24 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     //}
 
                     // verificamos se na planilha original tem o item invertido, caso tenha nós alteramos e incluimos na lista de cabosInclusos.
-                    var TotalInvertido = this._lDadosPlanilha.Where(c => c.TERM_DER == item.TERM_IZQ && c.TERM_IZQ == item.TERM_DER
+                    var TotalInvertido = this._lDadosParaAssignacao.Where(c => c.TERM_DER == item.TERM_IZQ && c.TERM_IZQ == item.TERM_DER
                                                     && c.bUtilizado == false);
 
                     if (lado == Lado.DIREITO)
-                        TotalInvertido = this._lDadosPlanilha.Where(c => c.TERM_IZQ == item.TERM_DER && c.TERM_DER == item.TERM_IZQ
+                        TotalInvertido = this._lDadosParaAssignacao.Where(c => c.TERM_IZQ == item.TERM_DER && c.TERM_DER == item.TERM_IZQ
                                                     && c.bUtilizado == false);
 
                     if (TotalInvertido.Count() > 0)
                     {
                         foreach (var c in TotalInvertido)
                         {
-                            //string td = c.TERM_DER; // terminal direito
-                            //string sd = c.ACC_01_D; // selo direito
-                            //string te = c.TERM_IZQ; // terminal esquerdo                             
-                            //string se = c.ACC_01_I; // selo esquerdo
-
-                            //// muda-se os lados.
-                            //c.TERM_DER = te;
-                            //c.ACC_01_D = se;
-                            //c.TERM_IZQ = td;
-                            //c.ACC_01_I = sd;
-                            //c.bUtilizado = true;
                             cabosInlcusos.Add(Util.InverteLado(c));
                         }
                     }
                 }
 
                 // agrupamos os registros.
-                cabosInlcusos = Util.GroupList(cabosInlcusos.ToList());
+                //cabosInlcusos = Util.GroupList(cabosInlcusos.ToList());
 
 
                 // inverte o lado da comparação.
@@ -607,7 +719,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         .Select(c => c.TERM_DER).Distinct().ToList();
 
                 // buscamos qual o terminal que mais se repete.
-                var terminalMaisRepete = (from t in this._lDadosPlanilha
+                var terminalMaisRepete = (from t in this._lDadosParaAssignacao
                                           where terminais.Contains(t.TERM_IZQ) && t.COD_DI != "Y" && t.bUtilizado == false
                                           group t.idPLANILHA by t.TERM_IZQ into term
                                           select new
@@ -617,7 +729,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                           }).OrderByDescending(c => c.TOTAL).FirstOrDefault();
 
                 if (lado == Lado.DIREITO)
-                    terminalMaisRepete = (from t in this._lDadosPlanilha
+                    terminalMaisRepete = (from t in this._lDadosParaAssignacao
                                           where terminais.Contains(t.TERM_DER) && t.COD_DD != "Y" && t.bUtilizado == false
                                           group t.idPLANILHA by t.TERM_DER into term
                                           select new

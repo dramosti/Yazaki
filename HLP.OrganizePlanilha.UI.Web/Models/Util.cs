@@ -48,8 +48,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
                         output.Write("\t");
                     }
                 }
-                output.Write("TOTAL");
-                output.Write("\t");
+                //output.Write("TOTAL");
+                //output.Write("\t");
                 output.WriteLine();
 
 
@@ -73,31 +73,24 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
                         output.WriteLine();
                     }
 
-                    foreach (PropertyDescriptor prop in props)
-                    {
-                        //String sValue = "";
-                        //if (prop.DisplayName == "CANTIDAD")
-                        //{
-                        //    sValue = ldata.Where(c => c.G == G).Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace(".", ","))).ToString("#0.00");
-                        //}
+                    //foreach (PropertyDescriptor prop in props)
+                    //{
+                    //    cl = lProperties.FirstOrDefault(c => c.Name == prop.DisplayName).GetCustomAttributes(true).FirstOrDefault(i => i.GetType() == typeof(Coluna));
+                    //    bool isColuna = false;
+                    //    if (cl != null)
+                    //        isColuna = (cl as Coluna).isColuna;
+                    //    if (isColuna)
+                    //    {
+                    //        output.Write("");
+                    //        output.Write("\t");
+                    //    }
+                    //}
 
-                        cl = lProperties.FirstOrDefault(c => c.Name == prop.DisplayName).GetCustomAttributes(true).FirstOrDefault(i => i.GetType() == typeof(Coluna));
-                        bool isColuna = false;
-                        if (cl != null)
-                            isColuna = (cl as Coluna).isColuna;
-                        if (isColuna)
-                        {
-                            output.Write("");
-                            output.Write("\t");
-                        }
-                    }
+                    //String sValue = "";
+                    //sValue = ldata.Where(c => c.G == G).Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace(".", ","))).ToString("#0.00");
+                    //output.Write(sValue);
+                    //output.Write("\t");
 
-                    String sValue = "";
-                    sValue = ldata.Where(c => c.G == G).Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace(".", ","))).ToString("#0.00");
-                    output.Write(sValue);
-                    output.Write("\t");
-
-                    output.WriteLine();
                     //output.WriteLine();
                 }
             }

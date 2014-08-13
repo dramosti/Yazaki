@@ -73,20 +73,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                         }
                     }
                 }
-
-
-                //int iCount = lDados.Count();
-                //var teste = lDados.Where(c => c.ACC_01_I == "7157-3035-60");
-
-                //teste = lDados.Where(c => c.ACC_01_I == "7157-3035-60" && c.CALIBRE == "0.35");
-
-                //teste = lDados.Where(c => c.ACC_01_I == "7157-3035-60" && c.CALIBRE == "0.5");
-
-
                 var dadosAgrupados = Util.GroupList(lDados);
-
-                //teste = dadosAgrupados.Where(c => c.ACC_01_I == "7157-3035-60");
-
+                
+                // NESSE MOMENTO EU JOGO TODOS OS MANUAIS COM AUTOMÁTICOS PRA UM LADO SÓ ( MANUAL = ESQUERDA - AUTOMÁTICO = DIREITA )
                 var dados = dadosAgrupados.Where(c => c.COD_DI == "2"
                                                  && c.COD_DD == "Y");
 

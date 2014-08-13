@@ -30,8 +30,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public string LONG_CORT { get; set; }
 
+
+        public string _CANTIDAD;
         [Coluna(isColuna = true)]
-        public string CANTIDAD { get; set; }
+        public string CANTIDAD
+        {
+            get { return (_CANTIDAD.ToDecimal() - this.dRestante).ToString(); }
+            set { _CANTIDAD = value; }
+        }
 
 
         [Coluna(isColuna = true)]
@@ -62,7 +68,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
                     this.COD_DI = "2";
             }
         }
-
 
 
         [Coluna(isColuna = true)]
@@ -96,7 +101,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
 
         private string _COD_01_I;
-
         [Coluna(isColuna = false)]
         public string COD_01_I
         {
@@ -132,5 +136,21 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
         //public bool bAtivaRegra = false;
+
+        private decimal dRestante { get; set; }
+
+        public decimal PERCENTUAL { get; set; }
+
+        public void SubtraiPercentual(decimal dPercentual)
+        {
+            decimal valorRelativo = Math.Round(((this.CANTIDAD.ToDecimal() * dPercentual) / this.PERCENTUAL),2);
+            this.dRestante += valorRelativo;
+        }
+
+        public void SubtraiValor(decimal dValor)
+        {
+            this.dRestante += dValor;
+        }
+
     }
 }
