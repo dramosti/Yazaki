@@ -48,7 +48,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         {
             try
             {
-
+                this.resultado.param.MAQUINA = this._maquina.xMAQUINA;
                 this.resultado.param.bitolaMin = Convert.ToDecimal(this._maquina.CALIBRE.Split('-')[0].ToString().Replace(".", ","));
                 if (this._maquina.CALIBRE.Split('-').Count() > 1)
                     this.resultado.param.bitolaMax = Convert.ToDecimal(this._maquina.CALIBRE.Split('-')[1].ToString().Replace(".", ","));
@@ -466,8 +466,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             item.G = PosicaoItem.G;
                             item.id = PosicaoItem.id;
                         }
-                        item.bUtilizado = true;
-                        this.resultado.Add(item);
+                        this.resultado.Add(this.DesvinculaItemCollectionGenerica(item));
 
                         if (this.resultado.GetVolumeTotalManualByLista() >= this.resultado.param.volumeYY)
                         {
@@ -525,11 +524,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     this.AnalisedeQuantidade();
 
                 this._lDadosParaAssignacao = new List<PlanilhaModel>();
-                this._lDadosParaAssignacao.AddRange(this.resultado);
-                foreach (var item in this._lDadosParaAssignacao)
+                foreach (var item in this.resultado)
                 {
-                    item.bUtilizado = false;
+                    this._lDadosParaAssignacao.Add(this.DesvinculaItemCollectionGenerica(item));
                 }
+
+                this._lDadosParaAssignacao = Util.GroupList(this._lDadosParaAssignacao);
 
                 YazakiList.ParametrosLista param = this.resultado.GetParametro();
                 this.resultado = new YazakiList();
@@ -538,6 +538,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
                 // MANUAIS - MANUAIS
                 this.IncludeSelosManuais();
+
+                var dadosYY = this.resultado.Where(c => c.COD_DD == "Y" && c.COD_DI == "Y").ToList();
+                foreach (var item in dadosYY)
+                {
+                    this.resultado.Remove(item);
+                }
+                dadosYY = Util.GroupListYY(dadosYY);
+                foreach (var itemYYtoAdd in dadosYY)
+                {
+                    this.resultado.Add(itemYYtoAdd);
+                }
 
                 // metodo que escreve os dados em xls e salva.
                 this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
@@ -549,14 +560,33 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         }
 
 
-        private void DesvinculaItemCollectionGenerica() 
+        /// <summary>
+        /// Retorna o objeto clonado
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private PlanilhaModel DesvinculaItemCollectionGenerica(PlanilhaModel item)
         {
             try
             {
+                PlanilhaModel itemClone = item.Clone() as PlanilhaModel;
+                if (item.dRestante > 0)
+                {
+                    item.CANTIDAD = item.dRestante.ToString();
+                    item.dRestante = 0;
+                    item.bUtilizado = false;
+                }
+                else
+                {
+                    item.CANTIDAD = "0";
+                    item.bUtilizado = true;
+                }
+                itemClone.bUtilizado = false;
+                return itemClone;
 
             }
             catch (Exception ex)
-            {                
+            {
                 throw ex;
             }
         }

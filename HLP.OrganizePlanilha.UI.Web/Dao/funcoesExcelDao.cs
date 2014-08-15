@@ -71,8 +71,19 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
 
                             idCount = idCount + 1;
                         }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+
                     }
                 }
+
+
+
                 var dadosAgrupados = Util.GroupList(lDados);
                 
                 // NESSE MOMENTO EU JOGO TODOS OS MANUAIS COM AUTOMÁTICOS PRA UM LADO SÓ ( MANUAL = ESQUERDA - AUTOMÁTICO = DIREITA )
@@ -83,6 +94,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                 {
                     Util.InverteLado(item);
                 }
+
+                
+
+
                 dadosAgrupados = Util.GroupList(dadosAgrupados);
 
                 int icount = 0;

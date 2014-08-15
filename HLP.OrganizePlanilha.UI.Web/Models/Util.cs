@@ -141,6 +141,54 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         }
 
+        public static List<PlanilhaModel> GroupListYY(List<PlanilhaModel> dados)
+        {
+            try
+            {
+                // agrupamos os registros.
+                return (from c in dados
+                        group c by new
+                        {
+                            c.PLANTA,
+                            c.ACC_01_D,
+                            c.ACC_01_I,
+                            c.CALIBRE,
+                            c.COD_DD,
+                            c.COD_DI,
+                            c.TERM_DER,
+                            c.TERM_IZQ,
+                            c.TIPO,
+                            c.COD_01_I,
+                            c.COD_01_D,
+                            c.G,
+                            c.id,
+                        } into grupo
+                        orderby grupo.Sum(o => Convert.ToDecimal(o.CANTIDAD.Replace(".", ",")))
+                        select new PlanilhaModel
+                        {
+                            PLANTA = grupo.Key.PLANTA,
+                            ACC_01_D = grupo.Key.ACC_01_D,
+                            ACC_01_I = grupo.Key.ACC_01_I,
+                            CALIBRE = grupo.Key.CALIBRE,
+                            COD_DD = grupo.Key.COD_DD,
+                            COD_DI = grupo.Key.COD_DI,
+                            TERM_DER = grupo.Key.TERM_DER,
+                            TERM_IZQ = grupo.Key.TERM_IZQ,
+                            TIPO = grupo.Key.TIPO,
+                            COD_01_D = grupo.Key.COD_01_D,
+                            COD_01_I = grupo.Key.COD_01_I,
+                            id = grupo.Key.id,
+                            G = grupo.Key.G,
+                            CANTIDAD = grupo.Sum(o => Convert.ToDecimal(o.CANTIDAD.Replace(".", ","))).ToString("#0.00")
+                        }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
         public static PlanilhaModel InverteLado(PlanilhaModel c)
         {
             string td = c.TERM_DER; // terminal direito

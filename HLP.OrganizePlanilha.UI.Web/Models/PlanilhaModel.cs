@@ -5,11 +5,11 @@ using System.Web;
 
 namespace HLP.OrganizePlanilha.UI.Web.Models
 {
-    public sealed class PlanilhaModel : IComparable
+    public sealed class PlanilhaModel : ICloneable
     {
         public PlanilhaModel()
         {
-            maquina = new MaquinaModel();
+           
         }
 
         [Coluna(isColuna = false)]
@@ -18,8 +18,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = true)]
         public string PLANTA { get; set; }
 
-        [Coluna(isColuna = false)]
-        public MaquinaModel maquina { get; set; }
+        [Coluna(isColuna = true)]
+        public string MAQUINA { get; set; }
 
         [Coluna(isColuna = true)]
         public string TIPO { get; set; }
@@ -30,7 +30,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public string LONG_CORT { get; set; }
 
-
         public string _CANTIDAD;
         [Coluna(isColuna = true)]
         public string CANTIDAD
@@ -39,11 +38,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set { _CANTIDAD = value; }
         }
 
-
         [Coluna(isColuna = true)]
         public string COD_DI { get; set; }
-
-
+        
         private string _TERM_IZQ;
         [Coluna(isColuna = true)]
         public string TERM_IZQ
@@ -130,20 +127,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set { _id = value; }
         }
 
-        public int CompareTo(object obj)
-        {
-            return this.CALIBRE.CompareTo(obj);
-        }
-
-        //public bool bAtivaRegra = false;
-
-        private decimal dRestante { get; set; }
+        [Coluna(isColuna = false)]
+        public decimal dRestante { get; set; }
 
         public decimal PERCENTUAL { get; set; }
 
         public void SubtraiPercentual(decimal dPercentual)
         {
-            decimal valorRelativo = Math.Round(((this.CANTIDAD.ToDecimal() * dPercentual) / this.PERCENTUAL),2);
+            decimal valorRelativo = Math.Round(((this.CANTIDAD.ToDecimal() * dPercentual) / this.PERCENTUAL), 2);
             this.dRestante += valorRelativo;
         }
 
@@ -152,5 +143,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             this.dRestante += dValor;
         }
 
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

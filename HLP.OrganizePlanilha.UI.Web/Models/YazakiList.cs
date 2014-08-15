@@ -17,7 +17,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         protected override void InsertItem(int index, PlanilhaModel item)
         {
-            this.param.volumeAtual += Convert.ToDecimal((item).CANTIDAD.Replace(".", ","));
+            item.MAQUINA = this.param.MAQUINA;
             base.InsertItem(index, item);
         }
 
@@ -69,11 +69,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
 
-
-
-
         public class ParametrosLista
         {
+            public string MAQUINA { get; set; }
             public decimal bitolaMin { get; set; }
             public decimal bitolaMax { get; set; }
             public int termEsqMin { get; set; }
@@ -82,7 +80,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             public int termDirMax { get; set; }
             public List<string> lseloEsq { get; set; }
             public List<string> lseloDir { get; set; }
-            public decimal volumeAtual { get; set; }
             public decimal volumeTotal { get; set; }
             public decimal volumeYY { get; set; }
             public decimal tolerancia { get; set; }
