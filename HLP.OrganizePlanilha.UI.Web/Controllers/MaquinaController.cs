@@ -61,7 +61,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
 
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            objProjetoModel.ldadosMaquina = new List<MaquinaModel>();
 
             if (objProjetoModel != null)
             {
@@ -78,21 +77,23 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 {
                     foreach (TB_MAQUINA m in lMaquinas)
                     {
-                        objProjetoModel.ldadosMaquina.Add(item:
-                            new MaquinaModel
-                            {
-                                idMAQUINA = m.idMAQUINA,
-                                idPROJETO = m.idPROJETO ?? 0,
-                                xMAQUINA = m.xMAQUINA,
-                                SELOS_ESQUERDO = m.SELOS_ESQUERDO,
-                                SELOS_DIREITO = m.SELOS_DIREITO,
-                                QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
-                                QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
-                                CALIBRE = m.CALIBRE,
-                                QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
-                                QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
-                                YY = m.QTDE_YY
-                            });
+
+                        if (objProjetoModel.ldadosMaquina.Count(i => i.idMAQUINA == m.idMAQUINA) == 0)
+                            objProjetoModel.ldadosMaquina.Add(item:
+                                new MaquinaModel
+                                {
+                                    idMAQUINA = m.idMAQUINA,
+                                    idPROJETO = m.idPROJETO ?? 0,
+                                    xMAQUINA = m.xMAQUINA,
+                                    SELOS_ESQUERDO = m.SELOS_ESQUERDO,
+                                    SELOS_DIREITO = m.SELOS_DIREITO,
+                                    QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
+                                    QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
+                                    CALIBRE = m.CALIBRE,
+                                    QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
+                                    QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
+                                    YY = m.QTDE_YY
+                                });
                     }
                 }
 
@@ -155,6 +156,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                     , arg0: ex.Message);
             }
             base.aviso = "Máquina cadastrada com sucesso.";
+
+            MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA
+                == maquina.idMAQUINA);
+
+            if (m != null)
+                base.SessionProjetoModel.ldadosMaquina.Remove(item: m);
+
             return RedirectToAction("Listar");
         }
 
@@ -163,6 +171,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
 
             rep.Delete(idMaquina: id);
+
+            MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
+
+            if (m != null)
+                base.SessionProjetoModel.ldadosMaquina.Remove(item: m);
 
             base.aviso = "Maquina excluida com sucesso.";
             return RedirectToAction("Listar");

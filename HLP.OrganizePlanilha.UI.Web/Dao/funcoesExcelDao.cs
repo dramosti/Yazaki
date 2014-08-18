@@ -65,8 +65,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                                 COD_01_I = reader.GetValue(9).ToString(),
                                 COD_01_D = reader.GetValue(10).ToString(),
                                 ACC_01_I = (lSelosAtivos.Where(c => reader.GetValue(11).ToString().Contains(c)).Count() > 0) ? reader.GetValue(11).ToString() : "",
-                                ACC_01_D = (lSelosAtivos.Where(c => reader.GetValue(12).ToString().Contains(c)).Count() > 0) ? reader.GetValue(12).ToString() : "",
-                                idPLANILHA = idCount
+                                ACC_01_D = (lSelosAtivos.Where(c => reader.GetValue(12).ToString().Contains(c)).Count() > 0) ? reader.GetValue(12).ToString() : ""
+                                //idPLANILHA = idCount
                             });
 
                             idCount = idCount + 1;
@@ -100,12 +100,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
 
                 dadosAgrupados = Util.GroupList(dadosAgrupados);
 
-                int icount = 0;
-                foreach (var item in dadosAgrupados)
-                {
-                    item.idPLANILHA = icount;
-                    icount = icount + 1;
-                }
+                //int icount = 0;
+                //foreach (var item in dadosAgrupados)
+                //{
+                //    item.idPLANILHA = icount;
+                //    icount = icount + 1;
+                //}
                 return dadosAgrupados;
 
             }
