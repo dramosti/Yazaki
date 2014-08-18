@@ -42,12 +42,11 @@
   <ItemGroup>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="jQueryTmpl">
-      <HintPath>..\packages\jquery-tmpl.net.0.6\lib\net40\jQueryTmpl.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="jQueryTmpl.Mvc">
       <HintPath>..\packages\jquery-tmpl.net.0.6\lib\net40\jQueryTmpl.Mvc.dll</HintPath>

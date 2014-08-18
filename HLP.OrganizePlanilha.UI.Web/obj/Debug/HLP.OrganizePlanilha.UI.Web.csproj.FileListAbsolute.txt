@@ -137,7 +137,6 @@ D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.Razor.xml
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.xml
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Deployment.xml
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Razor.xml
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.csprojResolveAssemblyReference.cache
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.pdb
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\HLP.OrganizePlanilha.UI.Web.dll.config
@@ -166,7 +165,4 @@ C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Deplo
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Razor.xml
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.dll
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.pdb
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.dll
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.SqlServer.dll
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.xml
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.SqlServer.xml
+D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.csprojResolveAssemblyReference.cache

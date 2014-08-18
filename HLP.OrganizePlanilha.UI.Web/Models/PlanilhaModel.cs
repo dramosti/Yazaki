@@ -133,7 +133,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public decimal dRestante { get; set; }
 
+        [Coluna(isColuna = false)]
         public decimal PERCENTUAL { get; set; }
+               
+        
 
         public void SubtraiPercentual(decimal dPercentual)
         {
