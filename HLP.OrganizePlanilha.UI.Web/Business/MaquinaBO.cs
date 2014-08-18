@@ -328,70 +328,70 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     }
                 }
 
-
-
-                // verifico dados que podem ser invertidos.
-                var lInvert = (from c in this._lDadosPlanilha
-                               where
-                               c.TERM_DER == sTerm
-                               && c.ACC_01_D != ""
-                               && c.ACC_01_I != ""
-                               && c.bUtilizado == false
-                               select c).OrderBy(c => c.CALIBRE).ToList();
-
-                foreach (var itemToInvert in lInvert)
+                if (sTerm != "")
                 {
-                    Util.InverteLado(itemToInvert);
+                    // verifico dados que podem ser invertidos.
+                    var lInvert = (from c in this._lDadosPlanilha
+                                   where
+                                   c.TERM_DER == sTerm
+                                   && c.ACC_01_D != ""
+                                   && c.ACC_01_I != ""
+                                   && c.bUtilizado == false
+                                   select c).OrderBy(c => c.CALIBRE).ToList();
+
+                    foreach (var itemToInvert in lInvert)
+                    {
+                        Util.InverteLado(itemToInvert);
+                    }
+
+                    // incluo primeiro os 2 - Y
+                    var dadosAutomaticos_Manuais = (from c in this._lDadosPlanilha
+                                                    where
+                                                    c.TERM_IZQ == sTerm
+                                                    && c.ACC_01_D != ""
+                                                    && c.ACC_01_I != ""
+                                                    && c.COD_DD == "Y "
+                                                    && c.bUtilizado == false
+                                                    select c).OrderBy(c => c.CALIBRE).ToList();
+
+                    foreach (var item in dadosAutomaticos_Manuais)
+                    {
+                        item.bUtilizado = true;
+                        this.resultado.Add(item);
+                    }
+
+                    var dados = (from c in this._lDadosPlanilha
+                                 where
+                                 c.TERM_IZQ == sTerm
+                                   && c.ACC_01_D != ""
+                                   && c.ACC_01_I != ""
+                                 && c.bUtilizado == false
+                                 select c).OrderBy(c => c.CALIBRE).Take(5);
+
+                    List<PlanilhaModel> lDadosIncluosos = new List<PlanilhaModel>();
+                    foreach (var item in dados)
+                    {
+                        if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                            this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
+                    }
+
+
+                    var TotalPorTerminal = (from c in this._lDadosPlanilha
+                                            where lDadosIncluosos.Select(o => o.TERM_IZQ).Contains(c.TERM_IZQ)
+                                            && c.ACC_01_D != ""
+                                            && c.ACC_01_I != ""
+                                            && c.bUtilizado == false
+                                            group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
+                                            select new
+                                            {
+                                                TERMINAL = grupoPlanilha.Key.TERM_IZQ,
+                                                CALIBRE = grupoPlanilha.Key.CALIBRE,
+                                                TOTAL = grupoPlanilha.Count()
+                                            }).OrderBy(c => c.TOTAL);
+
+
+                    this.IncludeAutomaticosLado_A_B(TotalPorTerminal.FirstOrDefault().TERMINAL);
                 }
-
-                // incluo primeiro os 2 - Y
-                var dadosAutomaticos_Manuais = (from c in this._lDadosPlanilha
-                                                where
-                                                c.TERM_IZQ == sTerm
-                                                && c.ACC_01_D != ""
-                                                && c.ACC_01_I != ""
-                                                && c.COD_DD == "Y "
-                                                && c.bUtilizado == false
-                                                select c).OrderBy(c => c.CALIBRE).ToList();
-
-                foreach (var item in dadosAutomaticos_Manuais)
-                {
-                    item.bUtilizado = true;
-                    this.resultado.Add(item);
-                }
-
-                var dados = (from c in this._lDadosPlanilha
-                             where
-                             c.TERM_IZQ == sTerm
-                               && c.ACC_01_D != ""
-                               && c.ACC_01_I != ""
-                             && c.bUtilizado == false
-                             select c).OrderBy(c => c.CALIBRE).Take(5);
-
-                List<PlanilhaModel> lDadosIncluosos = new List<PlanilhaModel>();
-                foreach (var item in dados)
-                {
-                    if (this.resultado.TotalTerminalDireitoFaltante > 0)
-                        this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
-                }
-
-
-                var TotalPorTerminal = (from c in this._lDadosPlanilha
-                                        where lDadosIncluosos.Select(o => o.TERM_IZQ).Contains(c.TERM_IZQ)
-                                        && c.ACC_01_D != ""
-                                        && c.ACC_01_I != ""
-                                        && c.bUtilizado == false
-                                        group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
-                                        select new
-                                        {
-                                            TERMINAL = grupoPlanilha.Key.TERM_IZQ,
-                                            CALIBRE = grupoPlanilha.Key.CALIBRE,
-                                            TOTAL = grupoPlanilha.Count()
-                                        }).OrderBy(c => c.TOTAL);
-
-
-                this.IncludeAutomaticosLado_A_B(TotalPorTerminal.FirstOrDefault().TERMINAL);
-
             }
             catch (Exception ex)
             {
