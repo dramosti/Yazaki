@@ -200,6 +200,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             }
 
             Util.bAtivaRegraModel = false;
+
             TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
 
             foreach (PlanilhaModel itemPlanilha in objProjetoModel.ldadosPlanilhaOriginal)
