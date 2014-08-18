@@ -143,7 +143,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             Util.InverteLado(item);
                         }
                 }
-
+                // Verifica se existe algum selo no outro lado para mudar de lado.
                 foreach (var selod in this.resultado.param.lseloDir)
                 {
                     if (!this.resultado.param.lseloEsq.Contains(selod))
@@ -152,6 +152,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             Util.InverteLado(item);
                         }
                 }
+
+                // verifica se existe o selo e do outro lado tenha tb selo constando na lista de parametros
                 foreach (var selo in this.resultado.param.lseloEsq)
                 {
                     if (selo != "")
@@ -165,6 +167,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         }
                     }
                 }
+                // verifica se existe o selo e do outro lado tenha tb selo constando na lista de parametros
                 foreach (var selo in this.resultado.param.lseloDir)
                 {
                     if (selo != "")
@@ -177,7 +180,34 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         }
                 }
 
-                //  this.lSelos = Util.GroupList(this.lSelos);
+                // verifica se existe o selo e do outro lado seja Manual ( Y )
+                foreach (var selo in this.resultado.param.lseloEsq)
+                {
+                    if (selo != "")
+                    {
+                        foreach (var itemSelo in this._lDadosPlanilha.Where(c =>
+                            c.ACC_01_I == selo
+                            && c.COD_DD == "Y"))
+                        {
+                            itemSelo.bUtilizado = true;
+                            this.lSelos.Add(itemSelo);
+                        }
+                    }
+                }
+
+                // verifica se existe o selo e do outro lado seja Manual ( Y )
+                foreach (var selo in this.resultado.param.lseloDir)
+                {
+                    if (selo != "")
+                        foreach (var itemSelo in this._lDadosPlanilha.Where(c =>
+                            c.ACC_01_D == selo
+                            && c.COD_DI == "Y"))
+                        {
+                            itemSelo.bUtilizado = true;
+                            this.lSelos.Add(itemSelo);
+                        }
+                }
+
 
                 foreach (var item in this.lSelos)
                 {
@@ -702,7 +732,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
 
                 if (!this.resultado.ValidaPorcentagemGeral())
-                     this.AnalisedeQuantidade();
+                    this.AnalisedeQuantidade();
 
                 this._lDadosParaAssignacao = new List<PlanilhaModel>();
                 foreach (var item in this.resultado)
