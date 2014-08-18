@@ -9,11 +9,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
     {
         public PlanilhaModel()
         {
-           
+
         }
 
-        [Coluna(isColuna = false)]
+        [Coluna(isColuna = true)]
         public int idPLANILHA { get; set; }
+
+        [Coluna(isColuna = true)]
+        public int idProjeto { get; set; }
 
         [Coluna(isColuna = true)]
         public string PLANTA { get; set; }
@@ -40,7 +43,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         [Coluna(isColuna = true)]
         public string COD_DI { get; set; }
-        
+
         private string _TERM_IZQ;
         [Coluna(isColuna = true)]
         public string TERM_IZQ

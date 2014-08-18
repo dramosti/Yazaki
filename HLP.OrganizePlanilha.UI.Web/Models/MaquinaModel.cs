@@ -67,9 +67,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         [Required(ErrorMessage = "Campo é obrigatório.")]
         [Display(Name = "Tolerância")]
-        public string QTDE_TOLERANCIA { get; set; }
-
-
+        public string QTDE_TOLERANCIA { get; set; }       
 
     }
 }

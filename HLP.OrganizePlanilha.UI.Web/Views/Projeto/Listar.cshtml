@@ -1,0 +1,39 @@
+﻿@using HLP.OrganizePlanilha.UI.Web.Models
+
+@model IEnumerable<ProjetoModel>
+@{
+    ViewBag.Title = "Listar";
+    Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>Id</td>
+            <td>Projeto</td>
+            <td>Cadastro</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>
+                    @p.idProjeto
+                </td>
+                <td>
+                    @p.xPROJETO
+                </td>
+                <td>
+                    @p.dtCADASTRO
+                </td>
+                <td>
+                    <a href="/Projeto/FindXmlWithSelectedProject/@p.idProjeto">
+                        <img src="~/Content/Images/go.png" />
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -12,6 +12,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
     {
 
         public int idProjeto { get; set; }
+
+        [Display(Name = "Nome do Projeto")]
+        [Required(ErrorMessage = "Nome para o Projeto é obrigatório")]
         public string xPROJETO { get; set; }
         [Display(Name = "Nome da aba")]
         [Required(ErrorMessage = "Nome da aba é obrigatório.")]

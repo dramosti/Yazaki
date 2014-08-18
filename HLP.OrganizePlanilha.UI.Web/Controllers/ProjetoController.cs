@@ -1,5 +1,7 @@
 ﻿using HLP.OrganizePlanilha.UI.Web.Business;
 using HLP.OrganizePlanilha.UI.Web.Dao;
+using HLP.OrganizePlanilha.UI.Web.Dao.Contexts;
+using HLP.OrganizePlanilha.UI.Web.Dao.Repositories;
 using HLP.OrganizePlanilha.UI.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -23,10 +25,90 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return View();
         }
 
-        // GET: /Projeto/
         public ActionResult FindXml()
         {
+            base.SessionProjetoModel = new ProjetoModel();
             return View();
+        }
+
+        // GET: /Projeto/
+        public ActionResult FindXmlWithSelectedProject(int id)
+        {
+            ProjetoModel objProjeto = new ProjetoModel();
+            TB_PROJETO objPrj = null;
+
+            using (var con = new DB_YAZAKIEntities())
+            {
+                objPrj = con.TB_PROJETO.FirstOrDefault(
+                    i => i.idPROJETO == id);
+            }
+
+            if (objPrj != null)
+            {
+                objProjeto = new ProjetoModel
+                {
+                    idProjeto = objPrj.idPROJETO,
+                    xPROJETO = objPrj.xPROJETO,
+                    dtCADASTRO = objPrj.dtCADASTRO
+                };
+
+                List<TB_PLANILHA> lItensPlanilha = null;
+
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    lItensPlanilha = con.TB_PLANILHA.Where(i => i.idPROJETO == id).ToList();
+                }
+
+                if (lItensPlanilha != null)
+                {
+                    foreach (TB_PLANILHA itensPlanilha in lItensPlanilha)
+                    {
+                        objProjeto.ldadosPlanilhaOriginal.Add(item:
+                             new PlanilhaModel
+                             {
+                                 idPLANILHA = itensPlanilha.id_PLANILHA,
+                                 idProjeto = itensPlanilha.idPROJETO,
+                                 PLANTA = itensPlanilha.PLANTA,
+                                 TIPO = itensPlanilha.TIPO,
+                                 CALIBRE = itensPlanilha.CALIBRE,
+                                 LONG_CORT = itensPlanilha.LONG_CORT,
+                                 CANTIDAD = itensPlanilha.CANTIDAD,
+                                 COD_DI = itensPlanilha.COD_DI,
+                                 TERM_DER = itensPlanilha.TERM_DER,
+                                 COD_01_I = itensPlanilha.COD_01_I,
+                                 COD_01_D = itensPlanilha.COD_01_D,
+                                 ACC_01_I = itensPlanilha.ACC_01_I,
+                                 ACC_01_D = itensPlanilha.ACC_01_D
+                             });
+                    }
+                }
+            }
+
+            base.SessionProjetoModel = objProjeto;
+            return View(model: objProjeto, viewName: "FindXml");
+        }
+
+        public ActionResult Listar()
+        {
+            List<ProjetoModel> lProjetos = new List<ProjetoModel>();
+
+            using (var con = new DB_YAZAKIEntities())
+            {
+                if (con.TB_PROJETO.Count() > 0)
+                {
+                    foreach (TB_PROJETO p in con.TB_PROJETO)
+                    {
+                        lProjetos.Add(item: new ProjetoModel
+                            {
+                                idProjeto = p.idPROJETO,
+                                dtCADASTRO = p.dtCADASTRO,
+                                xPROJETO = p.xPROJETO
+                            });
+                    }
+                }
+            }
+
+            return View(model: lProjetos);
         }
 
         [HttpPost]
@@ -64,7 +146,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                         base.aviso = sAviso;
                     }
                     projeto.dtCADASTRO = DateTime.Now;
-                    projeto.xPROJETO = Request.Files["FileUpload"].FileName;
                     projeto.ldadosPlanilhaOriginal = funcoes.GetAllInfo();
                     base.SessionProjetoModel = projeto;
                 }
@@ -158,6 +239,49 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             {
                 throw ex;
             }
+        }
+
+        [HttpPost]
+        public ActionResult prosseguir()
+        {
+            ProjetoModel objProjetoModel = base.SessionProjetoModel;
+
+            TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
+
+
+            if (base.SessionProjetoModel.idProjeto == 0)
+            {
+                base.SessionProjetoModel.idProjeto = projetoRepository.Save(objProjeto: new Dao.Contexts.TB_PROJETO
+                    {
+                        xPROJETO = objProjetoModel.xPROJETO,
+                        dtCADASTRO = objProjetoModel.dtCADASTRO
+                    });
+
+                TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
+
+                foreach (PlanilhaModel itemPlanilha in objProjetoModel.ldadosPlanilhaOriginal)
+                {
+                    planilhaRepository.Save(objPlanilha:
+                        new Dao.Contexts.TB_PLANILHA
+                        {
+                            idPROJETO = base.SessionProjetoModel.idProjeto,
+                            PLANTA = itemPlanilha.PLANTA,
+                            TIPO = itemPlanilha.TIPO,
+                            CALIBRE = itemPlanilha.CALIBRE,
+                            LONG_CORT = itemPlanilha.LONG_CORT,
+                            CANTIDAD = itemPlanilha.CANTIDAD,
+                            COD_DI = itemPlanilha.COD_DI,
+                            TERM_IZQ = itemPlanilha.TERM_IZQ,
+                            COD_DD = itemPlanilha.COD_DD,
+                            TERM_DER = itemPlanilha.TERM_DER,
+                            COD_01_I = itemPlanilha.COD_01_I,
+                            COD_01_D = itemPlanilha.COD_01_D,
+                            ACC_01_I = itemPlanilha.ACC_01_I,
+                            ACC_01_D = itemPlanilha.ACC_01_D
+                        });
+                }
+            }
+            return RedirectToAction(actionName: "Listar", controllerName: "Maquina");
         }
 
     }

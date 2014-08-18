@@ -4,8 +4,8 @@
     Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
 }
 <script src="~/Scripts/jquery-1.10.2.js"></script>
-<script>
 
+<script>
     function SetParameter(id) {
 
         //AlteraParametro
@@ -26,27 +26,27 @@
                 alert(thrownError);
             }
         });
-
-
-        //$.ajax({
-        //    type: "POST",
-        //    url: "AlteraParametro",
-        //    data: { id: id },
-        //    beforeSend: function () {
-        //        $('.loader').show();
-        //    },
-        //    success: function (data) {
-        //        $('.center').html();
-        //    },
-        //    complete: function () {
-        //        $('.loader').hide();
-        //    },
-        //    error: function (xhr, ajaxOptions, thrownError) {
-        //        alert(xhr.status);
-        //        alert(thrownError);
-        //    }
-        //});
     }
+
+
+    //$.ajax({
+    //    type: "POST",
+    //    url: "AlteraParametro",
+    //    data: { id: id },
+    //    beforeSend: function () {
+    //        $('.loader').show();
+    //    },
+    //    success: function (data) {
+    //        $('.center').html();
+    //    },
+    //    complete: function () {
+    //        $('.loader').hide();
+    //    },
+    //    error: function (xhr, ajaxOptions, thrownError) {
+    //        alert(xhr.status);
+    //        alert(thrownError);
+    //    }
+    //});
 </script>
 
 <fieldset>
@@ -94,13 +94,14 @@
         </div>
     </div>
     <div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <a class="btn btn-primary" href="/Maquina/Listar/">
-                    Prosseguir
-                </a>
+        @using (Html.BeginForm(actionName: "prosseguir", controllerName: "Projeto", method: FormMethod.Post))
+        {
+            <div class="row clearfix">
+                <div class="col-md-12 column">                    
+                    <input type="submit" name="prosseguir" value="Prosseguir"/>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </fieldset>
 

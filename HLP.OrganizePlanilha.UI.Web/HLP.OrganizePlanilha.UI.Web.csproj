@@ -40,6 +40,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="jQueryTmpl">
       <HintPath>..\packages\jquery-tmpl.net.0.6\lib\net40\jQueryTmpl.dll</HintPath>
     </Reference>
@@ -50,6 +56,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -121,7 +129,34 @@
     <Compile Include="Controllers\MaquinaController.cs" />
     <Compile Include="Controllers\ProjetoController.cs" />
     <Compile Include="Dao\conexaoDao.cs" />
+    <Compile Include="Dao\Contexts\TB_MAQUINA.cs">
+      <DependentUpon>Yazaki_DataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\Contexts\TB_PLANILHA.cs">
+      <DependentUpon>Yazaki_DataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\Contexts\TB_PROJETO.cs">
+      <DependentUpon>Yazaki_DataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\Contexts\Yazaki_DataBase.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Yazaki_DataBase.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\Contexts\Yazaki_DataBase.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Yazaki_DataBase.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Dao\Contexts\Yazaki_DataBase.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Yazaki_DataBase.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Dao\funcoesExcelDao.cs" />
+    <Compile Include="Dao\Repositories\TB_MAQUINA_Repository.cs" />
+    <Compile Include="Dao\Repositories\TB_PLANILHA_Repository.cs" />
+    <Compile Include="Dao\Repositories\TB_PROJETO_Repository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -145,6 +180,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\go.png" />
     <Content Include="Content\Images\loader.GIF" />
     <Content Include="Content\Images\delete.png" />
     <Content Include="Content\Images\invert.png" />
@@ -224,6 +260,23 @@
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EntityDeploy Include="Dao\Contexts\Yazaki_DataBase.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Yazaki_DataBase.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Dao\Contexts\Yazaki_DataBase.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Yazaki_DataBase.edmx</DependentUpon>
+      <LastGenOutput>Yazaki_DataBase.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Dao\Contexts\Yazaki_DataBase.edmx.diagram">
+      <DependentUpon>Yazaki_DataBase.edmx</DependentUpon>
+    </Content>
+    <Content Include="Dao\Contexts\Yazaki_DataBase.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Yazaki_DataBase.edmx</DependentUpon>
+      <LastGenOutput>Yazaki_DataBase.cs</LastGenOutput>
+    </Content>
     <None Include="Properties\PublishProfiles\Yazaki.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -257,6 +310,7 @@
     <Content Include="Views\Maquina\Listar.cshtml" />
     <Content Include="Views\Maquina\Editar.cshtml" />
     <Content Include="Views\Projeto\_PlanilhaOriginal.cshtml" />
+    <Content Include="Views\Projeto\Listar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -269,6 +323,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

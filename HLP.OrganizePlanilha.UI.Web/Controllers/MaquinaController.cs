@@ -1,4 +1,6 @@
 ﻿using HLP.OrganizePlanilha.UI.Web.Business;
+using HLP.OrganizePlanilha.UI.Web.Dao.Contexts;
+using HLP.OrganizePlanilha.UI.Web.Dao.Repositories;
 using HLP.OrganizePlanilha.UI.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -30,17 +32,44 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             try
             {
                 ProjetoModel objProjetoModel = base.SessionProjetoModel;
+
                 if (objProjetoModel != null)
                 {
-                    if (objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == maquina.xMAQUINA).Count() == 0)
+                    try
                     {
-                        objProjetoModel.ldadosMaquina.Add(maquina);
+                        TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
+
+                        rep.Save(objMaquina: new Dao.Contexts.TB_MAQUINA
+                        {
+                            idMAQUINA = maquina.idMAQUINA,
+                            CALIBRE = maquina.CALIBRE,
+                            idPROJETO = base.SessionProjetoModel.idProjeto,
+                            xMAQUINA = maquina.xMAQUINA,
+                            QTDE_CAPACIDADE = maquina.QTDE_CAPACIDADE,
+                            QTDE_TERM_DIREITO = maquina.QTDE_TERM_DIREITO,
+                            QTDE_TERM_ESQUERDO = maquina.QTDE_TERM_ESQUERDO,
+                            QTDE_TOLERANCIA = maquina.QTDE_TOLERANCIA,
+                            QTDE_YY = maquina.YY,
+                            SELOS_DIREITO = maquina.SELOS_DIREITO,
+                            SELOS_ESQUERDO = maquina.SELOS_ESQUERDO,
+                        });
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        base.aviso = "Máquina ja cadastrada, altere o nome da máquina.";
-                        return View(maquina);
+                        base.aviso =
+                            string.Format(format: "Não foi possível salvar máquina. Motivo: {0}"
+                            , arg0: ex.Message);
                     }
+
+                    //if (objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == maquina.xMAQUINA).Count() == 0)
+                    //{
+                    //    objProjetoModel.ldadosMaquina.Add(maquina);
+                    //}
+                    //else
+                    //{
+                    //    base.aviso = "Máquina ja cadastrada, altere o nome da máquina.";
+                    //    return View(maquina);
+                    //}
                 }
                 base.aviso = "Máquina cadastrada com sucesso.";
                 return RedirectToAction("Listar");
@@ -56,6 +85,36 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             if (objProjetoModel != null)
             {
                 // carrega as informações parametrizadas para a Lista Geral.
+
+                List<TB_MAQUINA> lMaquinas;
+
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == objProjetoModel.idProjeto).ToList();
+                }
+
+                if (lMaquinas != null)
+                {
+                    foreach (TB_MAQUINA m in lMaquinas)
+                    {
+                        objProjetoModel.ldadosMaquina.Add(item:
+                            new MaquinaModel
+                            {
+                                idMAQUINA = m.idMAQUINA,
+                                idPROJETO = m.idPROJETO ?? 0,
+                                xMAQUINA = m.xMAQUINA,
+                                SELOS_ESQUERDO = m.SELOS_ESQUERDO,
+                                SELOS_DIREITO = m.SELOS_DIREITO,
+                                QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
+                                QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
+                                CALIBRE = m.CALIBRE,
+                                QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
+                                QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
+                                YY = m.QTDE_YY
+                            });
+                    }
+                }
+
                 foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
                 {
                     foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == item.TERM
