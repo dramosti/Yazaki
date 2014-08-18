@@ -207,6 +207,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 planilhaRepository.Save(objPlanilha:
                     new Dao.Contexts.TB_PLANILHA
                     {
+                        id_PLANILHA = itemPlanilha.idPLANILHA,
                         idPROJETO = base.SessionProjetoModel.idProjeto,
                         PLANTA = itemPlanilha.PLANTA,
                         TIPO = itemPlanilha.TIPO,
