@@ -47,7 +47,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                 {
                     if (reader.GetValue(3).ToString() != "" && reader.GetValue(2).ToString() != "")
                     {
-
+                        if ( reader.GetValue(12).ToString() == "7157-3112-70")
+                        {
+                            
+                        }
                         decimal.TryParse(reader.GetValue(3).ToString(), out dValida);
                         if (dValida > 0)
                         {

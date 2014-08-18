@@ -167,47 +167,25 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         }
                     }
                 }
+
                 // verifica se existe o selo e do outro lado tenha tb selo constando na lista de parametros
                 foreach (var selo in this.resultado.param.lseloDir)
                 {
                     if (selo != "")
+                    {
+                        var itens = this._lDadosPlanilha.Where(c => c.ACC_01_D == selo);
+
+                        itens = this._lDadosPlanilha.Where(c => c.ACC_01_D != "");
+
                         foreach (var itemSelo in this._lDadosPlanilha.Where(c =>
                             c.ACC_01_D == selo
-                            && this.resultado.param.lseloEsq.Where(o => o.Equals(c.ACC_01_I)).Count() > 0))
-                        {
-                            itemSelo.bUtilizado = true;
-                            this.lSelos.Add(itemSelo);
-                        }
-                }
-
-                // verifica se existe o selo e do outro lado seja Manual ( Y )
-                foreach (var selo in this.resultado.param.lseloEsq)
-                {
-                    if (selo != "")
-                    {
-                        foreach (var itemSelo in this._lDadosPlanilha.Where(c =>
-                            c.ACC_01_I == selo
-                            && c.COD_DD == "Y"))
+                            && this.resultado.param.lseloEsq.Contains(c.ACC_01_I)))
                         {
                             itemSelo.bUtilizado = true;
                             this.lSelos.Add(itemSelo);
                         }
                     }
                 }
-
-                // verifica se existe o selo e do outro lado seja Manual ( Y )
-                foreach (var selo in this.resultado.param.lseloDir)
-                {
-                    if (selo != "")
-                        foreach (var itemSelo in this._lDadosPlanilha.Where(c =>
-                            c.ACC_01_D == selo
-                            && c.COD_DI == "Y"))
-                        {
-                            itemSelo.bUtilizado = true;
-                            this.lSelos.Add(itemSelo);
-                        }
-                }
-
 
                 foreach (var item in this.lSelos)
                 {
@@ -724,6 +702,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         this.IncludeAutomaticosBySelos();
                 }
                 Util.bAtivaRegraModel = true;
+                Util.bAtivaRegraModel = false;
 
                 if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                 {

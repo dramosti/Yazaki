@@ -41,8 +41,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set { _CANTIDAD = value; }
         }
 
+        public string _COD_DI;
         [Coluna(isColuna = true)]
-        public string COD_DI { get; set; }
+
+        public string COD_DI
+        {
+            get { return _COD_DI; }
+            set { 
+                _COD_DI = value;
+
+            }
+        }
 
         private string _TERM_IZQ;
         [Coluna(isColuna = true)]
@@ -70,8 +79,16 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
 
+        public string _COD_DD;
         [Coluna(isColuna = true)]
-        public string COD_DD { get; set; }
+        public string COD_DD
+        {
+            get { return _COD_DD; }
+            set { 
+                _COD_DD = value; 
+            
+            }
+        }
 
 
         private string _TERM_DER;

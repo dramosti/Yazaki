@@ -74,7 +74,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             decimal porcentagemAtual = this.lista.Sum(c => c.PERCENTUAL);
             decimal porcentagemTolerancia = Math.Round(((this.param.tolerancia * 100) / totalPermitido), 2);
 
-            if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
+            //if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
+            if (porcentagemAtual >= (100 - porcentagemTolerancia))
                 return true;
             else return false;
         }
