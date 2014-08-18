@@ -38,17 +38,28 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             return this.lista.Where(c => c.COD_DI == "2" || c.COD_DD == "2").Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace('.', ',')));
         }
-        private int GetTotalTerminalEsquerdoFaltanteByLista()
+        private int GetVolumeTotalTerminalEsquerdoFaltanteByLista()
         {
             return this.param.termEsqMax - this.lista.Where(c => c.COD_DI == "2").Select(c => c.TERM_IZQ.Trim()).Distinct().Count();
         }
-        private int GetTotalTerminalDireitoFaltanteByLista()
+        private int GetVolumeTerminalDireitoFaltanteByLista()
         {
             return this.param.termDirMax - this.lista.Where(c => c.COD_DD == "2").Select(c => c.TERM_DER.Trim()).Distinct().Count();
         }
 
-        public int TotalTerminalEsquerdoFaltante { get { return this.GetTotalTerminalEsquerdoFaltanteByLista(); } }
-        public int TotalTerminalDireitoFaltante { get { return this.GetTotalTerminalDireitoFaltanteByLista(); } }
+
+
+        public bool isCompleted { get { return this.GetVolumeTotalByLista() >= this.param.volumeTotal; } }
+
+        public int TotalTerminalEsquerdoFaltante
+        {
+            get
+            {
+                int iValor = this.GetVolumeTotalTerminalEsquerdoFaltanteByLista() - this.param.lseloEsq.Count();
+                return iValor <= 0 ? 0 : iValor;
+            }
+        }
+        public int TotalTerminalDireitoFaltante { get { return this.GetVolumeTerminalDireitoFaltanteByLista(); } }
 
         private List<PlanilhaModel> lista { get { return (this.ToList() as List<PlanilhaModel>); } }
 
@@ -63,7 +74,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             decimal porcentagemAtual = this.lista.Sum(c => c.PERCENTUAL);
             decimal porcentagemTolerancia = Math.Round(((this.param.tolerancia * 100) / totalPermitido), 2);
 
-            if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
+            //if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
+            if (porcentagemAtual >= (100 - porcentagemTolerancia))
                 return true;
             else return false;
         }
@@ -85,6 +97,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             public decimal tolerancia { get; set; }
             public List<string> ltermEsq = new List<string>();
             public List<string> ltermDir = new List<string>();
+
+            public bool IsSelos { get { return this.lseloEsq.Count() > 0 || this.lseloDir.Count() > 0; } }
+
         }
 
 

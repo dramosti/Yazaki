@@ -100,11 +100,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
                 {
                     foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == item.TERM
+                                                                                        && c.ACC_01_I == item.ACC_01
                                                                                         && c.COD_01_I == item.COD_01))
                     {
                         cabo.COD_DI = item.COD_D;
                     }
                     foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == item.TERM
+                                                                                       && c.ACC_01_D == item.ACC_01 
                                                                                        && c.COD_01_D == item.COD_01))
                     {
                         cabo.COD_DD = item.COD_D;
