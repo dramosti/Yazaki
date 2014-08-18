@@ -200,23 +200,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 foreach (var itemSelo in this.lSelos)
                 {
 
-                    //var terminaisEsquerda = new List<PlanilhaModel>();
-
-                    //if (itemSelo.TERM_IZQ != "")
-                    //    terminaisEsquerda = this._lDadosPlanilha.Where(c => c.TERM_IZQ == itemSelo.TERM_IZQ && c.bUtilizado == false).ToList();
-
-                    //var terminaisDireita = new List<PlanilhaModel>();
-                    //if (itemSelo.TERM_DER != "")
-                    //    terminaisDireita = this._lDadosPlanilha.Where(c => c.TERM_DER == itemSelo.TERM_DER && c.bUtilizado == false).ToList();
-
-                    //if (terminaisEsquerda.Count() > 0)
-                    //{
-
-                    //}
-                    //if (terminaisDireita.Count() > 0)
-                    //{
-
-                    //}
 
                     dadosPesquisa = new List<PlanilhaModel>();
                     if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
@@ -306,91 +289,113 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         {
             try
             {
-
-                if (sTerm == "")
+                if (this.resultado.TotalTerminalEsquerdoFaltante > 0 && this.resultado.TotalTerminalDireitoFaltante > 0)
                 {
-                    var TotalPorTerminal = (from c in this._lDadosPlanilha
-                                            where
-                                            c.ACC_01_D != ""
-                                            && c.ACC_01_I != ""
-                                            && c.COD_DI == "2"
-                                            && c.bUtilizado == false
-                                            group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
-                                            select new
-                                            {
-                                                TERMINAL = grupoPlanilha.Key.TERM_IZQ,
-                                                CALIBRE = grupoPlanilha.Key.CALIBRE,
-                                                TOTAL = grupoPlanilha.Count()
-                                            }).OrderByDescending(c => c.TOTAL);
-                    if (TotalPorTerminal.Count() > 0)
+                    if (sTerm == "")
                     {
-                        sTerm = TotalPorTerminal.FirstOrDefault().TERMINAL;
-                    }
-                }
+                        // verifico no lado esquerdo os que ja constam na maquina com selos.
+                        var TotalPorTerminal = (from c in this._lDadosPlanilha
+                                                where
+                                                c.ACC_01_D != ""
+                                                && c.ACC_01_I != ""
+                                                && this.resultado.Select(o => c.TERM_IZQ).Contains(c.TERM_IZQ)
+                                                && c.bUtilizado == false
+                                                group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
+                                                select new
+                                                {
+                                                    TERMINAL = grupoPlanilha.Key.TERM_IZQ,
+                                                    CALIBRE = grupoPlanilha.Key.CALIBRE,
+                                                    TOTAL = grupoPlanilha.Count()
+                                                }).OrderByDescending(c => c.TOTAL);
 
-                if (sTerm != "")
-                {
-                    // verifico dados que podem ser invertidos.
-                    var lInvert = (from c in this._lDadosPlanilha
-                                   where
-                                   c.TERM_DER == sTerm
-                                   && c.ACC_01_D != ""
-                                   && c.ACC_01_I != ""
-                                   && c.bUtilizado == false
-                                   select c).OrderBy(c => c.CALIBRE).ToList();
-
-                    foreach (var itemToInvert in lInvert)
-                    {
-                        Util.InverteLado(itemToInvert);
-                    }
-
-                    // incluo primeiro os 2 - Y
-                    var dadosAutomaticos_Manuais = (from c in this._lDadosPlanilha
-                                                    where
-                                                    c.TERM_IZQ == sTerm
-                                                    && c.ACC_01_D != ""
-                                                    && c.ACC_01_I != ""
-                                                    && c.COD_DD == "Y "
-                                                    && c.bUtilizado == false
-                                                    select c).OrderBy(c => c.CALIBRE).ToList();
-
-                    foreach (var item in dadosAutomaticos_Manuais)
-                    {
-                        item.bUtilizado = true;
-                        this.resultado.Add(item);
+                        if (TotalPorTerminal.Count() == 0)
+                        {
+                            // verifico na lista inteira.
+                            TotalPorTerminal = (from c in this._lDadosPlanilha
+                                                where
+                                                c.ACC_01_D != ""
+                                                && c.ACC_01_I != ""
+                                                && c.COD_DI == "2"
+                                                && c.bUtilizado == false
+                                                group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
+                                                select new
+                                                {
+                                                    TERMINAL = grupoPlanilha.Key.TERM_IZQ,
+                                                    CALIBRE = grupoPlanilha.Key.CALIBRE,
+                                                    TOTAL = grupoPlanilha.Count()
+                                                }).OrderByDescending(c => c.TOTAL);
+                        }
+                        if (TotalPorTerminal.Count() > 0)
+                            sTerm = TotalPorTerminal.FirstOrDefault().TERMINAL;
                     }
 
-                    var dados = (from c in this._lDadosPlanilha
-                                 where
-                                 c.TERM_IZQ == sTerm
-                                   && c.ACC_01_D != ""
-                                   && c.ACC_01_I != ""
-                                 && c.bUtilizado == false
-                                 select c).OrderBy(c => c.CALIBRE).Take(5);
-
-                    List<PlanilhaModel> lDadosIncluosos = new List<PlanilhaModel>();
-                    foreach (var item in dados)
+                    if (sTerm != "")
                     {
-                        if (this.resultado.TotalTerminalDireitoFaltante > 0)
-                            this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
+                        // verifico dados que podem ser invertidos.
+                        var lInvert = (from c in this._lDadosPlanilha
+                                       where
+                                       c.TERM_DER == sTerm
+                                       && c.ACC_01_D != ""
+                                       && c.ACC_01_I != ""
+                                       && c.bUtilizado == false
+                                       select c).OrderBy(c => c.CALIBRE).ToList();
+
+                        foreach (var itemToInvert in lInvert)
+                        {
+                            Util.InverteLado(itemToInvert);
+                        }
+
+                        // incluo primeiro os 2 - Y
+                        var dadosAutomaticos_Manuais = (from c in this._lDadosPlanilha
+                                                        where
+                                                        c.TERM_IZQ == sTerm
+                                                        && c.ACC_01_D != ""
+                                                        && c.ACC_01_I != ""
+                                                        && c.COD_DD == "Y "
+                                                        && c.bUtilizado == false
+                                                        select c).OrderBy(c => c.CALIBRE).ToList();
+
+                        foreach (var item in dadosAutomaticos_Manuais)
+                        {
+                            item.bUtilizado = true;
+                            this.resultado.Add(item);
+                        }
+
+                        var dados = (from c in this._lDadosPlanilha
+                                     where
+                                     c.TERM_IZQ == sTerm
+                                       && c.ACC_01_D != ""
+                                       && c.ACC_01_I != ""
+                                     && c.bUtilizado == false
+                                     select c).OrderBy(c => c.CALIBRE).Take(5);
+
+                        List<PlanilhaModel> lDadosIncluosos = new List<PlanilhaModel>();
+                        foreach (var item in dados)
+                        {
+                            if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                                this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
+                        }
+
+
+                        var TotalPorTerminal = (from c in this._lDadosPlanilha
+                                                where lDadosIncluosos.Select(o => o.TERM_IZQ).Contains(c.TERM_IZQ)
+                                                && c.ACC_01_D != ""
+                                                && c.ACC_01_I != ""
+                                                && c.bUtilizado == false
+                                                group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
+                                                select new
+                                                {
+                                                    TERMINAL = grupoPlanilha.Key.TERM_IZQ,
+                                                    CALIBRE = grupoPlanilha.Key.CALIBRE,
+                                                    TOTAL = grupoPlanilha.Count()
+                                                }).OrderBy(c => c.TOTAL);
+
+                        if (TotalPorTerminal.Count() > 0)
+                            this.IncludeAutomaticosLado_A_B(TotalPorTerminal.FirstOrDefault().TERMINAL);
+                        else
+                            this.IncludeAutomaticosLado_A_B();
+
                     }
-
-
-                    var TotalPorTerminal = (from c in this._lDadosPlanilha
-                                            where lDadosIncluosos.Select(o => o.TERM_IZQ).Contains(c.TERM_IZQ)
-                                            && c.ACC_01_D != ""
-                                            && c.ACC_01_I != ""
-                                            && c.bUtilizado == false
-                                            group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
-                                            select new
-                                            {
-                                                TERMINAL = grupoPlanilha.Key.TERM_IZQ,
-                                                CALIBRE = grupoPlanilha.Key.CALIBRE,
-                                                TOTAL = grupoPlanilha.Count()
-                                            }).OrderBy(c => c.TOTAL);
-
-
-                    this.IncludeAutomaticosLado_A_B(TotalPorTerminal.FirstOrDefault().TERMINAL);
                 }
             }
             catch (Exception ex)
@@ -679,22 +684,25 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
                 if (this.resultado.param.IsSelos)
                 {
-                    // SELOS
+                    // INCLUI SELOS
                     this.IncludeSelos();
                     Util.bAtivaRegraModel = true;
-                    if (!this.resultado.isCompleted)
+
+                    // INCLUI CABOS QUE FAZEM REFERENCIA COM OS SELOS.
+                    //if (!this.resultado.isCompleted)
+                    if (this.resultado.param.lseloEsq.Count() > 0 && this.resultado.param.lseloDir.Count() > 0)
                         this.IncludeAutomaticosBySelos();
                 }
                 Util.bAtivaRegraModel = true;
 
-                if (this.resultado.TotalTerminalDireitoFaltante > 0 || this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                 {
                     // AUTOMÁTICOS.
                     this.IncludeAutomaticosLado_A_B();
                 }
 
                 if (!this.resultado.ValidaPorcentagemGeral())
-                    this.AnalisedeQuantidade();
+                     this.AnalisedeQuantidade();
 
                 this._lDadosParaAssignacao = new List<PlanilhaModel>();
                 foreach (var item in this.resultado)

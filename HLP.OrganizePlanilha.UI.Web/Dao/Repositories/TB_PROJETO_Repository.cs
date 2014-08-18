@@ -12,6 +12,27 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
         {
         }
 
+        public bool Delete(int id)
+        {
+            try
+            {
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    TB_PROJETO p = con.TB_PROJETO.FirstOrDefault(i => i.idPROJETO == id);
+
+                    con.TB_PROJETO.Remove(entity: p);
+
+                    con.SaveChanges();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
         public int Save(TB_PROJETO objProjeto)
         {
             if (objProjeto.idPROJETO == 0)

@@ -4,7 +4,7 @@
     <Key>
       <PropertyRef Name="idMAQUINA" />
     </Key>
-    <Property Name="idMAQUINA" Type="int" Nullable="false" />
+    <Property Name="idMAQUINA" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="idPROJETO" Type="int" />
     <Property Name="xMAQUINA" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="SELOS_ESQUERDO" Type="varchar" MaxLength="50" />
