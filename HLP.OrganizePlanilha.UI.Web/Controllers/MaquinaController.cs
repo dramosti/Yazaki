@@ -31,57 +31,38 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             try
             {
-                ProjetoModel objProjetoModel = base.SessionProjetoModel;
+                TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
 
-                if (objProjetoModel != null)
+                rep.Save(objMaquina: new Dao.Contexts.TB_MAQUINA
                 {
-                    try
-                    {
-                        TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
-
-                        rep.Save(objMaquina: new Dao.Contexts.TB_MAQUINA
-                        {
-                            idMAQUINA = maquina.idMAQUINA,
-                            CALIBRE = maquina.CALIBRE,
-                            idPROJETO = base.SessionProjetoModel.idProjeto,
-                            xMAQUINA = maquina.xMAQUINA,
-                            QTDE_CAPACIDADE = maquina.QTDE_CAPACIDADE,
-                            QTDE_TERM_DIREITO = maquina.QTDE_TERM_DIREITO,
-                            QTDE_TERM_ESQUERDO = maquina.QTDE_TERM_ESQUERDO,
-                            QTDE_TOLERANCIA = maquina.QTDE_TOLERANCIA,
-                            QTDE_YY = maquina.YY,
-                            SELOS_DIREITO = maquina.SELOS_DIREITO,
-                            SELOS_ESQUERDO = maquina.SELOS_ESQUERDO,
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        base.aviso =
-                            string.Format(format: "Não foi possível salvar máquina. Motivo: {0}"
-                            , arg0: ex.Message);
-                    }
-
-                    //if (objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == maquina.xMAQUINA).Count() == 0)
-                    //{
-                    //    objProjetoModel.ldadosMaquina.Add(maquina);
-                    //}
-                    //else
-                    //{
-                    //    base.aviso = "Máquina ja cadastrada, altere o nome da máquina.";
-                    //    return View(maquina);
-                    //}
-                }
-                base.aviso = "Máquina cadastrada com sucesso.";
-                return RedirectToAction("Listar");
+                    idMAQUINA = maquina.idMAQUINA,
+                    CALIBRE = maquina.CALIBRE,
+                    idPROJETO = base.SessionProjetoModel.idProjeto,
+                    xMAQUINA = maquina.xMAQUINA,
+                    QTDE_CAPACIDADE = maquina.QTDE_CAPACIDADE,
+                    QTDE_TERM_DIREITO = maquina.QTDE_TERM_DIREITO,
+                    QTDE_TERM_ESQUERDO = maquina.QTDE_TERM_ESQUERDO,
+                    QTDE_TOLERANCIA = maquina.QTDE_TOLERANCIA,
+                    QTDE_YY = maquina.YY,
+                    SELOS_DIREITO = maquina.SELOS_DIREITO,
+                    SELOS_ESQUERDO = maquina.SELOS_ESQUERDO,
+                });
             }
             catch (Exception ex)
             {
-                throw ex;
+                base.aviso =
+                    string.Format(format: "Não foi possível salvar máquina. Motivo: {0}"
+                    , arg0: ex.Message);
             }
+            base.aviso = "Máquina cadastrada com sucesso.";
+            return RedirectToAction("Listar");
         }
         public ActionResult Listar()
         {
+
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
+            objProjetoModel.ldadosMaquina = new List<MaquinaModel>();
+
             if (objProjetoModel != null)
             {
                 // carrega as informações parametrizadas para a Lista Geral.
@@ -131,19 +112,58 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 }
                 AtualizarDashBoard();
             }
+
+            base.SessionProjetoModel.ldadosMaquina = objProjetoModel.ldadosMaquina;
             return View(objProjetoModel);
         }
-        public ActionResult Editar()
+
+        public ActionResult Editar(int id)
         {
-            return View();
+            AtualizarDashBoard();
+
+            MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
+
+            return View(viewName: "Cadastrar", model: m);
         }
 
-
-        public ActionResult Excluir(string id)
+        [HttpPost]
+        public ActionResult Editar(MaquinaModel maquina)
         {
-            ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == id).FirstOrDefault();
-            objProjetoModel.ldadosMaquina.Remove(m);
+            try
+            {
+                TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
+
+                rep.Save(objMaquina: new Dao.Contexts.TB_MAQUINA
+                {
+                    idMAQUINA = maquina.idMAQUINA,
+                    CALIBRE = maquina.CALIBRE,
+                    idPROJETO = base.SessionProjetoModel.idProjeto,
+                    xMAQUINA = maquina.xMAQUINA,
+                    QTDE_CAPACIDADE = maquina.QTDE_CAPACIDADE,
+                    QTDE_TERM_DIREITO = maquina.QTDE_TERM_DIREITO,
+                    QTDE_TERM_ESQUERDO = maquina.QTDE_TERM_ESQUERDO,
+                    QTDE_TOLERANCIA = maquina.QTDE_TOLERANCIA,
+                    QTDE_YY = maquina.YY,
+                    SELOS_DIREITO = maquina.SELOS_DIREITO,
+                    SELOS_ESQUERDO = maquina.SELOS_ESQUERDO,
+                });
+            }
+            catch (Exception ex)
+            {
+                base.aviso =
+                    string.Format(format: "Não foi possível salvar máquina. Motivo: {0}"
+                    , arg0: ex.Message);
+            }
+            base.aviso = "Máquina cadastrada com sucesso.";
+            return RedirectToAction("Listar");
+        }
+
+        public ActionResult Excluir(int id)
+        {
+            TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
+
+            rep.Delete(idMaquina: id);
+
             base.aviso = "Maquina excluida com sucesso.";
             return RedirectToAction("Listar");
         }

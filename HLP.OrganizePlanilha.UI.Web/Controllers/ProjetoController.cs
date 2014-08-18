@@ -85,7 +85,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             }
 
             base.SessionProjetoModel = objProjeto;
-            return View(model: objProjeto, viewName: "FindXml");
+            ProjetoBO.OrganizeDadosParaParametroInicial(base.SessionProjetoModel);
+
+            return View(model: base.SessionProjetoModel, viewName: "Parametros");
         }
 
         public ActionResult Listar()
@@ -246,43 +248,60 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
 
-            TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
-
-
             if (base.SessionProjetoModel.idProjeto == 0)
             {
+                TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
                 base.SessionProjetoModel.idProjeto = projetoRepository.Save(objProjeto: new Dao.Contexts.TB_PROJETO
                     {
                         xPROJETO = objProjetoModel.xPROJETO,
                         dtCADASTRO = objProjetoModel.dtCADASTRO
                     });
+            }
 
-                TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
+            Util.bAtivaRegraModel = false;
+            TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
 
-                foreach (PlanilhaModel itemPlanilha in objProjetoModel.ldadosPlanilhaOriginal)
-                {
-                    planilhaRepository.Save(objPlanilha:
-                        new Dao.Contexts.TB_PLANILHA
-                        {
-                            idPROJETO = base.SessionProjetoModel.idProjeto,
-                            PLANTA = itemPlanilha.PLANTA,
-                            TIPO = itemPlanilha.TIPO,
-                            CALIBRE = itemPlanilha.CALIBRE,
-                            LONG_CORT = itemPlanilha.LONG_CORT,
-                            CANTIDAD = itemPlanilha.CANTIDAD,
-                            COD_DI = itemPlanilha.COD_DI,
-                            TERM_IZQ = itemPlanilha.TERM_IZQ,
-                            COD_DD = itemPlanilha.COD_DD,
-                            TERM_DER = itemPlanilha.TERM_DER,
-                            COD_01_I = itemPlanilha.COD_01_I,
-                            COD_01_D = itemPlanilha.COD_01_D,
-                            ACC_01_I = itemPlanilha.ACC_01_I,
-                            ACC_01_D = itemPlanilha.ACC_01_D
-                        });
-                }
+            foreach (PlanilhaModel itemPlanilha in objProjetoModel.ldadosPlanilhaOriginal)
+            {
+                planilhaRepository.Save(objPlanilha:
+                    new Dao.Contexts.TB_PLANILHA
+                    {
+                        idPROJETO = base.SessionProjetoModel.idProjeto,
+                        PLANTA = itemPlanilha.PLANTA,
+                        TIPO = itemPlanilha.TIPO,
+                        CALIBRE = itemPlanilha.CALIBRE,
+                        LONG_CORT = itemPlanilha.LONG_CORT,
+                        CANTIDAD = itemPlanilha.CANTIDAD,
+                        COD_DI = itemPlanilha.COD_DI,
+                        TERM_IZQ = itemPlanilha.TERM_IZQ,
+                        COD_DD = itemPlanilha.COD_DD,
+                        TERM_DER = itemPlanilha.TERM_DER,
+                        COD_01_I = itemPlanilha.COD_01_I,
+                        COD_01_D = itemPlanilha.COD_01_D,
+                        ACC_01_I = itemPlanilha.ACC_01_I,
+                        ACC_01_D = itemPlanilha.ACC_01_D
+                    });
             }
             return RedirectToAction(actionName: "Listar", controllerName: "Maquina");
         }
 
+
+        public ActionResult Delete(int? idProjeto)
+        {
+            TB_MAQUINA_Repository repMaquina = new TB_MAQUINA_Repository();
+            if (repMaquina.DeteteByIdProject(idProjeto: idProjeto ?? 0))
+            {
+                TB_PLANILHA_Repository repPlanilha = new TB_PLANILHA_Repository();
+                if (repPlanilha.DeleteByIdProjeto(idProjeto: idProjeto ?? 0))
+                {
+                    TB_PROJETO_Repository repProjeto = new TB_PROJETO_Repository();
+                    repProjeto.Delete(id: idProjeto ?? 0);
+                }
+            }
+
+            base.aviso = "Projeto excluido com sucesso!";
+
+            return View(viewName: "Listar");
+        }
     }
 }

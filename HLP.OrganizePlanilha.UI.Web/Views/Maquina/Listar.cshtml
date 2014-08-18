@@ -73,6 +73,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <td>Editar</td>
                             <td>Excluir</td>
                             <td>MÁQUINA</td>
                             <td>CALIBRE</td>
@@ -89,11 +90,16 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="/Maquina/Excluir/@maquina.xMAQUINA" onclick="return confirm('Deseja excluir ?');">
-                                        <img src="~/Content/Images/delete.png" />
+                                    <a href="/Maquina/Editar/@maquina.idMAQUINA">
+                                        <img src="~/Content/Images/edit.png" />
                                     </a>
                                 </td>
-                                <td>@maquina.xMAQUINA</td>
+                                <td>
+                                    <a href="/Maquina/Excluir/@maquina.idMAQUINA" onclick="return confirm('Deseja excluir ?');">
+                                        <img src="~/Content/Images/delete.png" />
+                                    </a>
+                                </td>                                
+                                <td >@maquina.xMAQUINA</td>
                                 <td>@maquina.CALIBRE</td>
                                 <td>@maquina.QTDE_TERM_ESQUERDO</td>
                                 <td>@maquina.QTDE_TERM_DIREITO</td>
