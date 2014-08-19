@@ -115,7 +115,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             public List<string> ltermEsq = new List<string>();
             public List<string> ltermDir = new List<string>();
 
-            public bool IsSelos { get { return this.lseloEsq.Count() > 0 || this.lseloDir.Count() > 0; } }
+            public bool IsSelos { get { return this.lseloEsq.Where(c => c != "").Count() > 0 || this.lseloDir.Where(c => c != "").Count() > 0; } }
 
         }
 
@@ -129,6 +129,68 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             this.TerminaisComSeloEsq = this.lista.Where(c => c.TERM_IZQ != "").Select(c => c.TERM_IZQ).Distinct().ToList();
             this.TerminaisComSeloDir = this.lista.Where(c => c.TERM_DER != "").Select(c => c.TERM_DER).Distinct().ToList();
+        }
+
+        /// <summary>
+        /// verifica se o terminal faz combinação com algum terminal com selo.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool CombinacaoComSeloEsquerdo(PlanilhaModel item)
+        {
+            bool bReturn = true;
+            if (item.COD_DI == "2")
+                if (!this.TerminaisComSeloEsq.Contains(item.TERM_IZQ))
+                    bReturn = false;
+
+            return bReturn;
+        }
+
+        /// <summary>
+        /// verifica se o terminal faz combinação com algum terminal com selo.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool CombinacaoComSeloDireito(PlanilhaModel item)
+        {
+            bool bReturn = true;
+            if (item.COD_DD == "2")
+                if (!this.TerminaisComSeloDir.Contains(item.TERM_DER))
+                    bReturn = false;
+            return bReturn;
+        }
+
+
+        public bool PodeAddCaboAnalisandoTerminais(PlanilhaModel item)
+        {
+            bool bLadoE = true;
+            bool bLadoD = true;
+            if (item.COD_DI == "2")
+            {
+                if (this.lista.Where(c => c.TERM_IZQ == item.TERM_IZQ).Count() == 0)
+                {
+                    if (this.TotalTerminalEsquerdoFaltante == 0)
+                    {
+                        bLadoE = false;
+                    }
+                }
+            }
+
+            if (item.COD_DD == "2")
+            {
+                if (this.lista.Where(c => c.TERM_DER == item.TERM_DER).Count() == 0)
+                {
+                    if (this.TotalTerminalDireitoFaltante == 0)
+                    {
+                        bLadoD = false;
+                    }
+                }
+            }
+
+            if (bLadoE && bLadoD)
+                return true;
+            else
+                return false;
         }
 
     }

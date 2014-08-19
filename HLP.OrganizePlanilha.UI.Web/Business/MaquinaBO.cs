@@ -336,10 +336,22 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     }
                     if (dadosPesquisa.Count() > 0)
                     {
-
-                        var itemSelecionado = dadosPesquisa.FirstOrDefault();
-                        itemSelecionado.bUtilizado = true;
-                        this.resultado.Add(itemSelecionado);
+                        foreach (var item in dadosPesquisa)
+                        {
+                            if (this.resultado.CombinacaoComSeloDireito(item) && this.resultado.CombinacaoComSeloEsquerdo(item))
+                            {
+                                item.bUtilizado = true;
+                                this.resultado.Add(item);
+                            }
+                            else
+                            {
+                                if (this.resultado.PodeAddCaboAnalisandoTerminais(item))
+                                {
+                                    item.bUtilizado = true;
+                                    this.resultado.Add(item);
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -350,10 +362,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             {
                 throw ex;
             }
-
         }
-
-
 
         private void IncludeAutomaticosLado_A_B(string sTerm = "")
         {
@@ -366,8 +375,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         // verifico no lado esquerdo os que ja constam na maquina com selos.
                         var TotalPorTerminal = (from c in this._lDadosPlanilha
                                                 where
-                                                c.ACC_01_D != ""
-                                                && c.ACC_01_I != ""
+                                                c.ACC_01_D == ""
+                                                && c.ACC_01_I == ""
+                                                && c.COD_DI == "Y"
                                                 && this.resultado.Select(o => c.TERM_IZQ).Contains(c.TERM_IZQ)
                                                 && c.bUtilizado == false
                                                 group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
@@ -383,8 +393,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             // verifico na lista inteira.
                             TotalPorTerminal = (from c in this._lDadosPlanilha
                                                 where
-                                                c.ACC_01_D != ""
-                                                && c.ACC_01_I != ""
+                                                c.ACC_01_D == ""
+                                                && c.ACC_01_I == ""
                                                 && c.COD_DI == "2"
                                                 && c.bUtilizado == false
                                                 group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
@@ -405,8 +415,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         var lInvert = (from c in this._lDadosPlanilha
                                        where
                                        c.TERM_DER == sTerm
-                                       && c.ACC_01_D != ""
-                                       && c.ACC_01_I != ""
+                                       && c.ACC_01_D == ""
+                                       && c.ACC_01_I == ""
                                        && c.bUtilizado == false
                                        select c).OrderBy(c => c.CALIBRE).ToList();
 
@@ -419,8 +429,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         var dadosAutomaticos_Manuais = (from c in this._lDadosPlanilha
                                                         where
                                                         c.TERM_IZQ == sTerm
-                                                        && c.ACC_01_D != ""
-                                                        && c.ACC_01_I != ""
+                                                        && c.ACC_01_D == ""
+                                                        && c.ACC_01_I == ""
                                                         && c.COD_DD == "Y "
                                                         && c.bUtilizado == false
                                                         select c).OrderBy(c => c.CALIBRE).ToList();
@@ -434,8 +444,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         var dados = (from c in this._lDadosPlanilha
                                      where
                                      c.TERM_IZQ == sTerm
-                                       && c.ACC_01_D != ""
-                                       && c.ACC_01_I != ""
+                                       && c.ACC_01_D == ""
+                                       && c.ACC_01_I == ""
                                      && c.bUtilizado == false
                                      select c).OrderBy(c => c.CALIBRE).Take(5);
 
@@ -449,8 +459,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
                         var TotalPorTerminal = (from c in this._lDadosPlanilha
                                                 where lDadosIncluosos.Select(o => o.TERM_IZQ).Contains(c.TERM_IZQ)
-                                                && c.ACC_01_D != ""
-                                                && c.ACC_01_I != ""
+                                                && c.ACC_01_D == ""
+                                                && c.ACC_01_I == ""
                                                 && c.bUtilizado == false
                                                 group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
                                                 select new
@@ -482,8 +492,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 var lInvert = (from c in this._lDadosPlanilha
                                where
                                c.TERM_IZQ == item.TERM_DER
-                               && c.ACC_01_D != ""
-                               && c.ACC_01_I != ""
+                               && c.ACC_01_D == ""
+                               && c.ACC_01_I == ""
                                && c.bUtilizado == false
                                select c).OrderBy(c => c.CALIBRE).ToList();
 
@@ -497,8 +507,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                 where
                                                 c.TERM_DER == item.TERM_DER
                                                 && c.COD_DD == "Y "
-                                                && c.ACC_01_D != ""
-                                                && c.ACC_01_I != ""
+                                                && c.ACC_01_D == ""
+                                                && c.ACC_01_I == ""
                                                 && c.bUtilizado == false
                                                 select c).OrderBy(c => c.CALIBRE).ToList();
 
@@ -511,8 +521,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 var dados = (from c in this._lDadosPlanilha
                              where
                              c.TERM_DER == item.TERM_DER
-                             && c.ACC_01_D != ""
-                             && c.ACC_01_I != ""
+                             && c.ACC_01_D == ""
+                             && c.ACC_01_I == ""
                              && c.bUtilizado == false
                              select c).OrderBy(c => c.CALIBRE).Take(3);
 
@@ -725,6 +735,27 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         }
 
 
+        public void OrganizacaoRestante(List<PlanilhaModel> lDadosPlanilha_)
+        {
+            try
+            {
+                this.SetParametros();
+                this._lDadosParaAssignacao = new List<PlanilhaModel>();
+                foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false))
+                {
+                    this._lDadosParaAssignacao.Add(item);
+                }
+                BeginAssignacao();
+                // metodo que escreve os dados em xls e salva.
+                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         /// <summary>
         /// Método que irá chamar irá fazer a organização e salvar o arquivo em excel.
         /// </summary>
@@ -734,13 +765,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             try
             {
                 this.SetParametros();
-                if (_lDadosPlanilha != null)
-                    foreach (var item in this._lDadosPlanilha)
-                    {
-                        item.bUtilizado = false;
-                        item.id = null;
-                    }
-
                 this._lDadosPlanilha = new List<PlanilhaModel>();
 
                 foreach (var item in lDadosPlanilha_.Where(c => (Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) >= this.resultado.param.bitolaMin
@@ -756,7 +780,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 {
                     // INCLUI SELOS
                     this.IncludeSelos();
-                    //this.resultado.SetListaComSelos(); verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
+                    this.resultado.SetListaComSelos(); // verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
                     Util.bAtivaRegraModel = true;
 
                     // INCLUI CABOS QUE FAZEM REFERENCIA COM OS SELOS.
@@ -765,7 +789,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
                 else
                     Util.bAtivaRegraModel = true;
-                this.resultado.SetListaComSelos();
+
+                //this.resultado.SetListaComSelos();
 
                 if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                 {

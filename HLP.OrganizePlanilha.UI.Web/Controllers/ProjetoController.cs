@@ -152,7 +152,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             m.CALIBRE = "0.1-100";
             if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
             {
-                m.BusinessMaquina.IniciaOrganizacao(objProjetoModel.ldadosPlanilhaOriginal);
+                m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
                 base.aviso = "Arquivos organizados com sucesso.";
             }
             objProjetoModel.ldadosPlanilhaFinal = m.BusinessMaquina.resultado.ToList();
