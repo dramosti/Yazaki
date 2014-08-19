@@ -49,12 +49,39 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
                 using (var con = new DB_YAZAKIEntities())
                 {
                     con.TB_PROJETO.Attach(entity: objProjeto);
-
+                    con.Entry(entity: objProjeto).State = System.Data.Entity.EntityState.Modified;
                     con.SaveChanges();
                 }
             }
 
             return objProjeto.idPROJETO;
+        }
+
+        public TB_PROJETO getProjeto(int idProjeto)
+        {
+            TB_PROJETO prj = null;
+
+            try
+            {
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    prj = con.TB_PROJETO.FirstOrDefault(i => i.idPROJETO == idProjeto);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return prj;
+        }
+
+        public List<TB_PROJETO> getAllProjetos()
+        {
+            using (var con = new DB_YAZAKIEntities())
+            {
+                return con.TB_PROJETO.ToList();
+            }
         }
     }
 }

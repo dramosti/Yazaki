@@ -81,5 +81,24 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
             }
             return objMaquina.idMAQUINA;
         }
+
+        public List<TB_MAQUINA> getMaquinasByIdProjeto(int idProjeto)
+        {
+            List<TB_MAQUINA> lMaquinas = null;
+
+            try
+            {
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == idProjeto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }           
+
+            return lMaquinas;
+        }
     }
 }

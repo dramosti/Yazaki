@@ -5,7 +5,18 @@
 }
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 
-<script>
+@section SCRIPTS
+{
+    <script type="text/javascript">
+
+        $(function functionProsseguir() {
+            $('#register-form').submit(function () {
+                $('#prosseguir').attr('disabled', 'disabled');
+            });
+        })
+    </script>
+
+    <script>
     function SetParameter(id) {
 
         //AlteraParametro
@@ -28,26 +39,10 @@
         });
     }
 
+    </script>
 
-    //$.ajax({
-    //    type: "POST",
-    //    url: "AlteraParametro",
-    //    data: { id: id },
-    //    beforeSend: function () {
-    //        $('.loader').show();
-    //    },
-    //    success: function (data) {
-    //        $('.center').html();
-    //    },
-    //    complete: function () {
-    //        $('.loader').hide();
-    //    },
-    //    error: function (xhr, ajaxOptions, thrownError) {
-    //        alert(xhr.status);
-    //        alert(thrownError);
-    //    }
-    //});
-</script>
+
+}
 
 <fieldset>
     <div class="container">
@@ -72,7 +67,7 @@
                             <tr>
                                 <td align="left">
                                     <img src="~/Content/Images/invert.png" onclick="javascript:SetParameter(@parametro.id)" />
-                                </td>                                
+                                </td>
                                 <td id="tdCod_@(parametro.id)">@parametro.COD_D</td>
                                 <td id="tdTerm_@(parametro.id)">@parametro.TERM</td>
                                 <td>@parametro.ACC_01</td>
@@ -94,14 +89,13 @@
         </div>
     </div>
     <div class="container">
-        @using (Html.BeginForm(actionName: "prosseguir", controllerName: "Projeto", method: FormMethod.Post))
+        @using (Html.BeginForm(actionName: "prosseguir", controllerName: "Projeto", method: FormMethod.Post, htmlAttributes: new { id = "register-form", enctype = "multipart/form-data" }))
         {
             <div class="row clearfix">
-                <div class="col-md-12 column">                    
-                    <input type="submit" name="prosseguir" value="Prosseguir"/>
+                <div class="col-md-12 column">
+                    <input type="submit" id="prosseguir" name="prosseguir" value="Prosseguir" class="btn btn-primary" />
                 </div>
             </div>
         }
     </div>
 </fieldset>
-

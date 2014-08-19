@@ -61,17 +61,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
 
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            
+            TB_MAQUINA_Repository maqRepository = new TB_MAQUINA_Repository();
+
             if (objProjetoModel != null)
             {
                 // carrega as informações parametrizadas para a Lista Geral.
 
-                List<TB_MAQUINA> lMaquinas;
-                
-                using (var con = new DB_YAZAKIEntities())
-                {
-                    lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == objProjetoModel.idProjeto).ToList();
-                }
+                List<TB_MAQUINA> lMaquinas = maqRepository.getMaquinasByIdProjeto(idProjeto: objProjetoModel.idProjeto);
 
                 if (lMaquinas != null)
                 {
@@ -106,7 +102,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                         cabo.COD_DI = item.COD_D;
                     }
                     foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == item.TERM
-                                                                                       && c.ACC_01_D == item.ACC_01 
+                                                                                       && c.ACC_01_D == item.ACC_01
                                                                                        && c.COD_01_D == item.COD_01))
                     {
                         cabo.COD_DD = item.COD_D;

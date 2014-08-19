@@ -33,23 +33,21 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
 
         public ActionResult Listar()
         {
-            List<ProjetoModel> lProjetos = new List<ProjetoModel>();
+            TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
 
-            using (var con = new DB_YAZAKIEntities())
-            {
-                if (con.TB_PROJETO.Count() > 0)
+            List<ProjetoModel> lProjetos = new List<ProjetoModel>();
+            List<TB_PROJETO> lProjetosDataBase = projetoRepository.getAllProjetos();
+
+            if (lProjetosDataBase != null)
+                foreach (TB_PROJETO p in lProjetosDataBase)
                 {
-                    foreach (TB_PROJETO p in con.TB_PROJETO)
+                    lProjetos.Add(item: new ProjetoModel
                     {
-                        lProjetos.Add(item: new ProjetoModel
-                            {
-                                idProjeto = p.idPROJETO,
-                                dtCADASTRO = p.dtCADASTRO,
-                                xPROJETO = p.xPROJETO
-                            });
-                    }
+                        idProjeto = p.idPROJETO,
+                        dtCADASTRO = p.dtCADASTRO,
+                        xPROJETO = p.xPROJETO
+                    });
                 }
-            }
 
             return View(model: lProjetos);
         }
@@ -103,9 +101,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult AlteraParametro(string id)
+        public JsonResult AlteraParametro(int id)
         {
-            ProjetoBO.AlteraParametroTerminal(base.SessionProjetoModel, Convert.ToInt32(id));
+            ProjetoBO.AlteraParametroTerminal(base.SessionProjetoModel, id);
             return Json(new { Msg = "OK", Id = id });
         }
 
@@ -200,6 +198,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             }
 
             Util.bAtivaRegraModel = false;
+
             TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
 
             foreach (PlanilhaModel itemPlanilha in objProjetoModel.ldadosPlanilhaOriginal)
@@ -232,12 +231,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             ProjetoModel objProjeto = new ProjetoModel();
             TB_PROJETO objPrj = null;
+            TB_PLANILHA_Repository planilhaRepository = new TB_PLANILHA_Repository();
+            TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
 
-            using (var con = new DB_YAZAKIEntities())
-            {
-                objPrj = con.TB_PROJETO.FirstOrDefault(
-                    i => i.idPROJETO == id);
-            }
+            objPrj = projetoRepository.getProjeto(idProjeto: id);
 
             if (objPrj != null)
             {
@@ -248,12 +245,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                     dtCADASTRO = objPrj.dtCADASTRO
                 };
 
-                List<TB_PLANILHA> lItensPlanilha = null;
-
-                using (var con = new DB_YAZAKIEntities())
-                {
-                    lItensPlanilha = con.TB_PLANILHA.Where(i => i.idPROJETO == id).ToList();
-                }
+                List<TB_PLANILHA> lItensPlanilha = planilhaRepository.getPlanilhasByIdProjeto(idProjeto: id);
 
                 if (lItensPlanilha != null)
                 {
@@ -270,6 +262,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                                  LONG_CORT = itensPlanilha.LONG_CORT,
                                  CANTIDAD = itensPlanilha.CANTIDAD,
                                  COD_DI = itensPlanilha.COD_DI,
+                                 COD_DD = itensPlanilha.COD_DD,
+                                 TERM_IZQ = itensPlanilha.TERM_IZQ,
                                  TERM_DER = itensPlanilha.TERM_DER,
                                  COD_01_I = itensPlanilha.COD_01_I,
                                  COD_01_D = itensPlanilha.COD_01_D,
@@ -283,12 +277,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             base.SessionProjetoModel = objProjeto;
             ProjetoBO.OrganizeDadosParaParametroInicial(base.SessionProjetoModel);
 
-            return View(model: base.SessionProjetoModel, viewName: "Parametros");
+            return RedirectToAction(actionName: "Parametros", controllerName: "Projeto");
         }
 
         public ActionResult Excluir(int id)
         {
             TB_MAQUINA_Repository repMaquina = new TB_MAQUINA_Repository();
+            TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
+
             if (repMaquina.DeteteByIdProject(idProjeto: id))
             {
                 TB_PLANILHA_Repository repPlanilha = new TB_PLANILHA_Repository();
@@ -302,21 +298,18 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             base.aviso = "Projeto excluido com sucesso!";
 
             List<ProjetoModel> lProjetos = new List<ProjetoModel>();
+            List<TB_PROJETO> lProjetosDataBase =
+                projetoRepository.getAllProjetos();
 
-            using (var con = new DB_YAZAKIEntities())
+
+            foreach (TB_PROJETO p in lProjetosDataBase)
             {
-                if (con.TB_PROJETO.Count() > 0)
+                lProjetos.Add(item: new ProjetoModel
                 {
-                    foreach (TB_PROJETO p in con.TB_PROJETO)
-                    {
-                        lProjetos.Add(item: new ProjetoModel
-                        {
-                            idProjeto = p.idPROJETO,
-                            dtCADASTRO = p.dtCADASTRO,
-                            xPROJETO = p.xPROJETO
-                        });
-                    }
-                }
+                    idProjeto = p.idPROJETO,
+                    dtCADASTRO = p.dtCADASTRO,
+                    xPROJETO = p.xPROJETO
+                });
             }
 
             return View(viewName: "Listar", model: lProjetos);
