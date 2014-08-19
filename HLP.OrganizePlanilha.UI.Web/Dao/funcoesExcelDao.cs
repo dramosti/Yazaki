@@ -47,7 +47,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                 while (reader.Read())
                 {
                     if (reader.GetValue(3).ToString() != "" && reader.GetValue(2).ToString() != "")
-                    {                        
+                    {
                         decimal.TryParse(reader.GetValue(3).ToString(), out dValida);
                         if (dValida > 0)
                         {
@@ -68,10 +68,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                                 ACC_01_D = (lSelosAtivos.Where(c => reader.GetValue(12).ToString().Contains(c)).Count() > 0) ? reader.GetValue(12).ToString() : ""
                                 //idPLANILHA = idCount
                             });
-                            if (itemPlanilha.TERM_IZQ == "7116-8060-02" && itemPlanilha._COD_DI == "Y")
-                            {
-                                
-                            }
+
+
                             lDados.Add(itemPlanilha);
 
                             idCount = idCount + 1;
@@ -87,9 +85,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                     }
                 }
 
-
+                var testesemselo = lDados.Where(c => c.TERM_IZQ == "7116-8060-02" && c.ACC_01_I == "").ToList();
+                var testeComselo = lDados.Where(c => c.TERM_IZQ == "7116-8060-02").ToList();
 
                 var dadosAgrupados = Util.GroupList(lDados);
+
+                testesemselo = dadosAgrupados.Where(c => c.TERM_IZQ == "7116-8060-02" && c.ACC_01_I == "").ToList();
+                testeComselo = dadosAgrupados.Where(c => c.TERM_IZQ == "7116-8060-02").ToList();
 
                 // NESSE MOMENTO EU JOGO TODOS OS MANUAIS COM AUTOMÁTICOS PRA UM LADO SÓ ( MANUAL = ESQUERDA - AUTOMÁTICO = DIREITA )
                 var dados = dadosAgrupados.Where(c => c.COD_DI == "2"
@@ -100,7 +102,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                     Util.InverteLado(item);
                 }
 
-                
+
 
 
                 dadosAgrupados = Util.GroupList(dadosAgrupados);

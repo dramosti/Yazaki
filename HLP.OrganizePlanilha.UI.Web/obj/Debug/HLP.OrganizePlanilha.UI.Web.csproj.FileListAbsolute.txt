@@ -169,3 +169,4 @@ D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Deploym
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Razor.xml
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.pdb
+D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.csprojResolveAssemblyReference.cache

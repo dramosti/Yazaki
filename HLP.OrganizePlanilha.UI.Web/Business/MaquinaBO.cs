@@ -111,11 +111,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     this.resultado.param.tolerancia = this._maquina.QTDE_TOLERANCIA.ToDecimal();
                 }
 
-                this.resultado.param.termDirMax += this.resultado.param.lseloDir.Count();
-                this.resultado.param.termDirMin += this.resultado.param.lseloDir.Count();
+                //this.resultado.param.termDirMax += this.resultado.param.lseloDir.Where(c=> c != "").Count();
+                //this.resultado.param.termDirMin += this.resultado.param.lseloDir.Where(c => c != "").Count();
 
-                this.resultado.param.termEsqMax += this.resultado.param.lseloEsq.Count();
-                this.resultado.param.termEsqMin += this.resultado.param.lseloEsq.Count();
+                //this.resultado.param.termEsqMax += this.resultado.param.lseloEsq.Where(c => c != "").Count();
+                //this.resultado.param.termEsqMin += this.resultado.param.lseloEsq.Where(c => c != "").Count();
 
 
             }
@@ -209,12 +209,29 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 {
 
                     dadosPesquisa = new List<PlanilhaModel>();
-                    //if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
-                    {
-                        // verifico primeiro o lado esquerdo.
-                        if (itemSelo.COD_DI == "2")
-                        {
 
+                    // PRIMEIRAMENTE ANALISAMOS OS TERMINAIS COM SELO DO LADO ESQUERDO.                   
+                    if (itemSelo.COD_DI == "2")
+                    {
+                        // 2-2  (Automático - Automático)
+                        if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                        {
+                            // resultado para ser invertido o lado. (Automático - Automático)
+                            dadosPesquisa = (from c in this._lDadosPlanilha
+                                             where c.COD_DI == "2"
+                                             && c.COD_DD == "2"
+                                             && c.ACC_01_D == ""
+                                             && c.ACC_01_I == ""
+                                             && c.TERM_DER == itemSelo.TERM_IZQ
+                                             && c.bUtilizado == false
+                                             select c).ToList();
+
+                            foreach (var itemInvert in dadosPesquisa)
+                            {
+                                Util.InverteLado(itemInvert);
+                            }
+                            dadosPesquisa = new List<PlanilhaModel>();
+                            // reultado de Automático - Automático.
                             dadosPesquisa = (from c in this._lDadosPlanilha
                                              where c.COD_DI == "2"
                                              && c.COD_DD == "2"
@@ -224,28 +241,28 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                              && c.bUtilizado == false
                                              select c).ToList();
                         }
-                        // se não encontrou nada, eu verifico na direita.                        
-                        if (dadosPesquisa.Count() == 0 && itemSelo.COD_DD == "2")
+                        if (dadosPesquisa.Count() == 0)
                         {
+                            // resultado para ser invertido ( Automático - Manual )
                             dadosPesquisa = (from c in this._lDadosPlanilha
-                                             where c.COD_DI == "2"
+                                             where
+                                             c.COD_DI == "Y"
                                              && c.COD_DD == "2"
                                              && c.ACC_01_D == ""
-                                             && c.ACC_01_I == ""
-                                             && c.TERM_DER == itemSelo.TERM_DER
+                                             && c.TERM_DER == itemSelo.TERM_IZQ
                                              && c.bUtilizado == false
                                              select c).ToList();
-                        }
-                    }
 
+                            foreach (var itemInvert in dadosPesquisa)
+                            {
+                                Util.InverteLado(itemInvert);
+                            }
+                            dadosPesquisa = new List<PlanilhaModel>();
+                            // Resultado Automático - Manual
 
-                    if (dadosPesquisa.Count() == 0)
-                    {
-                        //VERIFICO MANUAL E AUTOMÁTICO. PRIMEIRO LADO ESQUERDO
-                     //   if (this.resultado.TotalTerminalEsquerdoFaltante > 0 && itemSelo.COD_DI == "2")
-                        {
                             dadosPesquisa = (from c in this._lDadosPlanilha
-                                             where c.COD_DI == "2"
+                                             where
+                                             c.COD_DI == "2"
                                              && c.ACC_01_I == ""
                                              && c.COD_DD == "Y"
                                              && c.TERM_IZQ == itemSelo.TERM_IZQ
@@ -254,22 +271,69 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         }
                     }
 
-
+                    // ANÁLISE DE TERMINAIS COM SELO DO LADO DIREITO .
                     if (dadosPesquisa.Count() == 0)
                     {
-                        //VERIFICO MANUAL E AUTOMÁTICO. LADO DIREITO.
-                        if (this.resultado.TotalTerminalDireitoFaltante > 0 && itemSelo.COD_DD == "2")
+                        if (itemSelo.COD_DD == "2")
                         {
-                            dadosPesquisa = (from c in this._lDadosPlanilha
-                                             where c.COD_DD == "2"
-                                             && c.ACC_01_D == ""
-                                             && c.COD_DI == "Y"
-                                             && c.TERM_DER == itemSelo.TERM_DER
-                                             && c.bUtilizado == false
-                                             select c).ToList();
+                            // 2-2  (Automático - Automático)
+                            if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                            {
+                                // resultado para ser invertido o lado. (Automático - Automático)
+                                dadosPesquisa = (from c in this._lDadosPlanilha
+                                                 where c.COD_DI == "2"
+                                                 && c.COD_DD == "2"
+                                                 && c.ACC_01_D == ""
+                                                 && c.ACC_01_I == ""
+                                                 && c.TERM_IZQ == itemSelo.TERM_DER
+                                                 && c.bUtilizado == false
+                                                 select c).ToList();
+
+                                foreach (var itemInvert in dadosPesquisa)
+                                {
+                                    Util.InverteLado(itemInvert);
+                                }
+                                dadosPesquisa = new List<PlanilhaModel>();
+                                // reultado de Automático - Automático.
+                                dadosPesquisa = (from c in this._lDadosPlanilha
+                                                 where c.COD_DI == "2"
+                                                 && c.COD_DD == "2"
+                                                 && c.ACC_01_D == ""
+                                                 && c.ACC_01_I == ""
+                                                 && c.TERM_DER == itemSelo.TERM_DER
+                                                 && c.bUtilizado == false
+                                                 select c).ToList();
+                            }
+                            if (dadosPesquisa.Count() == 0)
+                            {
+                                // resultado para ser invertido ( Automático - Manual )
+                                dadosPesquisa = (from c in this._lDadosPlanilha
+                                                 where
+                                                 c.COD_DD == "Y"
+                                                 && c.COD_DI == "2"
+                                                 && c.ACC_01_I == ""
+                                                 && c.TERM_IZQ == itemSelo.TERM_DER
+                                                 && c.bUtilizado == false
+                                                 select c).ToList();
+
+                                foreach (var itemInvert in dadosPesquisa)
+                                {
+                                    Util.InverteLado(itemInvert);
+                                }
+                                dadosPesquisa = new List<PlanilhaModel>();
+                                // Resultado Automático - Manual
+
+                                dadosPesquisa = (from c in this._lDadosPlanilha
+                                                 where
+                                                 c.COD_DD == "2"
+                                                 && c.ACC_01_D == ""
+                                                 && c.COD_DI == "Y"
+                                                 && c.TERM_DER == itemSelo.TERM_DER
+                                                 && c.bUtilizado == false
+                                                 select c).ToList();
+                            }
                         }
                     }
-
                     if (dadosPesquisa.Count() > 0)
                     {
 
@@ -280,8 +344,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
 
                 if (this.resultado.Count() > icountAtual)
-                    if (this.resultado.TotalTerminalDireitoFaltante > 0 || this.resultado.TotalTerminalEsquerdoFaltante > 0)
-                        this.IncludeAutomaticosBySelos();
+                    this.IncludeAutomaticosBySelos();
             }
             catch (Exception ex)
             {
@@ -693,15 +756,16 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 {
                     // INCLUI SELOS
                     this.IncludeSelos();
+                    //this.resultado.SetListaComSelos(); verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
                     Util.bAtivaRegraModel = true;
 
                     // INCLUI CABOS QUE FAZEM REFERENCIA COM OS SELOS.
-                    //if (!this.resultado.isCompleted)
                     if (this.resultado.param.lseloEsq.Count() > 0 && this.resultado.param.lseloDir.Count() > 0)
                         this.IncludeAutomaticosBySelos();
                 }
-                Util.bAtivaRegraModel = true;
-                Util.bAtivaRegraModel = false;
+                else
+                    Util.bAtivaRegraModel = true;
+                this.resultado.SetListaComSelos();
 
                 if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                 {
@@ -709,7 +773,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     this.IncludeAutomaticosLado_A_B();
                 }
 
-                if (!this.resultado.ValidaPorcentagemGeral())
+
+                if (this.resultado.Ultrapassou())
                     this.AnalisedeQuantidade();
 
                 this._lDadosParaAssignacao = new List<PlanilhaModel>();

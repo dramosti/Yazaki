@@ -33,7 +33,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public string LONG_CORT { get; set; }
 
-        public string _CANTIDAD;
+        private string _CANTIDAD;
         [Coluna(isColuna = true)]
         public string CANTIDAD
         {
@@ -41,7 +41,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set { _CANTIDAD = value; }
         }
 
-        public string _COD_DI;
+        private string _COD_DI;
         [Coluna(isColuna = true)]
 
         public string COD_DI
@@ -79,7 +79,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
 
-        public string _COD_DD;
+        private string _COD_DD;
         [Coluna(isColuna = true)]
         public string COD_DD
         {

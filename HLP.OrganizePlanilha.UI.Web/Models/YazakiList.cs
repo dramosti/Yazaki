@@ -13,6 +13,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public YazakiList()
         {
             param = new ParametrosLista();
+            this.TerminaisComSeloEsq = new List<string>();
+            this.TerminaisComSeloDir = new List<string>();
         }
 
         protected override void InsertItem(int index, PlanilhaModel item)
@@ -38,16 +40,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             return this.lista.Where(c => c.COD_DI == "2" || c.COD_DD == "2").Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace('.', ',')));
         }
-        private int GetVolumeTotalTerminalEsquerdoFaltanteByLista()
-        {
-            return this.param.termEsqMax - this.lista.Where(c => c.COD_DI == "2").Select(c => c.TERM_IZQ.Trim()).Distinct().Count();
-        }
-        private int GetVolumeTerminalDireitoFaltanteByLista()
-        {
-            return this.param.termDirMax - this.lista.Where(c => c.COD_DD == "2").Select(c => c.TERM_DER.Trim()).Distinct().Count();
-        }
-
-
 
         public bool isCompleted { get { return this.GetVolumeTotalByLista() >= this.param.volumeTotal; } }
 
@@ -55,11 +47,22 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             get
             {
-                int iValor = this.GetVolumeTotalTerminalEsquerdoFaltanteByLista() - this.param.lseloEsq.Count();
-                return iValor <= 0 ? 0 : iValor;
+                // desconsidera os terminais com selos.
+                return this.param.termEsqMax - this.lista.Where(c => !(this.TerminaisComSeloEsq.Contains(c.TERM_IZQ))
+                                                            && c.COD_DI == "2"
+                    ).Select(c => c.TERM_IZQ.Trim()).Distinct().Count();
             }
         }
-        public int TotalTerminalDireitoFaltante { get { return this.GetVolumeTerminalDireitoFaltanteByLista(); } }
+        public int TotalTerminalDireitoFaltante
+        {
+            get
+            {
+                // desconsidera os terminais com selos.
+                var resultado = this.lista.Where(c => !(this.TerminaisComSeloDir.Contains(c.TERM_DER))
+                                                        && c.COD_DD == "2").Select(c => c.TERM_DER.Trim()).Distinct();
+                return this.param.termDirMax - resultado.Count();
+            }
+        }
 
         private List<PlanilhaModel> lista { get { return (this.ToList() as List<PlanilhaModel>); } }
 
@@ -74,12 +77,26 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             decimal porcentagemAtual = this.lista.Sum(c => c.PERCENTUAL);
             decimal porcentagemTolerancia = Math.Round(((this.param.tolerancia * 100) / totalPermitido), 2);
 
-            //if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
-            if (porcentagemAtual >= (100 - porcentagemTolerancia))
+            if (porcentagemAtual >= (100 - porcentagemTolerancia) && porcentagemAtual <= (100 + porcentagemTolerancia))
                 return true;
             else return false;
         }
 
+        public bool Ultrapassou(bool bIncludeYY = false)
+        {
+            decimal totalPermitido = this.param.volumeTotal - (bIncludeYY ? 0 : this.param.volumeYY);
+            foreach (var item in this.lista.Where(c => c.COD_DI == "2" || c.COD_DD == "2"))
+            {
+                item.PERCENTUAL = Math.Round(((item.CANTIDAD.ToDecimal() * 100) / totalPermitido), 2);
+            }
+
+            decimal porcentagemAtual = this.lista.Sum(c => c.PERCENTUAL);
+            decimal porcentagemTolerancia = Math.Round(((this.param.tolerancia * 100) / totalPermitido), 2);
+
+            if (porcentagemAtual >= (100 + porcentagemTolerancia))
+                return true;
+            else return false;
+        }
 
         public class ParametrosLista
         {
@@ -102,6 +119,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         }
 
+
+
+        private List<string> TerminaisComSeloEsq = new List<string>();
+        private List<string> TerminaisComSeloDir = new List<string>();
+
+
+        public void SetListaComSelos()
+        {
+            this.TerminaisComSeloEsq = this.lista.Where(c => c.TERM_IZQ != "").Select(c => c.TERM_IZQ).Distinct().ToList();
+            this.TerminaisComSeloDir = this.lista.Where(c => c.TERM_DER != "").Select(c => c.TERM_DER).Distinct().ToList();
+        }
 
     }
 }
