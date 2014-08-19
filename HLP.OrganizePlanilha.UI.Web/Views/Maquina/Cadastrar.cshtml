@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "..: Cadastrar Maquina :..";
     Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+    ViewBag.Projeto = "Projeto:" + ViewBag.xProjetoLocal;        
 }
 
 <fieldset>
@@ -76,7 +77,8 @@
                     </div>
                     <div>
                         <input class="btn btn-danger" type="reset" id="limpar" name="limpar" value="Limpar" />
-                        <input class="btn btn-primary" type="submit" id="cadastrar" name="cadastrar" value="Cadastrar" />
+                        <input type="button" class="btn btn-warning" title="voltar" value="voltar" onclick="location.href='@Url.Action("voltar", "Maquina", new { })'" />                                                
+                        <input class="btn btn-primary" type="submit" id="cadastrar" name="cadastrar" value="Cadastrar" />                        
                     </div>
                 }
             </div>

@@ -17,6 +17,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             try
             {
                 AtualizarDashBoard();
+                ViewBag.xProjetoLocal = base.SessionProjetoModel.xPROJETO;
                 return View();
 
             }
@@ -67,7 +68,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 // carrega as informações parametrizadas para a Lista Geral.
 
                 List<TB_MAQUINA> lMaquinas;
-                
+
                 using (var con = new DB_YAZAKIEntities())
                 {
                     lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == objProjetoModel.idProjeto).ToList();
@@ -106,7 +107,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                         cabo.COD_DI = item.COD_D;
                     }
                     foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == item.TERM
-                                                                                       && c.ACC_01_D == item.ACC_01 
+                                                                                       && c.ACC_01_D == item.ACC_01
                                                                                        && c.COD_01_D == item.COD_01))
                     {
                         cabo.COD_DD = item.COD_D;
@@ -125,6 +126,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             AtualizarDashBoard();
 
             MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
+            ViewBag.xProjetoLocal = base.SessionProjetoModel.xPROJETO;
 
             return View(viewName: "Cadastrar", model: m);
         }
@@ -187,6 +189,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             ViewData["painel"] = ProjetoBO.CarregarDadosPainel(base.SessionProjetoModel);
             ViewData["bitolas"] = ProjetoBO.CarregarDadosBitola(base.SessionProjetoModel);
+        }
+                
+        public ActionResult voltar()
+        {
+            return RedirectToAction(actionName: "Listar");
         }
 
         //[HttpPost]

@@ -2,52 +2,48 @@
 @{
     ViewBag.Title = "..: Parametros iniciais :..";
     Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+    ViewBag.Projeto = "Projeto:" + Model.xPROJETO;
 }
 <script src="~/Scripts/jquery-1.10.2.js"></script>
-<script>
 
-    function SetParameter(id) {
+@section SCRIPTS
+{
+    <script type="text/javascript">
 
-        //AlteraParametro
-        $.ajax({
-            type: "POST",
-            url: "AlteraParametro",
-            data: { id: id },
-            success: function (data) {
-                var oldValue = $('#tdCod_' + id).html();
-                if (oldValue == '2') {
-                    $('#tdCod_' + id).html('Y');
-                } else {
-                    $('#tdCod_' + id).html('2');
+        $(function functionProsseguir() {
+            $('#register-form').submit(function () {
+                $('#prosseguir').attr('disabled', 'disabled');
+            });
+        })
+    </script>
+
+    <script>
+        function SetParameter(id) {
+
+            //AlteraParametro
+            $.ajax({
+                type: "POST",
+                url: "AlteraParametro",
+                data: { id: id },
+                success: function (data) {
+                    var oldValue = $('#tdCod_' + id).html();
+                    if (oldValue == '2') {
+                        $('#tdCod_' + id).html('Y');
+                    } else {
+                        $('#tdCod_' + id).html('2');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
                 }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
+            });
+        }
+
+    </script>
 
 
-        //$.ajax({
-        //    type: "POST",
-        //    url: "AlteraParametro",
-        //    data: { id: id },
-        //    beforeSend: function () {
-        //        $('.loader').show();
-        //    },
-        //    success: function (data) {
-        //        $('.center').html();
-        //    },
-        //    complete: function () {
-        //        $('.loader').hide();
-        //    },
-        //    error: function (xhr, ajaxOptions, thrownError) {
-        //        alert(xhr.status);
-        //        alert(thrownError);
-        //    }
-        //});
-    }
-</script>
+}
 
 <fieldset>
     <div class="container">
@@ -83,7 +79,7 @@
                     <tfoot>
                         <tr>
                             <td colspan="2">
-                                Total de registros: @Model.ldadosParametroTempDistinct.Count()
+                                Total de registros: @Model.ldadosParametroTempDistinct.Count
                             </td>
                         </tr>
 
@@ -94,13 +90,13 @@
         </div>
     </div>
     <div class="container">
-        <div class="row clearfix">
-            <div class="col-md-12 column">
-                <a class="btn btn-primary" href="/Maquina/Listar/">
-                    Prosseguir
-                </a>
+        @using (Html.BeginForm(actionName: "prosseguir", controllerName: "Projeto", method: FormMethod.Post, htmlAttributes: new { id = "register-form", enctype = "multipart/form-data" }))
+        {
+            <div class="row clearfix">
+                <div class="col-md-12 column">
+                    <input type="submit" id="prosseguir" name="prosseguir" value="Prosseguir" class="btn btn-primary" />
+                </div>
             </div>
-        </div>
+        }
     </div>
 </fieldset>
-

@@ -28,9 +28,21 @@
 </head>
 <body>
     <header>
-        <div>
+        <div class="page-header">
             @* Tudo que for jogado no ViewBag será visivel nas paginas pais e filhas. *@
-            <h1 class="text-muted text-left">@ViewBag.Title</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img class="center-block" src="~/Content/Images/logoYazaki.jpg" height="50" width="80" />
+                        </div>
+                        <div class="col-md-8">
+                            <h3 class="text-muted text-left">@ViewBag.Title</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6"><h4 class="text-muted navbar-right">@ViewBag.Projeto</h4></div>
+            </div>
             <nav class="navbar navbar-default" role="navigation">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
@@ -51,7 +63,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projeto <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>@Html.ActionLink("Novo Projeto", "FindXml", "Projeto")</li>
-                                    <li>@Html.ActionLink("Listar Projetos", "FindXml", "Projeto")</li>
+                                    <li>@Html.ActionLink("Listar Projetos", "Listar", "Projeto")</li>
                                 </ul>
                             </li>
                         </ul>

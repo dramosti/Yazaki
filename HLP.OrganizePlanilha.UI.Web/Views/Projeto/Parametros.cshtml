@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "..: Parametros iniciais :..";
     Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+    ViewBag.Projeto = "Projeto:" + Model.xPROJETO;
 }
 <script src="~/Scripts/jquery-1.10.2.js"></script>
 
@@ -17,27 +18,27 @@
     </script>
 
     <script>
-    function SetParameter(id) {
+        function SetParameter(id) {
 
-        //AlteraParametro
-        $.ajax({
-            type: "POST",
-            url: "AlteraParametro",
-            data: { id: id },
-            success: function (data) {
-                var oldValue = $('#tdCod_' + id).html();
-                if (oldValue == '2') {
-                    $('#tdCod_' + id).html('Y');
-                } else {
-                    $('#tdCod_' + id).html('2');
+            //AlteraParametro
+            $.ajax({
+                type: "POST",
+                url: "AlteraParametro",
+                data: { id: id },
+                success: function (data) {
+                    var oldValue = $('#tdCod_' + id).html();
+                    if (oldValue == '2') {
+                        $('#tdCod_' + id).html('Y');
+                    } else {
+                        $('#tdCod_' + id).html('2');
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status);
+                    alert(thrownError);
                 }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.status);
-                alert(thrownError);
-            }
-        });
-    }
+            });
+        }
 
     </script>
 
