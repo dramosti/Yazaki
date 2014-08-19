@@ -16,13 +16,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/15/2014 09:51:30</publishTime>
     </File>
     <File Include="bin/HLP.OrganizePlanilha.UI.Web.dll">
-      <publishTime>08/19/2014 10:32:40</publishTime>
+      <publishTime>08/19/2014 16:31:04</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>07/08/2013 15:15:08</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>10/02/2013 12:10:10</publishTime>
+    </File>
+    <File Include="bin/PagedList.dll">
+      <publishTime>08/19/2014 13:52:09</publishTime>
+    </File>
+    <File Include="bin/PagedList.Mvc.dll">
+      <publishTime>08/19/2014 13:52:09</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
       <publishTime>07/09/2013 11:04:28</publishTime>
@@ -89,6 +95,12 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     </File>
     <File Include="Content/Images/loader.GIF">
       <publishTime>08/15/2014 09:04:15</publishTime>
+    </File>
+    <File Include="Content/Images/logoYazaki.jpg">
+      <publishTime>08/19/2014 14:29:54</publishTime>
+    </File>
+    <File Include="Content/PagedList.css">
+      <publishTime>08/19/2014 13:52:12</publishTime>
     </File>
     <File Include="Content/Site.css">
       <publishTime>08/15/2014 09:04:15</publishTime>
@@ -298,7 +310,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/15/2014 09:04:15</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>08/15/2014 09:51:33</publishTime>
+      <publishTime>08/19/2014 13:52:13</publishTime>
     </File>
     <File Include="Scripts/bootbox.js">
       <publishTime>08/15/2014 09:04:15</publishTime>
@@ -358,13 +370,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/15/2014 09:04:16</publishTime>
     </File>
     <File Include="Views/Maquina/Cadastrar.cshtml">
-      <publishTime>08/18/2014 09:56:06</publishTime>
+      <publishTime>08/19/2014 16:29:17</publishTime>
     </File>
     <File Include="Views/Maquina/Editar.cshtml">
       <publishTime>08/15/2014 09:04:16</publishTime>
     </File>
     <File Include="Views/Maquina/Listar.cshtml">
-      <publishTime>08/19/2014 11:00:03</publishTime>
+      <publishTime>08/19/2014 16:05:25</publishTime>
     </File>
     <File Include="Views/Projeto/FindXml.cshtml">
       <publishTime>08/18/2014 15:50:38</publishTime>
@@ -373,16 +385,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/15/2014 09:04:16</publishTime>
     </File>
     <File Include="Views/Projeto/Listar.cshtml">
-      <publishTime>08/19/2014 10:53:38</publishTime>
+      <publishTime>08/19/2014 15:58:15</publishTime>
     </File>
     <File Include="Views/Projeto/Parametros.cshtml">
-      <publishTime>08/19/2014 09:25:26</publishTime>
+      <publishTime>08/19/2014 16:27:46</publishTime>
     </File>
     <File Include="Views/Projeto/_PlanilhaOriginal.cshtml">
       <publishTime>08/15/2014 09:04:16</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutPadrao.cshtml">
-      <publishTime>08/15/2014 15:19:32</publishTime>
+      <publishTime>08/19/2014 16:03:51</publishTime>
     </File>
     <File Include="Views/Shared/_PartialAviso.cshtml">
       <publishTime>08/15/2014 09:04:16</publishTime>

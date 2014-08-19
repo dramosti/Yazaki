@@ -64,14 +64,14 @@
         <tfoot>
             <tr>
                 <td>
-                    Número de projetos: @countProjetos
+                    Total de Registros: @countProjetos
                 </td>
             </tr>
         </tfoot>
     </table>
 </div>
 <div>
-    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
 </div>
 
 @Html.PagedListPager(Model, page => Url.Action("Listar",

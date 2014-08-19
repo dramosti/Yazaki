@@ -316,7 +316,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 });
             }
 
-            return View(viewName: "Listar", model: lProjetos);
+            return RedirectToAction(actionName: "Listar");
         }
     }
 }
