@@ -53,11 +53,31 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
                 using (var con = new DB_YAZAKIEntities())
                 {
                     con.TB_PLANILHA.Attach(entity: objPlanilha);
+                    con.Entry(entity: objPlanilha).State = System.Data.Entity.EntityState.Modified;
                     con.SaveChanges();
                 }
             }
 
             return objPlanilha.id_PLANILHA;
+        }
+
+        public List<TB_PLANILHA> getPlanilhasByIdProjeto(int idProjeto)
+        {
+            List<TB_PLANILHA> lItensPlanilha = null;
+
+            try
+            {
+                using (var con = new DB_YAZAKIEntities())
+                {
+                    lItensPlanilha = con.TB_PLANILHA.Where(i => i.idPROJETO == idProjeto).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return lItensPlanilha;
         }
     }
 }
