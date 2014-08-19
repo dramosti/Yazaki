@@ -38,13 +38,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         ACC_01 = item.ACC_01_I,
                         COD_01 = item.COD_01_I
                     });
-                    ldadosParametroTemp.Add(new ParametrosModel
-                    {
-                        COD_D = item.COD_DD,
-                        TERM = item.TERM_DER,
-                        ACC_01 = item.ACC_01_D,
-                        COD_01 = item.COD_01_D
-                    });
+                    //ldadosParametroTemp.Add(new ParametrosModel
+                    //{
+                    //    COD_D = item.COD_DD,
+                    //    TERM = item.TERM_DER,
+                    //    ACC_01 = item.ACC_01_D,
+                    //    COD_01 = item.COD_01_D
+                    //});                  
 
                     decimal dqtde = 0;
                     decimal.TryParse(item.CANTIDAD, out dqtde);

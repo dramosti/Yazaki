@@ -208,9 +208,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 foreach (var itemSelo in this.lSelos)
                 {
 
-
                     dadosPesquisa = new List<PlanilhaModel>();
-                    if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                    //if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                     {
                         // verifico primeiro o lado esquerdo.
                         if (itemSelo.COD_DI == "2")
@@ -243,7 +242,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     if (dadosPesquisa.Count() == 0)
                     {
                         //VERIFICO MANUAL E AUTOMÁTICO. PRIMEIRO LADO ESQUERDO
-                        if (this.resultado.TotalTerminalEsquerdoFaltante > 0 && itemSelo.COD_DI == "2")
+                     //   if (this.resultado.TotalTerminalEsquerdoFaltante > 0 && itemSelo.COD_DI == "2")
                         {
                             dadosPesquisa = (from c in this._lDadosPlanilha
                                              where c.COD_DI == "2"

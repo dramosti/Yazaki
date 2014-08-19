@@ -61,13 +61,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
 
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
-
+            
             if (objProjetoModel != null)
             {
                 // carrega as informações parametrizadas para a Lista Geral.
 
                 List<TB_MAQUINA> lMaquinas;
-
+                
                 using (var con = new DB_YAZAKIEntities())
                 {
                     lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == objProjetoModel.idProjeto).ToList();
