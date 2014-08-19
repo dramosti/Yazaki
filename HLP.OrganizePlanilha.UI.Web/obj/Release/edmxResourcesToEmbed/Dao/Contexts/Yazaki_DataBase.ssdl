@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DB_YAZAKIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="TB_MAQUINA">
+    <Key>
+      <PropertyRef Name="idMAQUINA" />
+    </Key>
+    <Property Name="idMAQUINA" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idPROJETO" Type="int" />
+    <Property Name="xMAQUINA" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="SELOS_ESQUERDO" Type="varchar" MaxLength="50" />
+    <Property Name="SELOS_DIREITO" Type="varchar" MaxLength="50" />
+    <Property Name="QTDE_TERM_ESQUERDO" Type="varchar" MaxLength="50" />
+    <Property Name="QTDE_TERM_DIREITO" Type="varchar" MaxLength="50" />
+    <Property Name="CALIBRE" Type="varchar" MaxLength="50" />
+    <Property Name="QTDE_CAPACIDADE" Type="varchar" MaxLength="50" />
+    <Property Name="QTDE_TOLERANCIA" Type="varchar" MaxLength="50" />
+    <Property Name="QTDE_YY" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="TB_PLANILHA">
+    <Key>
+      <PropertyRef Name="id_PLANILHA" />
+    </Key>
+    <Property Name="id_PLANILHA" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idPROJETO" Type="int" Nullable="false" />
+    <Property Name="PLANTA" Type="varchar" MaxLength="20" />
+    <Property Name="TIPO" Type="varchar" MaxLength="50" />
+    <Property Name="CALIBRE" Type="varchar" MaxLength="10" />
+    <Property Name="LONG_CORT" Type="varchar" MaxLength="50" />
+    <Property Name="CANTIDAD" Type="varchar" MaxLength="50" />
+    <Property Name="COD_DI" Type="char" MaxLength="1" />
+    <Property Name="TERM_IZQ" Type="varchar" MaxLength="50" />
+    <Property Name="COD_DD" Type="char" MaxLength="1" />
+    <Property Name="TERM_DER" Type="varchar" MaxLength="50" />
+    <Property Name="COD_01_I" Type="varchar" MaxLength="50" />
+    <Property Name="COD_01_D" Type="varchar" MaxLength="50" />
+    <Property Name="ACC_01_I" Type="varchar" MaxLength="50" />
+    <Property Name="ACC_01_D" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="TB_PROJETO">
+    <Key>
+      <PropertyRef Name="idPROJETO" />
+    </Key>
+    <Property Name="idPROJETO" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="xPROJETO" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="dtCADASTRO" Type="datetime" Nullable="false" />
+  </EntityType>
+  <Association Name="TB_PROJETO_TB_MAQUINA_FK1">
+    <End Role="TB_PROJETO" Type="Self.TB_PROJETO" Multiplicity="0..1" />
+    <End Role="TB_MAQUINA" Type="Self.TB_MAQUINA" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TB_PROJETO">
+        <PropertyRef Name="idPROJETO" />
+      </Principal>
+      <Dependent Role="TB_MAQUINA">
+        <PropertyRef Name="idPROJETO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TB_PROJETO_TB_PLANILHA_FK1">
+    <End Role="TB_PROJETO" Type="Self.TB_PROJETO" Multiplicity="1" />
+    <End Role="TB_PLANILHA" Type="Self.TB_PLANILHA" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TB_PROJETO">
+        <PropertyRef Name="idPROJETO" />
+      </Principal>
+      <Dependent Role="TB_PLANILHA">
+        <PropertyRef Name="idPROJETO" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DB_YAZAKIModelStoreContainer">
+    <EntitySet Name="TB_MAQUINA" EntityType="Self.TB_MAQUINA" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TB_PLANILHA" EntityType="Self.TB_PLANILHA" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TB_PROJETO" EntityType="Self.TB_PROJETO" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="TB_PROJETO_TB_MAQUINA_FK1" Association="Self.TB_PROJETO_TB_MAQUINA_FK1">
+      <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
+      <End Role="TB_MAQUINA" EntitySet="TB_MAQUINA" />
+    </AssociationSet>
+    <AssociationSet Name="TB_PROJETO_TB_PLANILHA_FK1" Association="Self.TB_PROJETO_TB_PLANILHA_FK1">
+      <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
+      <End Role="TB_PLANILHA" EntitySet="TB_PLANILHA" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

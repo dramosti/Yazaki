@@ -58,7 +58,7 @@
 }
 <div class="container">
     <div class="row clearfix">
-        <div class="col-md-4 column">
+        <div class="col-md-12 column">
             <fieldset>
                 <legend>
                     Ações
@@ -67,8 +67,66 @@
                 <a class="btn btn-primary btn-xs" href="../../Projeto/Download/">Download</a>
                 <img id="loader1" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
             </fieldset>
-            <br/>
-        </div>        
+            <br />
+            <fieldset>
+                <legend>Maquinas</legend>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>Editar</td>
+                            <td>Excluir</td>
+                            <td>MÁQUINA</td>
+                            <td>CALIBRE</td>
+                            <td>QTDE_TERM_E</td>
+                            <td>QTDE_TERM_D</td>
+                            <td>CANTIDAD</td>
+                            <td>Y-Y</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var maquina in Model.ldadosMaquina)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="~/Maquina/Editar/@maquina.idMAQUINA">
+                                        <img src="~/Content/Images/edit.png" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="~/Maquina/Excluir/@maquina.idMAQUINA" onclick="return confirm('Deseja excluir ?');">
+                                        <img src="~/Content/Images/delete.png" />
+                                    </a>
+                                </td>                                
+                                <td >@maquina.xMAQUINA</td>
+                                <td>@maquina.CALIBRE</td>
+                                <td>@maquina.QTDE_TERM_ESQUERDO</td>
+                                <td>@maquina.QTDE_TERM_DIREITO</td>
+                                <td>@maquina.QTDE_CAPACIDADE</td>
+                                <td>@maquina.YY</td>
+                                <td>
+                                    <a href="~/Projeto/Organizar/@maquina.xMAQUINA">carregar</a>
+                                </td>
+                                <td>
+                                    <a href="~/Projeto/DonwloadPlanilha/@maquina.xMAQUINA">download</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="1">
+                                <a class="btn btn-primary btn-xs" href="/Maquina/Cadastrar/">
+                                    Novo
+                                </a>
+                            </td>
+                        </tr>
+
+                    </tfoot>
+                </table>
+            </fieldset>
+        </div>
     </div>
     <div class="row clearfix">
         <div class="col-md-6 column">

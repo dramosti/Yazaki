@@ -55,6 +55,7 @@
             });
         }
     </script>
+
 }
 <div class="container">
     <div class="row clearfix">
@@ -90,12 +91,12 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="/Maquina/Editar/@maquina.idMAQUINA">
+                                    <a href="~/Maquina/Editar/@maquina.idMAQUINA">
                                         <img src="~/Content/Images/edit.png" />
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/Maquina/Excluir/@maquina.idMAQUINA" onclick="return confirm('Deseja excluir ?');">
+                                    <a href="~/Maquina/Excluir/@maquina.idMAQUINA" onclick="return confirm('Deseja excluir ?');">
                                         <img src="~/Content/Images/delete.png" />
                                     </a>
                                 </td>                                
@@ -106,10 +107,10 @@
                                 <td>@maquina.QTDE_CAPACIDADE</td>
                                 <td>@maquina.YY</td>
                                 <td>
-                                    <a href="/Projeto/Organizar/@maquina.xMAQUINA">carregar</a>
+                                    <a href="~/Projeto/Organizar/@maquina.xMAQUINA">carregar</a>
                                 </td>
                                 <td>
-                                    <a href="/Projeto/DonwloadPlanilha/@maquina.xMAQUINA">download</a>
+                                    <a href="~/Projeto/DonwloadPlanilha/@maquina.xMAQUINA">download</a>
                                 </td>
                             </tr>
                         }

@@ -37,6 +37,15 @@
                         </p>
                     </div>
                     <div>
+                        @Html.HiddenFor(i => i.idProjeto)
+                    </div>
+                    <div>
+                        @Html.LabelFor(c => c.xPROJETO)
+                        @Html.TextBoxFor(c => c.xPROJETO, new { @class = "form-control", placeholder = "informe o nome para o projeto." })
+                        @Html.ValidationMessageFor(c => c.xPROJETO)
+
+                    </div>
+                    <div>
                         @Html.LabelFor(c => c.xNomeAba)
                         @Html.TextBoxFor(c => c.xNomeAba, new { @class = "form-control", placeholder = "informe o nome da aba onde se encontra os dados." })
                         @Html.ValidationMessageFor(C => C.xNomeAba)

@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
 
 namespace HLP.OrganizePlanilha.UI.Web.Controllers
 {
@@ -31,7 +32,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return View();
         }
 
-        public ActionResult Listar()
+        public ActionResult Listar(int? page)
         {
             TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
 
@@ -49,7 +50,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                     });
                 }
 
-            return View(model: lProjetos);
+
+            ViewBag.countProjetos = lProjetos.Count;
+
+            return View(model: lProjetos.OrderByDescending(i => i.dtCADASTRO).ToPagedList(pageNumber: page ?? 1, pageSize: 10));
         }
 
         [HttpPost]

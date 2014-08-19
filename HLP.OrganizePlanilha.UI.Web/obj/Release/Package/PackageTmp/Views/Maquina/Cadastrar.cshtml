@@ -25,57 +25,60 @@
         <div class="row clearfix">
             <div class="col-md-6 column">
                 @using (Html.BeginForm())
-                    {
+                {
+                    <div>
+                        @Html.HiddenFor(x => x.idMAQUINA)
+                    </div>
                     <div>
                         @Html.LabelFor(x => x.xMAQUINA)
                         @Html.TextBoxFor(x => x.xMAQUINA, new { @class = "form-control", autofocus = "autofocus", placeholder = "Insira o código da máquina" })
                         @Html.ValidationMessageFor(x => x.xMAQUINA)
                     </div>
-                    @*<div>
-                            @Html.LabelFor(x => x.CALIBRE)
-                            @Html.TextBoxFor(x => x.CALIBRE, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe os valores da bitola com ~" })
-                            @Html.ValidationMessageFor(x => x.CALIBRE)
-                        </div>*@
-                    @*<div>
-                            @Html.LabelFor(x => x.QTDE_TERM_ESQUERDO)
-                            @Html.TextBoxFor(x => x.QTDE_TERM_ESQUERDO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a quantidade de Terminal com - " })
-                            @Html.ValidationMessageFor(x => x.QTDE_TERM_ESQUERDO)
-                        </div>*@
                     <div>
-                        @Html.LabelFor(x => x.QTDE_SELOS_ESQUERDO)
-                        @Html.TextBoxFor(x => x.QTDE_SELOS_ESQUERDO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Quantidade de selos do lado esquerdo" })
-                        @* @Html.ValidationMessageFor(x => x.QTDE_SELOS_ESQUERDO)*@
+                        @Html.LabelFor(x => x.CALIBRE)
+                        @Html.TextBoxFor(x => x.CALIBRE, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe os valores da bitola com ~" })
+                        @Html.ValidationMessageFor(x => x.CALIBRE)
                     </div>
-                    @*<div>
-                            @Html.LabelFor(x => x.QTDE_TERM_DIREITO)
-                            @Html.TextBoxFor(x => x.QTDE_TERM_DIREITO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a quantidade de Terminal com - " })
-                            @Html.ValidationMessageFor(x => x.QTDE_TERM_DIREITO)
-                        </div>*@
                     <div>
-                        @Html.LabelFor(x => x.QTDE_SELOS_DIREITO)
-                        @Html.TextBoxFor(x => x.QTDE_SELOS_DIREITO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Quantidade de selos do lado direito" })
-                        @*  @Html.ValidationMessageFor(x => x.QTDE_SELOS_DIREITO)*@
+                        @Html.LabelFor(x => x.QTDE_TERM_ESQUERDO)
+                        @Html.TextBoxFor(x => x.QTDE_TERM_ESQUERDO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a quantidade de Terminal com - " })
+                        @Html.ValidationMessageFor(x => x.QTDE_TERM_ESQUERDO)
                     </div>
-                    @*<div>
-                            @Html.LabelFor(x => x.YY)
-                            @Html.TextBoxFor(x => x.YY, new { @class = "form-control", autofocus = "autofocus", placeholder = "Qunatidade de cabos manuais." })
-                            @Html.ValidationMessageFor(x => x.YY)
-                        </div>
-                        <div>
-                            @Html.LabelFor(x => x.QTDE_CAPACIDADE)
-                            @Html.TextBoxFor(x => x.QTDE_CAPACIDADE, new { @class = "form-control", autofocus = "autofocus", placeholder = "Informe o volume desejado." })
-                            @Html.ValidationMessageFor(x => x.QTDE_CAPACIDADE)
-                        </div>
-                        <div>
-                            @Html.LabelFor(x => x.QTDE_TOLERANCIA)
-                            @Html.TextBoxFor(x => x.QTDE_TOLERANCIA, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a tolerância com - " })
-                            @Html.ValidationMessageFor(x => x.QTDE_TOLERANCIA)
-                        </div>*@
+                    <div>
+                        @Html.LabelFor(x => x.SELOS_ESQUERDO)
+                        @Html.TextBoxFor(x => x.SELOS_ESQUERDO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Selos do lado esquerdo, separe com vírgula" })
+                        @Html.ValidationMessageFor(x => x.SELOS_ESQUERDO)
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.QTDE_TERM_DIREITO)
+                        @Html.TextBoxFor(x => x.QTDE_TERM_DIREITO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a quantidade de Terminal com - " })
+                        @Html.ValidationMessageFor(x => x.QTDE_TERM_DIREITO)
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.SELOS_DIREITO)
+                        @Html.TextBoxFor(x => x.SELOS_DIREITO, new { @class = "form-control", autofocus = "autofocus", placeholder = "Quantidade de selos do lado direito" })
+                        @Html.ValidationMessageFor(x => x.SELOS_DIREITO)
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.YY)
+                        @Html.TextBoxFor(x => x.YY, new { @class = "form-control", autofocus = "autofocus", placeholder = "Qunatidade de cabos manuais." })
+                        @Html.ValidationMessageFor(x => x.YY)
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.QTDE_CAPACIDADE)
+                        @Html.TextBoxFor(x => x.QTDE_CAPACIDADE, new { @class = "form-control", autofocus = "autofocus", placeholder = "Informe o volume desejado." })
+                        @Html.ValidationMessageFor(x => x.QTDE_CAPACIDADE)
+                    </div>
+                    <div>
+                        @Html.LabelFor(x => x.QTDE_TOLERANCIA)
+                        @Html.TextBoxFor(x => x.QTDE_TOLERANCIA, new { @class = "form-control", autofocus = "autofocus", placeholder = "Separe a tolerância com - " })
+                        @Html.ValidationMessageFor(x => x.QTDE_TOLERANCIA)
+                    </div>
                     <div>
                         <input class="btn btn-danger" type="reset" id="limpar" name="limpar" value="Limpar" />
                         <input class="btn btn-primary" type="submit" id="cadastrar" name="cadastrar" value="Cadastrar" />
                     </div>
-                    }
+                }
             </div>
             <div class="col-md-6 column">
                 <div class="container">
@@ -116,12 +119,12 @@
                                     </thead>
                                     <tbody>
                                         @foreach (var bitola in (IEnumerable<HLP.OrganizePlanilha.UI.Web.Models.BitolaModel>)ViewData["bitolas"])
-                                            {
+                                        {
                                             <tr>
                                                 <td>@bitola.CALIBRE</td>
                                                 <td>@bitola.VOLUME</td>
                                             </tr>
-                                            }
+                                        }
                                     </tbody>
                                     <tfoot>
 

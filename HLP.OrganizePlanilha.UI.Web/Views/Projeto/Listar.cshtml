@@ -1,42 +1,78 @@
 ﻿@using HLP.OrganizePlanilha.UI.Web.Models
 
-@model IEnumerable<ProjetoModel>
+@using PagedList.Mvc
+
+
+@model PagedList.PagedList<ProjetoModel>
 @{
-    ViewBag.Title = "Listar";
+    ViewBag.Title = "..: Listar :..";
     Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+    var countProjetos = ViewBag.countProjetos;
 }
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <td>Excluir</td>
-            <td>Id</td>
-            <td>Projeto</td>
-            <td>Cadastro</td>
-            <td></td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var p in Model)
-        {
+<script type="text/javascript">
+    function makeTableScroll() {
+        // Constant retrieved from server-side via JSP
+        var maxRows = 10;
+
+        var table = document.getElementById('myTable');
+        var wrapper = table.parentNode;
+        var rowsInTable = table.rows.length;
+        var height = 0;
+        if (rowsInTable > maxRows) {
+            for (var i = 0; i < maxRows; i++) {
+                height += table.rows[i].clientHeight;
+            }
+            wrapper.style.height = height + "px";
+        }
+    }
+</script>
+
+<div>
+    <table class="table" id="myTable">
+        <thead>
+            <tr>
+                <th>Excluir</th>
+                <th>Projeto</th>
+                <th>Cadastro</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="~/Projeto/Excluir/@p.idProjeto" onclick="return confirm('Deseja excluir ?');">
+                            <img src="~/Content/Images/delete.png" />
+                        </a>
+                    </td>
+                    <td>
+                        @p.xPROJETO
+                    </td>
+                    <td>
+                        @p.dtCADASTRO
+                    </td>
+                    <td>
+                        <a href="~/Projeto/FindXmlWithSelectedProject/@p.idProjeto">
+                            <img src="~/Content/Images/go.png" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
             <tr>
                 <td>
-                    <a href="/Projeto/Excluir/@p.idProjeto" onclick="return confirm('Deseja excluir ?');">
-                        <img src="~/Content/Images/delete.png" />
-                    </a>
-                </td>
-                <td>
-                    @p.xPROJETO
-                </td>
-                <td>
-                    @p.dtCADASTRO
-                </td>
-                <td>
-                    <a href="/Projeto/FindXmlWithSelectedProject/@p.idProjeto">
-                        <img src="~/Content/Images/go.png" />
-                    </a>
+                    Número de projetos: @countProjetos
                 </td>
             </tr>
-        }
-    </tbody>
-</table>
+        </tfoot>
+    </table>
+</div>
+<div>
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Listar",
+    new { page }))
