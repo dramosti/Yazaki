@@ -14,6 +14,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         /// </summary>
         public YazakiList resultado { get; set; }
         public List<PlanilhaModel> lSelos { get; set; }
+        public List<PlanilhaModel> lUtilizadosSemAgrupamento { get; set; }
         public MaquinaModel _maquina { get; set; }
         public string fileLocation { get; set; }
 
@@ -36,6 +37,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         {
             this._maquina = maquina_;
             this.resultado = new YazakiList();
+            this.lUtilizadosSemAgrupamento = new List<PlanilhaModel>();
         }
 
 
@@ -377,7 +379,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                 where
                                                 c.ACC_01_D == ""
                                                 && c.ACC_01_I == ""
-                                                && c.COD_DI == "Y"
+                                                && c.COD_DI == "2"
                                                 && this.resultado.Select(o => c.TERM_IZQ).Contains(c.TERM_IZQ)
                                                 && c.bUtilizado == false
                                                 group c by new { c.TERM_IZQ, c.CALIBRE } into grupoPlanilha
@@ -542,137 +544,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
-
-
-        //private void IncludeAutomaticosAteCompletarTerminais()
-        //{
-        //    try
-        //    {
-        //        int iCountAtual = this.resultado.Count();
-        //        var resultPesquisa = new List<PlanilhaModel>();
-        //        if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
-        //        {
-        //            resultPesquisa = (from c in this._lDadosPlanilha
-        //                              where c.COD_DI == "2"
-        //                              && c.COD_DD == "2"
-        //                              && c.ACC_01_D == ""
-        //                              && c.ACC_01_I == ""
-        //                              && c.bUtilizado == false
-        //                              select c).OrderBy(c => c.CALIBRE).ToList();
-        //            if (resultPesquisa.Count() > 0)
-        //            {
-        //                var item = resultPesquisa.FirstOrDefault();
-        //                item.bUtilizado = true;
-        //                this.resultado.Add(item);
-
-        //                if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
-        //                {
-        //                    var itemEsquerdo = (from c in this._lDadosPlanilha
-        //                                        where c.COD_DI == "2"
-        //                                        && c.ACC_01_I == ""
-        //                                        && c.COD_DD == "Y"
-        //                                        && c.TERM_IZQ == item.TERM_IZQ
-        //                                        && c.bUtilizado == false
-        //                                        select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
-
-        //                    if (itemEsquerdo != null)
-        //                    {
-        //                        itemEsquerdo.bUtilizado = true;
-        //                        this.resultado.Add(itemEsquerdo);
-        //                    }
-        //                }
-        //                if (this.resultado.TotalTerminalDireitoFaltante > 0)
-        //                {
-        //                    var itemDireito = (from c in this._lDadosPlanilha
-        //                                       where c.COD_DD == "2"
-        //                                       && c.ACC_01_D == ""
-        //                                       && c.COD_DI == "Y"
-        //                                       && c.TERM_DER == item.TERM_DER
-        //                                       && c.bUtilizado == false
-        //                                       select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
-
-        //                    if (itemDireito != null)
-        //                    {
-        //                        itemDireito.bUtilizado = true;
-        //                        this.resultado.Add(itemDireito);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        if (resultPesquisa.Count() == 0)
-        //        {
-        //            if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
-        //            {
-        //                // contador para verificar se existe cabo automático na esquerda
-        //                int icountTotalAutomaticoLadoEsquerdo = (from c in this._lDadosPlanilha
-        //                                                         where c.COD_DI == "2"
-        //                                                         && c.COD_DD == "Y"
-        //                                                         && c.bUtilizado == false
-        //                                                         select c).Count();
-
-        //                PlanilhaModel itemEsquerdo = null;
-        //                if (icountTotalAutomaticoLadoEsquerdo > 0)
-        //                {
-        //                    // caso exista eu busco um para inserir na maquina
-        //                    itemEsquerdo = (from c in this._lDadosPlanilha
-        //                                    where c.COD_DI == "2"
-        //                                    && c.ACC_01_I == ""
-        //                                    && c.COD_DD == "Y"
-        //                                    && c.bUtilizado == false
-        //                                    select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
-        //                }
-        //                if (itemEsquerdo == null)
-        //                {
-        //                    // caso não tenha cabo na esquerda, eu verifico na direita e mudo ele de lado.
-        //                    itemEsquerdo = (from c in this._lDadosPlanilha
-        //                                    where c.COD_DD == "2"
-        //                                    && c.ACC_01_D == ""
-        //                                    && c.COD_DI == "Y"
-        //                                    && c.bUtilizado == false
-        //                                    select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
-        //                    if (itemEsquerdo != null)
-        //                        itemEsquerdo = Util.InverteLado(itemEsquerdo);
-        //                }
-
-
-
-        //                if (itemEsquerdo != null)
-        //                {
-        //                    itemEsquerdo.bUtilizado = true;
-        //                    this.resultado.Add(itemEsquerdo);
-        //                }
-        //            }
-        //            if (this.resultado.TotalTerminalDireitoFaltante > 0)
-        //            {
-        //                var itemDireito = (from c in this._lDadosPlanilha
-        //                                   where c.COD_DD == "2"
-        //                                   && c.ACC_01_D == ""
-        //                                   && c.COD_DI == "Y"
-        //                                   && c.bUtilizado == false
-        //                                   select c).OrderBy(c => c.CALIBRE).FirstOrDefault();
-
-        //                if (itemDireito != null)
-        //                {
-        //                    itemDireito.bUtilizado = true;
-        //                    this.resultado.Add(itemDireito);
-        //                }
-        //            }
-        //        }
-
-        //        if (this.resultado.Count > iCountAtual)
-        //            if (this.resultado.TotalTerminalDireitoFaltante > 0 || this.resultado.TotalTerminalEsquerdoFaltante > 0)
-        //                this.IncludeAutomaticosAteCompletarTerminais2();
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-
-        //}
-
-
         private void IncludeSelosManuais()
         {
             try
@@ -734,7 +605,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
-
         public void OrganizacaoRestante(List<PlanilhaModel> lDadosPlanilha_)
         {
             try
@@ -755,7 +625,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
-
         /// <summary>
         /// Método que irá chamar irá fazer a organização e salvar o arquivo em excel.
         /// </summary>
@@ -765,8 +634,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             try
             {
                 this.SetParametros();
-                this._lDadosPlanilha = new List<PlanilhaModel>();
 
+                this._lDadosPlanilha = new List<PlanilhaModel>();
                 foreach (var item in lDadosPlanilha_.Where(c => (Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) >= this.resultado.param.bitolaMin
                                                             && Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) <= this.resultado.param.bitolaMax)
                                                             && c.bUtilizado == false).ToList())
@@ -783,14 +652,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     this.resultado.SetListaComSelos(); // verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
                     Util.bAtivaRegraModel = true;
 
-                    // INCLUI CABOS QUE FAZEM REFERENCIA COM OS SELOS.
+                    // INCLUI CABOS QUE FAZEM REFERENCIA COM CABOS QUE TEM SELOS.
                     if (this.resultado.param.lseloEsq.Count() > 0 && this.resultado.param.lseloDir.Count() > 0)
-                        this.IncludeAutomaticosBySelos();
+                        if (!this.resultado.Ultrapassou())
+                            this.IncludeAutomaticosBySelos();
                 }
                 else
                     Util.bAtivaRegraModel = true;
-
-                //this.resultado.SetListaComSelos();
 
                 if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
                 {
@@ -799,6 +667,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
 
 
+                if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                {
+                    this.IncludeManualAutimatico(); // Y-2
+                }
+                if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                {
+                    this.IncludeAutomaticoManual(); // 2-Y
+                }
+
                 if (this.resultado.Ultrapassou())
                     this.AnalisedeQuantidade();
 
@@ -806,6 +683,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 foreach (var item in this.resultado)
                 {
                     this._lDadosParaAssignacao.Add(this.DesvinculaItemCollectionGenerica(item));
+                }
+
+                //crio uma Lista para saber quais itens estão sendo utilizados nessa máquina, para posteriormente desvincular.
+                foreach (PlanilhaModel item in this._lDadosParaAssignacao)
+                {
+                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel);
                 }
 
                 this._lDadosParaAssignacao = Util.GroupList(this._lDadosParaAssignacao);
@@ -818,9 +701,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 // MANUAIS - MANUAIS
                 this.IncludeSelosManuais();
 
+
                 var dadosYY = this.resultado.Where(c => c.COD_DD == "Y" && c.COD_DI == "Y").ToList();
                 foreach (var item in dadosYY)
                 {
+                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel); // insiro os manuais que até então nao se encontravam na lista.
                     this.resultado.Remove(item);
                 }
                 dadosYY = Util.GroupListYY(dadosYY);
@@ -837,6 +722,95 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 throw ex;
             }
         }
+
+        /// <summary>
+        /// Inclui 2-Y
+        /// </summary>
+        private void IncludeAutomaticoManual()
+        {
+            int iCountValidador = this.resultado.Count();
+            var dados = (from c in this._lDadosPlanilha
+                         where c.COD_DI == "2"
+                         && c.COD_DD == "Y"
+                         && c.bUtilizado == false
+                         select c).ToList();
+            if (dados.Count() > 0)
+            {
+                PlanilhaModel item = this._lDadosPlanilha.FirstOrDefault();
+                item.bUtilizado = true;
+                this.resultado.Add(item);
+            }
+            else
+            {
+                dados = (from c in this._lDadosPlanilha
+                         where c.COD_DI == "Y"
+                         && c.COD_DD == "2"
+                         && c.bUtilizado == false
+                         select c).ToList();
+
+                if (dados.Count() > 0)
+                {
+                    PlanilhaModel item = dados.FirstOrDefault();
+                    Util.InverteLado(item);
+                    item.bUtilizado = true;
+                    int iCount = this.resultado.Where(c => c.TERM_IZQ == item.TERM_IZQ).Count();
+                    this.resultado.Add(item);
+                }
+            }
+            if (this.resultado.Count() > iCountValidador)
+            {
+                if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                {
+                    this.IncludeAutomaticoManual();
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// inclui Y-2
+        /// </summary>
+        private void IncludeManualAutimatico()
+        {
+            int iCountValidador = this.resultado.Count();
+            var dados = (from c in this._lDadosPlanilha
+                         where c.COD_DD == "2"
+                         && c.COD_DI == "Y"
+                         && c.bUtilizado == false
+                         select c).ToList();
+            if (dados.Count() > 0)
+            {
+                PlanilhaModel item = this._lDadosPlanilha.FirstOrDefault();
+                item.bUtilizado = true;
+                this.resultado.Add(item);
+            }
+            else
+            {
+                dados = (from c in this._lDadosPlanilha
+                         where c.COD_DD == "Y"
+                         && c.COD_DI == "2"
+                         && c.bUtilizado == false
+                         select c).ToList();
+
+                if (dados.Count() > 0)
+                {
+                    PlanilhaModel item = dados.FirstOrDefault();
+                    Util.InverteLado(item);
+                    item.bUtilizado = true;
+                    this.resultado.Add(item);
+                }
+            }
+            if (this.resultado.Count() > iCountValidador)
+            {
+                if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                {
+                    this.IncludeAutomaticoManual();
+                }
+
+            }
+        }
+
+
 
 
         /// <summary>

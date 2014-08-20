@@ -85,13 +85,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                     }
                 }
 
-                var testesemselo = lDados.Where(c => c.TERM_IZQ == "7116-8060-02" && c.ACC_01_I == "").ToList();
-                var testeComselo = lDados.Where(c => c.TERM_IZQ == "7116-8060-02").ToList();
-
                 var dadosAgrupados = Util.GroupList(lDados);
-
-                testesemselo = dadosAgrupados.Where(c => c.TERM_IZQ == "7116-8060-02" && c.ACC_01_I == "").ToList();
-                testeComselo = dadosAgrupados.Where(c => c.TERM_IZQ == "7116-8060-02").ToList();
 
                 // NESSE MOMENTO EU JOGO TODOS OS MANUAIS COM AUTOMÁTICOS PRA UM LADO SÓ ( MANUAL = ESQUERDA - AUTOMÁTICO = DIREITA )
                 var dados = dadosAgrupados.Where(c => c.COD_DI == "2"
