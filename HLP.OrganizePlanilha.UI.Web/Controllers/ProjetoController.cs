@@ -66,18 +66,18 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
 
                 if (fileExtension == ".xls" || fileExtension == ".xlsx")
                 {
-                    string fileLocation = string.Format("{0}/{1}", Server.MapPath("~/App_Data/ExcelFiles"), Request.Files["FileUpload"].FileName);
-                    if (System.IO.File.Exists(fileLocation))
+                    Util.fileLocation = string.Format("{0}/{1}", Server.MapPath("~/App_Data/ExcelFiles"), Request.Files["FileUpload"].FileName);
+                    if (System.IO.File.Exists(Util.fileLocation))
                     {
-                        System.IO.File.Delete(fileLocation);
+                        System.IO.File.Delete(Util.fileLocation);
                     }
 
                     if (!System.IO.Directory.Exists(Server.MapPath("~/App_Data/ExcelFiles")))
                     {
                         System.IO.Directory.CreateDirectory(Server.MapPath("~/App_Data/ExcelFiles"));
                     }
-                    Request.Files["FileUpload"].SaveAs(fileLocation);
-                    funcoesExcelDao funcoes = new funcoesExcelDao(fileLocation);
+                    Request.Files["FileUpload"].SaveAs(Util.fileLocation);
+                    funcoesExcelDao funcoes = new funcoesExcelDao(Util.fileLocation);
                     funcoes.SetFirstTable(projeto.xNomeAba);
                     List<string> lRet = funcoes.ValidaCamposPlanilha();
 
@@ -111,14 +111,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return Json(new { Msg = "OK", Id = id });
         }
 
-        public ActionResult Organizar(String id)
+        public ActionResult Organizar(Int32 id)
         {
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
             MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
 
             if (m != null)
             {
-                if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
+                if (m.BusinessMaquina.lUtilizadosSemAgrupamento.Count() == 0)
                 {
                     m.BusinessMaquina.IniciaOrganizacao(objProjetoModel.ldadosPlanilhaOriginal);
                     base.aviso = "Arquivos organizados com sucesso.";
@@ -127,6 +127,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return RedirectToAction("Listar", "Maquina");
         }
 
+
         public FileResult DonwloadPlanilha(string id)
         {
             try
@@ -134,8 +135,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 ProjetoModel objProjetoModel = base.SessionProjetoModel;
                 MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
                 string ContentType = "application/vnd.ms-excel";
-                base.aviso = "Verifique os dados da planilha.";
-                return File(m.BusinessMaquina.fileLocation, ContentType, "planilha_yazaki.xls");
+                if (m.BusinessMaquina.fileLocation != null)
+                {
+                    base.aviso = "Verifique os dados da planilha.";
+                    return File(m.BusinessMaquina.fileLocation, ContentType, "planilha_yazaki.xls");
+                }
+                else
+                {
+                    base.aviso = "Planilha se encontra vazia, é necessário clicar em Assignar antes de Download.";
+                    m.BusinessMaquina.IniciaOrganizacao(new List<PlanilhaModel>());
+                    return File(m.BusinessMaquina.fileLocation, ContentType, "planilha_yazaki.xls");
+                }
             }
             catch (Exception ex)
             {
@@ -161,6 +171,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             }
             objProjetoModel.ldadosPlanilhaFinal = m.BusinessMaquina.resultado.ToList();
             objProjetoModel.fileLocationCompleted = m.BusinessMaquina.fileLocation;
+
+            // Retorna os itens ao estado de não utilizados.
+            foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
+            {
+                PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
+                itemPlanilha.bUtilizado = false;
+            }
             return RedirectToAction("Listar", "Maquina");
         }
 
@@ -169,15 +186,16 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             try
             {
                 ProjetoModel objProjetoModel = base.SessionProjetoModel;
+                string ContentType = "application/vnd.ms-excel";
                 if (!string.IsNullOrEmpty(objProjetoModel.fileLocationCompleted))
                 {
-                    string ContentType = "application/vnd.ms-excel";
-                    base.aviso = "Verifique os dados da planilha.";
+                    //base.aviso = "Verifique os dados da planilha.";
                     return File(objProjetoModel.fileLocationCompleted, ContentType, "planilha_yazaki.xls");
                 }
                 else
                 {
-                    return null;
+                    //base.aviso = "Resultado foi nulo, é necessário clicar em 'Organizar registros restantes' antes do 'Download'.";
+                    return File(Util.fileLocation, ContentType, "planilha_yazaki.xls");
                 }
             }
             catch (Exception ex)
@@ -249,38 +267,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                     dtCADASTRO = objPrj.dtCADASTRO
                 };
 
-                List<TB_PLANILHA> lItensPlanilha = planilhaRepository.getPlanilhasByIdProjeto(idProjeto: id);
-
-                if (lItensPlanilha != null)
-                {
-                    foreach (TB_PLANILHA itensPlanilha in lItensPlanilha)
-                    {
-                        objProjeto.ldadosPlanilhaOriginal.Add(item:
-                             new PlanilhaModel
-                             {
-                                 idPLANILHA = itensPlanilha.id_PLANILHA,
-                                 idProjeto = itensPlanilha.idPROJETO,
-                                 PLANTA = itensPlanilha.PLANTA,
-                                 TIPO = itensPlanilha.TIPO,
-                                 CALIBRE = itensPlanilha.CALIBRE,
-                                 LONG_CORT = itensPlanilha.LONG_CORT,
-                                 CANTIDAD = itensPlanilha.CANTIDAD,
-                                 COD_DI = itensPlanilha.COD_DI,
-                                 COD_DD = itensPlanilha.COD_DD,
-                                 TERM_IZQ = itensPlanilha.TERM_IZQ,
-                                 TERM_DER = itensPlanilha.TERM_DER,
-                                 COD_01_I = itensPlanilha.COD_01_I,
-                                 COD_01_D = itensPlanilha.COD_01_D,
-                                 ACC_01_I = itensPlanilha.ACC_01_I,
-                                 ACC_01_D = itensPlanilha.ACC_01_D
-                             });
-                    }
-                }
+                objProjeto.ldadosPlanilhaOriginal = planilhaRepository.getPlanilhasByIdProjeto(idProjeto: id);
             }
 
-            base.SessionProjetoModel = objProjeto;
-            ProjetoBO.OrganizeDadosParaParametroInicial(base.SessionProjetoModel);
+            
 
+            base.SessionProjetoModel = objProjeto;
+            //ProjetoBO.OrganizeDadosParaParametroInicial(base.SessionProjetoModel);
             return RedirectToAction(actionName: "Parametros", controllerName: "Projeto");
         }
 

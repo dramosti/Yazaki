@@ -67,69 +67,73 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             {
                 // carrega as informações parametrizadas para a Lista Geral.
 
-                List<TB_MAQUINA> lMaquinas;
+                TB_MAQUINA_Repository repMaquinas = new TB_MAQUINA_Repository();
 
-                using (var con = new DB_YAZAKIEntities())
-                {
-                    lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == objProjetoModel.idProjeto).ToList();
-                }
-
+                List<MaquinaModel> lMaquinas = repMaquinas.getMaquinasByIdProjeto(idProjeto: objProjetoModel.idProjeto);
                 if (lMaquinas != null)
                 {
-                    foreach (TB_MAQUINA m in lMaquinas)
+                    foreach (MaquinaModel m in lMaquinas)
                     {
 
                         if (objProjetoModel.ldadosMaquina.Count(i => i.idMAQUINA == m.idMAQUINA) == 0)
-                            objProjetoModel.ldadosMaquina.Add(item:
-                                new MaquinaModel
-                                {
-                                    idMAQUINA = m.idMAQUINA,
-                                    idPROJETO = m.idPROJETO ?? 0,
-                                    xMAQUINA = m.xMAQUINA,
-                                    SELOS_ESQUERDO = m.SELOS_ESQUERDO,
-                                    SELOS_DIREITO = m.SELOS_DIREITO,
-                                    QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
-                                    QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
-                                    CALIBRE = m.CALIBRE,
-                                    QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
-                                    QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
-                                    YY = m.QTDE_YY
-                                });
+                            objProjetoModel.ldadosMaquina.Add(m);
                     }
                 }
-
-                foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
+                if (objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.idPLANILHA == 0).Count() > 0)
                 {
-                    foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == item.TERM
-                                                                                        && c.ACC_01_I == item.ACC_01
-                                                                                        && c.COD_01_I == item.COD_01))
-                    {
-                        cabo.COD_DI = item.COD_D;
-                    }
-                    foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == item.TERM
-                                                                                       && c.ACC_01_D == item.ACC_01
-                                                                                       && c.COD_01_D == item.COD_01))
-                    {
-                        cabo.COD_DD = item.COD_D;
-                    }
-
+                    TB_PLANILHA_Repository repPlaniha = new TB_PLANILHA_Repository();
+                    objProjetoModel.ldadosPlanilhaOriginal = repPlaniha.getPlanilhasByIdProjeto(objProjetoModel.idProjeto);
                 }
+
+
+                //foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
+                //{
+                //    foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == item.TERM
+                //                                                                        && c.ACC_01_I == item.ACC_01
+                //                                                                        && c.COD_01_I == item.COD_01))
+                //    {
+                //        cabo.COD_DI = item.COD_D;
+                //    }
+                //    foreach (var cabo in objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == item.TERM
+                //                                                                       && c.ACC_01_D == item.ACC_01
+                //                                                                       && c.COD_01_D == item.COD_01))
+                //    {
+                //        cabo.COD_DD = item.COD_D;
+                //    }
+                //}
+
                 AtualizarDashBoard();
             }
-
-            base.SessionProjetoModel.ldadosMaquina = objProjetoModel.ldadosMaquina;
+            //base.SessionProjetoModel.ldadosMaquina = objProjetoModel.ldadosMaquina;
             return View(objProjetoModel);
         }
 
         public ActionResult Editar(int id)
         {
             AtualizarDashBoard();
-
-            MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
+            MaquinaModel m = RetornaItensUtilizadosParaStatusNormal(id);
+            base.SessionProjetoModel.ldadosMaquina.Remove(m);
+            TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
+            base.SessionProjetoModel.ldadosMaquina.Add(rep.getMaquinaByIdMaquina(m.idMAQUINA));
             ViewBag.xProjetoLocal = base.SessionProjetoModel.xPROJETO;
 
             return View(viewName: "Cadastrar", model: m);
         }
+
+        private MaquinaModel RetornaItensUtilizadosParaStatusNormal(int id)
+        {
+            MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
+
+            foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
+            {
+                PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
+                decimal ValorAtual = itemPlanilha.CANTIDAD.ToDecimal();
+                itemPlanilha.CANTIDAD = (ValorAtual + itemUtilizado.CANTIDAD.ToDecimal()).ToString();
+                itemPlanilha.bUtilizado = false;
+            }
+            return m;
+        }
+
 
         [HttpPost]
         public ActionResult Editar(MaquinaModel maquina)
@@ -170,10 +174,21 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return RedirectToAction("Listar");
         }
 
+        public ActionResult LimparMaquina(Int32 id)
+        {
+
+            MaquinaModel m = RetornaItensUtilizadosParaStatusNormal(id);
+            base.SessionProjetoModel.ldadosMaquina.Remove(m);
+            TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
+            base.SessionProjetoModel.ldadosMaquina.Add(rep.getMaquinaByIdMaquina(m.idMAQUINA));
+            base.aviso = "Limpeza concluída.";
+            return RedirectToAction("Listar");
+        }
+
         public ActionResult Excluir(int id)
         {
             TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
-
+            RetornaItensUtilizadosParaStatusNormal(id);
             rep.Delete(idMaquina: id);
 
             MaquinaModel m = base.SessionProjetoModel.ldadosMaquina.FirstOrDefault(i => i.idMAQUINA == id);
@@ -190,7 +205,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             ViewData["painel"] = ProjetoBO.CarregarDadosPainel(base.SessionProjetoModel);
             ViewData["bitolas"] = ProjetoBO.CarregarDadosBitola(base.SessionProjetoModel);
         }
-                
+
         public ActionResult voltar()
         {
             return RedirectToAction(actionName: "Listar");

@@ -1,4 +1,5 @@
 ﻿using HLP.OrganizePlanilha.UI.Web.Dao.Contexts;
+using HLP.OrganizePlanilha.UI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,23 +83,75 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
             return objMaquina.idMAQUINA;
         }
 
-        public List<TB_MAQUINA> getMaquinasByIdProjeto(int idProjeto)
+        public List<MaquinaModel> getMaquinasByIdProjeto(int idProjeto)
         {
-            List<TB_MAQUINA> lMaquinas = null;
+            List<MaquinaModel> lret = new List<MaquinaModel>();
 
             try
             {
+                List<TB_MAQUINA> lMaquinas = null;
                 using (var con = new DB_YAZAKIEntities())
                 {
                     lMaquinas = con.TB_MAQUINA.Where(i => i.idPROJETO == idProjeto).ToList();
+                    foreach (TB_MAQUINA m in lMaquinas)
+                    {
+
+                        lret.Add(item:
+                                   new MaquinaModel
+                                   {
+                                       idMAQUINA = m.idMAQUINA,
+                                       idPROJETO = m.idPROJETO ?? 0,
+                                       xMAQUINA = m.xMAQUINA,
+                                       SELOS_ESQUERDO = m.SELOS_ESQUERDO,
+                                       SELOS_DIREITO = m.SELOS_DIREITO,
+                                       QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
+                                       QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
+                                       CALIBRE = m.CALIBRE,
+                                       QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
+                                       QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
+                                       YY = m.QTDE_YY
+                                   });
+                    }
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
-            }           
+            }
 
-            return lMaquinas;
+            return lret;
+        }
+
+        public MaquinaModel getMaquinaByIdMaquina(int idMaquina)
+        {
+            try
+            {
+                using (var contexto = new DB_YAZAKIEntities())
+                {
+                    TB_MAQUINA m = contexto.TB_MAQUINA.FirstOrDefault(i => i.idMAQUINA == idMaquina);
+
+                    return new MaquinaModel
+                                   {
+                                       idMAQUINA = m.idMAQUINA,
+                                       idPROJETO = m.idPROJETO ?? 0,
+                                       xMAQUINA = m.xMAQUINA,
+                                       SELOS_ESQUERDO = m.SELOS_ESQUERDO,
+                                       SELOS_DIREITO = m.SELOS_DIREITO,
+                                       QTDE_TERM_ESQUERDO = m.QTDE_TERM_ESQUERDO,
+                                       QTDE_TERM_DIREITO = m.QTDE_TERM_DIREITO,
+                                       CALIBRE = m.CALIBRE,
+                                       QTDE_CAPACIDADE = m.QTDE_CAPACIDADE,
+                                       QTDE_TOLERANCIA = m.QTDE_TOLERANCIA,
+                                       YY = m.QTDE_YY
+                                   };
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
         }
     }
 }

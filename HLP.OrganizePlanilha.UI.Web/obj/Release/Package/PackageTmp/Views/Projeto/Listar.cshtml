@@ -10,7 +10,9 @@
     var countProjetos = ViewBag.countProjetos;
 }
 
-<script type="text/javascript">
+@section SCRIPTS
+{
+    <script type="text/javascript">
     function makeTableScroll() {
         // Constant retrieved from server-side via JSP
         var maxRows = 10;
@@ -26,53 +28,60 @@
             wrapper.style.height = height + "px";
         }
     }
-</script>
+    </script>
+}
 
-<div>
-    <table class="table" id="myTable">
-        <thead>
-            <tr>
-                <th>Excluir</th>
-                <th>Projeto</th>
-                <th>Cadastro</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var p in Model)
-            {
-                <tr>
-                    <td>
-                        <a href="~/Projeto/Excluir/@p.idProjeto" onclick="return confirm('Deseja excluir ?');">
-                            <img src="~/Content/Images/delete.png" />
-                        </a>
-                    </td>
-                    <td>
-                        @p.xPROJETO
-                    </td>
-                    <td>
-                        @p.dtCADASTRO
-                    </td>
-                    <td>
-                        <a href="~/Projeto/FindXmlWithSelectedProject/@p.idProjeto">
-                            <img src="~/Content/Images/go.png" />
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td>
-                    Total de Registros: @countProjetos
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
-<div>
-    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
-</div>
-
-@Html.PagedListPager(Model, page => Url.Action("Listar",
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-6 column">
+            <table class="table" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Excluir</th>
+                        <th>Projeto</th>
+                        <th>Cadastro</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a href="~/Projeto/Excluir/@p.idProjeto" onclick="return confirm('Deseja excluir ?');">
+                                    <img src="~/Content/Images/delete.png" />
+                                </a>
+                            </td>
+                            <td>
+                                @p.xPROJETO
+                            </td>
+                            <td>
+                                @p.dtCADASTRO
+                            </td>
+                            <td>
+                                <a href="~/Projeto/FindXmlWithSelectedProject/@p.idProjeto">
+                                    <img src="~/Content/Images/go.png" />
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                            Total: @countProjetos
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6 column">
+        Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("Listar",
     new { page }))
+    </div>
+</div>
+
+
+

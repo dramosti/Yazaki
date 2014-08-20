@@ -43,6 +43,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
         #region Metodos
 
+
         /// <summary>
         /// Método responsável por inserir os parametros necessários para a organização dos dados.
         /// </summary>
@@ -613,6 +614,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 this._lDadosParaAssignacao = new List<PlanilhaModel>();
                 foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false))
                 {
+                    this.lUtilizadosSemAgrupamento.Add(item);
                     this._lDadosParaAssignacao.Add(item);
                 }
                 BeginAssignacao();
@@ -736,7 +738,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                          select c).ToList();
             if (dados.Count() > 0)
             {
-                PlanilhaModel item = this._lDadosPlanilha.FirstOrDefault();
+                PlanilhaModel item = dados.FirstOrDefault();
                 item.bUtilizado = true;
                 this.resultado.Add(item);
             }
@@ -780,7 +782,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                          select c).ToList();
             if (dados.Count() > 0)
             {
-                PlanilhaModel item = this._lDadosPlanilha.FirstOrDefault();
+                PlanilhaModel item = dados.FirstOrDefault();
                 item.bUtilizado = true;
                 this.resultado.Add(item);
             }
@@ -804,7 +806,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             {
                 if (this.resultado.TotalTerminalDireitoFaltante > 0)
                 {
-                    this.IncludeAutomaticoManual();
+                    this.IncludeManualAutimatico();
                 }
 
             }
@@ -959,17 +961,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     itemToAdd.bUtilizado = true;
                     cabosInlcusos.Add(itemToAdd);
                 }
-                // cabos = Util.GroupList(cabos.ToList());
 
                 //verifica se da para inverter algum item.
                 foreach (var item in cabos)
                 {
-                    //if (item.bUtilizado == false)
-                    //{
-                    //    item.bUtilizado = true;
-                    //    cabosInlcusos.Add(item);
-                    //}
-
                     // verificamos se na planilha original tem o item invertido, caso tenha nós alteramos e incluimos na lista de cabosInclusos.
                     var TotalInvertido = this._lDadosParaAssignacao.Where(c => c.TERM_DER == item.TERM_IZQ && c.TERM_IZQ == item.TERM_DER
                                                     && c.bUtilizado == false);
@@ -986,10 +981,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         }
                     }
                 }
-
-                // agrupamos os registros.
-                //cabosInlcusos = Util.GroupList(cabosInlcusos.ToList());
-
 
                 // inverte o lado da comparação.
                 lado = lado == Lado.ESQUERDO ? Lado.DIREITO : Lado.ESQUERDO;

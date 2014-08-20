@@ -4,47 +4,47 @@
     <EntitySetMapping Name="TB_MAQUINA">
       <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_MAQUINA">
         <MappingFragment StoreEntitySet="TB_MAQUINA">
-          <ScalarProperty Name="idMAQUINA" ColumnName="idMAQUINA" />
-          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-          <ScalarProperty Name="xMAQUINA" ColumnName="xMAQUINA" />
-          <ScalarProperty Name="SELOS_ESQUERDO" ColumnName="SELOS_ESQUERDO" />
-          <ScalarProperty Name="SELOS_DIREITO" ColumnName="SELOS_DIREITO" />
-          <ScalarProperty Name="QTDE_TERM_ESQUERDO" ColumnName="QTDE_TERM_ESQUERDO" />
-          <ScalarProperty Name="QTDE_TERM_DIREITO" ColumnName="QTDE_TERM_DIREITO" />
-          <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
-          <ScalarProperty Name="QTDE_CAPACIDADE" ColumnName="QTDE_CAPACIDADE" />
-          <ScalarProperty Name="QTDE_TOLERANCIA" ColumnName="QTDE_TOLERANCIA" />
           <ScalarProperty Name="QTDE_YY" ColumnName="QTDE_YY" />
+          <ScalarProperty Name="QTDE_TOLERANCIA" ColumnName="QTDE_TOLERANCIA" />
+          <ScalarProperty Name="QTDE_CAPACIDADE" ColumnName="QTDE_CAPACIDADE" />
+          <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
+          <ScalarProperty Name="QTDE_TERM_DIREITO" ColumnName="QTDE_TERM_DIREITO" />
+          <ScalarProperty Name="QTDE_TERM_ESQUERDO" ColumnName="QTDE_TERM_ESQUERDO" />
+          <ScalarProperty Name="SELOS_DIREITO" ColumnName="SELOS_DIREITO" />
+          <ScalarProperty Name="SELOS_ESQUERDO" ColumnName="SELOS_ESQUERDO" />
+          <ScalarProperty Name="xMAQUINA" ColumnName="xMAQUINA" />
+          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
+          <ScalarProperty Name="idMAQUINA" ColumnName="idMAQUINA" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="TB_PLANILHA">
       <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_PLANILHA">
         <MappingFragment StoreEntitySet="TB_PLANILHA">
-          <ScalarProperty Name="id_PLANILHA" ColumnName="id_PLANILHA" />
-          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-          <ScalarProperty Name="PLANTA" ColumnName="PLANTA" />
-          <ScalarProperty Name="TIPO" ColumnName="TIPO" />
-          <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
-          <ScalarProperty Name="LONG_CORT" ColumnName="LONG_CORT" />
-          <ScalarProperty Name="CANTIDAD" ColumnName="CANTIDAD" />
-          <ScalarProperty Name="COD_DI" ColumnName="COD_DI" />
-          <ScalarProperty Name="TERM_IZQ" ColumnName="TERM_IZQ" />
-          <ScalarProperty Name="COD_DD" ColumnName="COD_DD" />
-          <ScalarProperty Name="TERM_DER" ColumnName="TERM_DER" />
-          <ScalarProperty Name="COD_01_I" ColumnName="COD_01_I" />
-          <ScalarProperty Name="COD_01_D" ColumnName="COD_01_D" />
-          <ScalarProperty Name="ACC_01_I" ColumnName="ACC_01_I" />
           <ScalarProperty Name="ACC_01_D" ColumnName="ACC_01_D" />
+          <ScalarProperty Name="ACC_01_I" ColumnName="ACC_01_I" />
+          <ScalarProperty Name="COD_01_D" ColumnName="COD_01_D" />
+          <ScalarProperty Name="COD_01_I" ColumnName="COD_01_I" />
+          <ScalarProperty Name="TERM_DER" ColumnName="TERM_DER" />
+          <ScalarProperty Name="COD_DD" ColumnName="COD_DD" />
+          <ScalarProperty Name="TERM_IZQ" ColumnName="TERM_IZQ" />
+          <ScalarProperty Name="COD_DI" ColumnName="COD_DI" />
+          <ScalarProperty Name="CANTIDAD" ColumnName="CANTIDAD" />
+          <ScalarProperty Name="LONG_CORT" ColumnName="LONG_CORT" />
+          <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
+          <ScalarProperty Name="TIPO" ColumnName="TIPO" />
+          <ScalarProperty Name="PLANTA" ColumnName="PLANTA" />
+          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
+          <ScalarProperty Name="id_PLANILHA" ColumnName="id_PLANILHA" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="TB_PROJETO">
       <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_PROJETO">
         <MappingFragment StoreEntitySet="TB_PROJETO">
-          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-          <ScalarProperty Name="xPROJETO" ColumnName="xPROJETO" />
           <ScalarProperty Name="dtCADASTRO" ColumnName="dtCADASTRO" />
+          <ScalarProperty Name="xPROJETO" ColumnName="xPROJETO" />
+          <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

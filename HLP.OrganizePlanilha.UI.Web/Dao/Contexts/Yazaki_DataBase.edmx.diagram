@@ -5,8 +5,8 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="178ca90b5fe64194b2e20011fcabd666" Name="Diagram1" ZoomLevel="95">
-        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_MAQUINA" Width="1.5" PointX="3" PointY="1.25" />
-        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PLANILHA" Width="1.5" PointX="3" PointY="5.25" />
+        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_MAQUINA" Width="1.5" PointX="3" PointY="6.125" />
+        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PLANILHA" Width="1.5" PointX="3" PointY="1.25" />
         <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PROJETO" Width="1.5" PointX="0.75" PointY="4.375" />
         <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1" />
         <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1" />

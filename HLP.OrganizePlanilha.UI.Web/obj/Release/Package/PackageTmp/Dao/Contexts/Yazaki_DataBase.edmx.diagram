@@ -5,11 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="178ca90b5fe64194b2e20011fcabd666" Name="Diagram1" ZoomLevel="95">
-        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_MAQUINA" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PLANILHA" Width="1.5" PointX="5.5" PointY="2.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PROJETO" Width="1.5" PointX="0.875" PointY="3.625" IsExpanded="true" />
-        <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1" ManuallyRouted="false" />
-        <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_MAQUINA" Width="1.5" PointX="3" PointY="6.125" />
+        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PLANILHA" Width="1.5" PointX="3" PointY="1.25" />
+        <EntityTypeShape EntityType="DB_YAZAKIModel.TB_PROJETO" Width="1.5" PointX="0.75" PointY="4.375" />
+        <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1" />
+        <AssociationConnector Association="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

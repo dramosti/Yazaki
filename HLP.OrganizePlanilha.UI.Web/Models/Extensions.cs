@@ -17,7 +17,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
                 return dValor;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return 0;
             }

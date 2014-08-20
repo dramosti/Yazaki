@@ -9,16 +9,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
 {
     public class BaseController : Controller
     {
-        private ProjetoModel _SessionProjetoModel;
         public ProjetoModel SessionProjetoModel
         {
             get { return Session["objProjeto"] != null ? Session["objProjeto"] as ProjetoModel : new ProjetoModel(); }
             set { Session.Add("objProjeto", value); }
         }
 
-
-        private string _aviso;
-
+                
         public string aviso
         {
             set

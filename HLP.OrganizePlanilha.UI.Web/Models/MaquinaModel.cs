@@ -21,7 +21,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public int idPROJETO { get; set; }
 
         [Required(ErrorMessage = "Campo é obrigatório.")]
-        [Display(Name = "Projeto")]
+        [Display(Name = "Maquina")]
         public string xMAQUINA { get; set; }
 
 

@@ -1,4 +1,5 @@
 ﻿using HLP.OrganizePlanilha.UI.Web.Dao.Contexts;
+using HLP.OrganizePlanilha.UI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,15 +62,41 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
             return objPlanilha.id_PLANILHA;
         }
 
-        public List<TB_PLANILHA> getPlanilhasByIdProjeto(int idProjeto)
+        public List<PlanilhaModel> getPlanilhasByIdProjeto(int idProjeto)
         {
-            List<TB_PLANILHA> lItensPlanilha = null;
+            List<PlanilhaModel> lRetorno = new List<PlanilhaModel>(); ;
 
             try
             {
                 using (var con = new DB_YAZAKIEntities())
                 {
-                    lItensPlanilha = con.TB_PLANILHA.Where(i => i.idPROJETO == idProjeto).ToList();
+                    List<TB_PLANILHA> lItensPlanilha = con.TB_PLANILHA.Where(i => i.idPROJETO == idProjeto).ToList();
+
+                    if (lItensPlanilha != null)
+                    {
+                        foreach (TB_PLANILHA itensPlanilha in lItensPlanilha)
+                        {
+                            lRetorno.Add(item:
+                                 new PlanilhaModel
+                                 {
+                                     idPLANILHA = itensPlanilha.id_PLANILHA,
+                                     idProjeto = itensPlanilha.idPROJETO,
+                                     PLANTA = itensPlanilha.PLANTA,
+                                     TIPO = itensPlanilha.TIPO,
+                                     CALIBRE = itensPlanilha.CALIBRE,
+                                     LONG_CORT = itensPlanilha.LONG_CORT,
+                                     CANTIDAD = itensPlanilha.CANTIDAD,
+                                     COD_DI = itensPlanilha.COD_DI,
+                                     COD_DD = itensPlanilha.COD_DD,
+                                     TERM_IZQ = itensPlanilha.TERM_IZQ,
+                                     TERM_DER = itensPlanilha.TERM_DER,
+                                     COD_01_I = itensPlanilha.COD_01_I,
+                                     COD_01_D = itensPlanilha.COD_01_D,
+                                     ACC_01_I = itensPlanilha.ACC_01_I,
+                                     ACC_01_D = itensPlanilha.ACC_01_D
+                                 });
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -77,7 +104,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao.Repositories
                 throw ex;
             }
 
-            return lItensPlanilha;
+            return lRetorno;
         }
     }
 }

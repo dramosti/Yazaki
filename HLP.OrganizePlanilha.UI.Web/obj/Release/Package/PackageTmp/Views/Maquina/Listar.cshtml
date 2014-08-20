@@ -65,7 +65,7 @@
                 <legend>
                     Ações
                 </legend>
-                <input type="button" class="btn btn-primary btn-xs" id="btnOrganizar" name="btnOrganizar" value="Organizar registros" onclick="OrganizaInformacoes()" />
+                <input type="button" class="btn btn-primary btn-xs" id="btnOrganizar" name="btnOrganizar" value="Organizar registros restantes" onclick="OrganizaInformacoes()" />
                 <a class="btn btn-primary btn-xs" href="../../Projeto/Download/">Download</a>
                 <img id="loader1" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
             </fieldset>
@@ -78,11 +78,14 @@
                             <td>Editar</td>
                             <td>Excluir</td>
                             <td>MÁQUINA</td>
-                            <td>CALIBRE</td>
-                            <td>QTDE_TERM_E</td>
-                            <td>QTDE_TERM_D</td>
-                            <td>CANTIDAD</td>
+                            @* <td>CALIBRE</td>*@
+                            <td>TERM_E</td>
+                            <td>SELOS ESQ</td>
+                            <td>TERM_D</td>
+                            <td>SELOS DIR</td>
+                            <td>CANT</td>
                             <td>Y-Y</td>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -102,16 +105,25 @@
                                     </a>
                                 </td>
                                 <td>@maquina.xMAQUINA</td>
-                                <td>@maquina.CALIBRE</td>
+                                @* <td>@maquina.CALIBRE</td>*@
                                 <td>@maquina.QTDE_TERM_ESQUERDO</td>
+                                <td>@maquina.SELOS_ESQUERDO</td>
                                 <td>@maquina.QTDE_TERM_DIREITO</td>
+                                <td>@maquina.SELOS_DIREITO</td>
                                 <td>@maquina.QTDE_CAPACIDADE</td>
                                 <td>@maquina.YY</td>
                                 <td>
-                                    <a href="~/Projeto/Organizar/@maquina.xMAQUINA">carregar</a>
+                                    <a href="~/Projeto/Organizar/@maquina.idMAQUINA">Assignar</a>
                                 </td>
                                 <td>
-                                    <a href="~/Projeto/DonwloadPlanilha/@maquina.xMAQUINA">download</a>
+                                    <a href="~/Maquina/LimparMaquina/@maquina.idMAQUINA">
+                                        <img src="~/Content/Images/clear.png" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="~/Projeto/DonwloadPlanilha/@maquina.idMAQUINA">
+                                        <img src="~/Content/Images/download.png" />
+                                    </a>
                                 </td>
                             </tr>
                         }

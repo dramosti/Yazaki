@@ -10,7 +10,9 @@
     var countProjetos = ViewBag.countProjetos;
 }
 
-<script type="text/javascript">
+@section SCRIPTS
+{
+    <script type="text/javascript">
     function makeTableScroll() {
         // Constant retrieved from server-side via JSP
         var maxRows = 10;
@@ -26,7 +28,8 @@
             wrapper.style.height = height + "px";
         }
     }
-</script>
+    </script>
+}
 
 <div class="container">
     <div class="row clearfix">
@@ -42,7 +45,7 @@
                 </thead>
                 <tbody>
                     @foreach (var p in Model)
-                        {
+                    {
                         <tr>
                             <td>
                                 <a href="~/Projeto/Excluir/@p.idProjeto" onclick="return confirm('Deseja excluir ?');">
@@ -61,22 +64,24 @@
                                 </a>
                             </td>
                         </tr>
-                        }
+                    }
                 </tbody>
                 <tfoot>
                     <tr>
                         <td>
-                            Total de Registros: @countProjetos
+                            Total: @countProjetos
                         </td>
                     </tr>
                 </tfoot>
             </table>
         </div>
     </div>
-</div>
-<div>
-    Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+    <div class="col-md-6 column">
+        Página @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) de @Model.PageCount
+        @Html.PagedListPager(Model, page => Url.Action("Listar",
+    new { page }))
+    </div>
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action("Listar",
-    new { page }))
+
+

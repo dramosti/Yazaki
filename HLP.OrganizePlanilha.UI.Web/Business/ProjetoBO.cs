@@ -38,13 +38,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         ACC_01 = item.ACC_01_I,
                         COD_01 = item.COD_01_I
                     });
-                    //ldadosParametroTemp.Add(new ParametrosModel
-                    //{
-                    //    COD_D = item.COD_DD,
-                    //    TERM = item.TERM_DER,
-                    //    ACC_01 = item.ACC_01_D,
-                    //    COD_01 = item.COD_01_D
-                    //});                  
+                    ldadosParametroTemp.Add(new ParametrosModel
+                    {
+                        COD_D = item.COD_DD,
+                        TERM = item.TERM_DER,
+                        ACC_01 = item.ACC_01_D,
+                        COD_01 = item.COD_01_D
+                    });
 
                     decimal dqtde = 0;
                     decimal.TryParse(item.CANTIDAD, out dqtde);
@@ -68,6 +68,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                                    COD_D = v.Key.COD_D,
                                                                    TERM = v.Key.TERM
                                                                }).ToList();
+
+                var TESTE = ldadosParametroTemp.Where(p => param.Contains(p.COD_01)).Distinct();
+
+                var teste2 = objProjetoModel.ldadosParametroTempDistinct.Where(c => c.TERM == "7116-8202-02");
+
+                var teste3 = objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == "7116-8202-02");
+
+                var teste4 = objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == "7116-8202-02");
+
+
+
 
                 int icount = 1;
                 foreach (var item in objProjetoModel.ldadosParametroTempDistinct)

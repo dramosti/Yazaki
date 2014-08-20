@@ -211,5 +211,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
         public static bool bAtivaRegraModel { get; set; }
+        public static string fileLocation { get; set; }
     }
 }
