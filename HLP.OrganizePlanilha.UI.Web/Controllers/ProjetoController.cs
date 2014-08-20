@@ -114,7 +114,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         public ActionResult Organizar(String id)
         {
             ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == id).FirstOrDefault();
+            MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
 
             if (m != null)
             {
@@ -132,7 +132,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             try
             {
                 ProjetoModel objProjetoModel = base.SessionProjetoModel;
-                MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.xMAQUINA == id).FirstOrDefault();
+                MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
                 string ContentType = "application/vnd.ms-excel";
                 base.aviso = "Verifique os dados da planilha.";
                 return File(m.BusinessMaquina.fileLocation, ContentType, "planilha_yazaki.xls");

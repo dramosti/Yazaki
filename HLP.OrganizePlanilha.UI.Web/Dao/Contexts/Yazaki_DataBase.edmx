@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DB_YAZAKIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DB_YAZAKIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="TB_MAQUINA">
           <Key>
             <PropertyRef Name="idMAQUINA" />
@@ -90,13 +90,26 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DB_YAZAKIModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="DB_YAZAKIEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="TB_MAQUINA" EntityType="DB_YAZAKIModel.TB_MAQUINA" />
+          <EntitySet Name="TB_PLANILHA" EntityType="DB_YAZAKIModel.TB_PLANILHA" />
+          <EntitySet Name="TB_PROJETO" EntityType="DB_YAZAKIModel.TB_PROJETO" />
+          <AssociationSet Name="TB_PROJETO_TB_MAQUINA_FK1" Association="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1">
+            <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
+            <End Role="TB_MAQUINA" EntitySet="TB_MAQUINA" />
+          </AssociationSet>
+          <AssociationSet Name="TB_PROJETO_TB_PLANILHA_FK1" Association="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1">
+            <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
+            <End Role="TB_PLANILHA" EntitySet="TB_PLANILHA" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="TB_MAQUINA">
           <Key>
             <PropertyRef Name="idMAQUINA" />
           </Key>
-          <Property Name="idMAQUINA" Type="Int32" Nullable="false" />
+          <Property Name="idMAQUINA" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="idPROJETO" Type="Int32" />
-          <Property Name="xMAQUINA" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="xMAQUINA" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="SELOS_ESQUERDO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="SELOS_DIREITO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="QTDE_TERM_ESQUERDO" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -105,7 +118,7 @@
           <Property Name="QTDE_CAPACIDADE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="QTDE_TOLERANCIA" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="QTDE_YY" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="TB_PROJETO" Relationship="Self.TB_PROJETO_TB_MAQUINA_FK1" FromRole="TB_MAQUINA" ToRole="TB_PROJETO" />
+          <NavigationProperty Name="TB_PROJETO" Relationship="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1" FromRole="TB_MAQUINA" ToRole="TB_PROJETO" />
         </EntityType>
         <EntityType Name="TB_PLANILHA">
           <Key>
@@ -126,21 +139,21 @@
           <Property Name="COD_01_D" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ACC_01_I" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ACC_01_D" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="TB_PROJETO" Relationship="Self.TB_PROJETO_TB_PLANILHA_FK1" FromRole="TB_PLANILHA" ToRole="TB_PROJETO" />
+          <NavigationProperty Name="TB_PROJETO" Relationship="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1" FromRole="TB_PLANILHA" ToRole="TB_PROJETO" />
         </EntityType>
         <EntityType Name="TB_PROJETO">
           <Key>
             <PropertyRef Name="idPROJETO" />
           </Key>
           <Property Name="idPROJETO" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="xPROJETO" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="xPROJETO" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="dtCADASTRO" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="TB_MAQUINA" Relationship="Self.TB_PROJETO_TB_MAQUINA_FK1" FromRole="TB_PROJETO" ToRole="TB_MAQUINA" />
-          <NavigationProperty Name="TB_PLANILHA" Relationship="Self.TB_PROJETO_TB_PLANILHA_FK1" FromRole="TB_PROJETO" ToRole="TB_PLANILHA" />
+          <NavigationProperty Name="TB_MAQUINA" Relationship="DB_YAZAKIModel.TB_PROJETO_TB_MAQUINA_FK1" FromRole="TB_PROJETO" ToRole="TB_MAQUINA" />
+          <NavigationProperty Name="TB_PLANILHA" Relationship="DB_YAZAKIModel.TB_PROJETO_TB_PLANILHA_FK1" FromRole="TB_PROJETO" ToRole="TB_PLANILHA" />
         </EntityType>
         <Association Name="TB_PROJETO_TB_MAQUINA_FK1">
-          <End Role="TB_PROJETO" Type="Self.TB_PROJETO" Multiplicity="0..1" />
-          <End Role="TB_MAQUINA" Type="Self.TB_MAQUINA" Multiplicity="*" />
+          <End Type="DB_YAZAKIModel.TB_PROJETO" Role="TB_PROJETO" Multiplicity="0..1" />
+          <End Type="DB_YAZAKIModel.TB_MAQUINA" Role="TB_MAQUINA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TB_PROJETO">
               <PropertyRef Name="idPROJETO" />
@@ -151,8 +164,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="TB_PROJETO_TB_PLANILHA_FK1">
-          <End Role="TB_PROJETO" Type="Self.TB_PROJETO" Multiplicity="1" />
-          <End Role="TB_PLANILHA" Type="Self.TB_PLANILHA" Multiplicity="*" />
+          <End Type="DB_YAZAKIModel.TB_PROJETO" Role="TB_PROJETO" Multiplicity="1" />
+          <End Type="DB_YAZAKIModel.TB_PLANILHA" Role="TB_PLANILHA" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TB_PROJETO">
               <PropertyRef Name="idPROJETO" />
@@ -162,19 +175,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="DB_YAZAKIEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="TB_MAQUINA" EntityType="Self.TB_MAQUINA" />
-          <EntitySet Name="TB_PLANILHA" EntityType="Self.TB_PLANILHA" />
-          <EntitySet Name="TB_PROJETO" EntityType="Self.TB_PROJETO" />
-          <AssociationSet Name="TB_PROJETO_TB_MAQUINA_FK1" Association="Self.TB_PROJETO_TB_MAQUINA_FK1">
-            <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
-            <End Role="TB_MAQUINA" EntitySet="TB_MAQUINA" />
-          </AssociationSet>
-          <AssociationSet Name="TB_PROJETO_TB_PLANILHA_FK1" Association="Self.TB_PROJETO_TB_PLANILHA_FK1">
-            <End Role="TB_PROJETO" EntitySet="TB_PROJETO" />
-            <End Role="TB_PLANILHA" EntitySet="TB_PLANILHA" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -184,47 +184,47 @@
           <EntitySetMapping Name="TB_MAQUINA">
             <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_MAQUINA">
               <MappingFragment StoreEntitySet="TB_MAQUINA">
-                <ScalarProperty Name="idMAQUINA" ColumnName="idMAQUINA" />
-                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-                <ScalarProperty Name="xMAQUINA" ColumnName="xMAQUINA" />
-                <ScalarProperty Name="SELOS_ESQUERDO" ColumnName="SELOS_ESQUERDO" />
-                <ScalarProperty Name="SELOS_DIREITO" ColumnName="SELOS_DIREITO" />
-                <ScalarProperty Name="QTDE_TERM_ESQUERDO" ColumnName="QTDE_TERM_ESQUERDO" />
-                <ScalarProperty Name="QTDE_TERM_DIREITO" ColumnName="QTDE_TERM_DIREITO" />
-                <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
-                <ScalarProperty Name="QTDE_CAPACIDADE" ColumnName="QTDE_CAPACIDADE" />
-                <ScalarProperty Name="QTDE_TOLERANCIA" ColumnName="QTDE_TOLERANCIA" />
                 <ScalarProperty Name="QTDE_YY" ColumnName="QTDE_YY" />
+                <ScalarProperty Name="QTDE_TOLERANCIA" ColumnName="QTDE_TOLERANCIA" />
+                <ScalarProperty Name="QTDE_CAPACIDADE" ColumnName="QTDE_CAPACIDADE" />
+                <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
+                <ScalarProperty Name="QTDE_TERM_DIREITO" ColumnName="QTDE_TERM_DIREITO" />
+                <ScalarProperty Name="QTDE_TERM_ESQUERDO" ColumnName="QTDE_TERM_ESQUERDO" />
+                <ScalarProperty Name="SELOS_DIREITO" ColumnName="SELOS_DIREITO" />
+                <ScalarProperty Name="SELOS_ESQUERDO" ColumnName="SELOS_ESQUERDO" />
+                <ScalarProperty Name="xMAQUINA" ColumnName="xMAQUINA" />
+                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
+                <ScalarProperty Name="idMAQUINA" ColumnName="idMAQUINA" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TB_PLANILHA">
             <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_PLANILHA">
               <MappingFragment StoreEntitySet="TB_PLANILHA">
-                <ScalarProperty Name="id_PLANILHA" ColumnName="id_PLANILHA" />
-                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-                <ScalarProperty Name="PLANTA" ColumnName="PLANTA" />
-                <ScalarProperty Name="TIPO" ColumnName="TIPO" />
-                <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
-                <ScalarProperty Name="LONG_CORT" ColumnName="LONG_CORT" />
-                <ScalarProperty Name="CANTIDAD" ColumnName="CANTIDAD" />
-                <ScalarProperty Name="COD_DI" ColumnName="COD_DI" />
-                <ScalarProperty Name="TERM_IZQ" ColumnName="TERM_IZQ" />
-                <ScalarProperty Name="COD_DD" ColumnName="COD_DD" />
-                <ScalarProperty Name="TERM_DER" ColumnName="TERM_DER" />
-                <ScalarProperty Name="COD_01_I" ColumnName="COD_01_I" />
-                <ScalarProperty Name="COD_01_D" ColumnName="COD_01_D" />
-                <ScalarProperty Name="ACC_01_I" ColumnName="ACC_01_I" />
                 <ScalarProperty Name="ACC_01_D" ColumnName="ACC_01_D" />
+                <ScalarProperty Name="ACC_01_I" ColumnName="ACC_01_I" />
+                <ScalarProperty Name="COD_01_D" ColumnName="COD_01_D" />
+                <ScalarProperty Name="COD_01_I" ColumnName="COD_01_I" />
+                <ScalarProperty Name="TERM_DER" ColumnName="TERM_DER" />
+                <ScalarProperty Name="COD_DD" ColumnName="COD_DD" />
+                <ScalarProperty Name="TERM_IZQ" ColumnName="TERM_IZQ" />
+                <ScalarProperty Name="COD_DI" ColumnName="COD_DI" />
+                <ScalarProperty Name="CANTIDAD" ColumnName="CANTIDAD" />
+                <ScalarProperty Name="LONG_CORT" ColumnName="LONG_CORT" />
+                <ScalarProperty Name="CALIBRE" ColumnName="CALIBRE" />
+                <ScalarProperty Name="TIPO" ColumnName="TIPO" />
+                <ScalarProperty Name="PLANTA" ColumnName="PLANTA" />
+                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
+                <ScalarProperty Name="id_PLANILHA" ColumnName="id_PLANILHA" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="TB_PROJETO">
             <EntityTypeMapping TypeName="DB_YAZAKIModel.TB_PROJETO">
               <MappingFragment StoreEntitySet="TB_PROJETO">
-                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
-                <ScalarProperty Name="xPROJETO" ColumnName="xPROJETO" />
                 <ScalarProperty Name="dtCADASTRO" ColumnName="dtCADASTRO" />
+                <ScalarProperty Name="xPROJETO" ColumnName="xPROJETO" />
+                <ScalarProperty Name="idPROJETO" ColumnName="idPROJETO" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

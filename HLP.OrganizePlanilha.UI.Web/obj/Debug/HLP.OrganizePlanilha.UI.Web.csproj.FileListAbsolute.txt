@@ -174,3 +174,12 @@ D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\System.Web.WebPages.Razor.x
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.csprojResolveAssemblyReference.cache
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.pdb
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Debug\HLP.OrganizePlanilha.UI.Web.csprojResolveAssemblyReference.cache
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.dll
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.SqlServer.dll
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.dll
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.xml
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.SqlServer.xml
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.xml
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.dll
+C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.xml

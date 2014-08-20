@@ -48,9 +48,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             get
             {
                 // desconsidera os terminais com selos.
-                return this.param.termEsqMax - this.lista.Where(c => !(this.TerminaisComSeloEsq.Contains(c.TERM_IZQ))
-                                                            && c.COD_DI == "2"
-                    ).Select(c => c.TERM_IZQ.Trim()).Distinct().Count();
+                var resultado = this.lista.Where(c => (!this.TerminaisComSeloEsq.Contains(c.TERM_IZQ))
+                                                       && c.COD_DI == "2"
+                    ).Select(c => c.TERM_IZQ.Trim()).Distinct().ToList();
+                return this.param.termEsqMax - resultado.Count();
             }
         }
         public int TotalTerminalDireitoFaltante
