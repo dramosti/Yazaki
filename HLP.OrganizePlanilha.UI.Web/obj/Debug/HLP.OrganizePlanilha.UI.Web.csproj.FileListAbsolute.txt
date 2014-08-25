@@ -181,5 +181,3 @@ C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.dll
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.xml
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\EntityFramework.SqlServer.xml
 C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.xml
-C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.dll
-C:\GIT\Projetos\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.xml

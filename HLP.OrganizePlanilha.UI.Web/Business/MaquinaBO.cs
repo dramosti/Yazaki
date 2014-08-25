@@ -6,23 +6,45 @@ using System.Web;
 
 namespace HLP.OrganizePlanilha.UI.Web.Business
 {
+    /// <summary>
+    /// Classe de negócio, onde será feita todas as regras para inserir os cabos na máquina e a assignação
+    /// </summary>
     public sealed class MaquinaBO
     {
-
+        #region Propriedades Publicas
         /// <summary>
         /// Lista que será o resultado final da análise e será convertida em planilha
         /// </summary>
         public YazakiList resultado { get; set; }
+
+        /// <summary>
+        /// Lista de todos os cabos que contem selos
+        /// </summary>
         public List<PlanilhaModel> lSelos { get; set; }
+        /// <summary>
+        /// Lista que terá todos os cabos utilizados, sem nenhum agrupamento, e só será usada para saber quais cabos
+        /// estão na contidos na máquina para posteriormente serem desvinculados.
+        /// </summary>
         public List<PlanilhaModel> lUtilizadosSemAgrupamento { get; set; }
+        /// <summary>
+        /// Objeto que representa a máquina
+        /// </summary>
         public MaquinaModel _maquina { get; set; }
+        /// <summary>
+        /// Local onde o arquivo xml assignado foi salvo.
+        /// </summary>
         public string fileLocation { get; set; }
 
+        #endregion
         #region Propriedades privadas
         /// <summary>
-        /// Lista de cabos que serão manipulados.
+        /// Lista que irá manter todos os cabos possíveis de acordo com a parametrização de calibre.
+        /// O Sistema irá buscar dessa lista os cabos para inserir na máquina.
         /// </summary>
         private List<PlanilhaModel> _lDadosPlanilha { get; set; }
+        /// <summary>
+        /// Lista que irá conter sómente os cabos já analisados e prontos para a assignação.
+        /// </summary>
         private List<PlanilhaModel> _lDadosParaAssignacao { get; set; }
 
         /// <summary>
@@ -30,18 +52,150 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         /// </summary>
         private int iContador { get; set; }
 
+        /// <summary>
+        /// Objeto utilizado na assignação, para saber qual foi o último registro analisado.
+        /// </summary>
         private PlanilhaModel objUltimoRegistro = null;
-        #endregion
 
+        #endregion
+        #region Construtor
         public MaquinaBO(MaquinaModel maquina_)
         {
             this._maquina = maquina_;
             this.resultado = new YazakiList();
             this.lUtilizadosSemAgrupamento = new List<PlanilhaModel>();
         }
-
-
+        #endregion
         #region Metodos
+        /// <summary>
+        /// Método que irá chamar irá fazer a organização e salvar o arquivo em excel.
+        /// </summary>
+        /// <param name="lDadosPlanilha_"></param>
+        public void IniciaOrganizacao(List<PlanilhaModel> lDadosPlanilha_)
+        {
+            try
+            {
+                this.SetParametros();
+
+                this._lDadosPlanilha = new List<PlanilhaModel>();
+                //Inserimos todos os cabos possíveis a serem analisados.
+                foreach (var item in lDadosPlanilha_.Where(c => (Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) >= this.resultado.param.bitolaMin
+                                                            && Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) <= this.resultado.param.bitolaMax)
+                                                            && c.bUtilizado == false).ToList())
+                {
+                    item.bUtilizado = false;
+                    item.id = null;
+                    this._lDadosPlanilha.Add(item);
+                }
+
+                // caso haja selos, é a primeira coisa que fazemos.
+                if (this.resultado.param.IsSelos)
+                {
+                    // incluir selos
+                    this.IncludeSelos();
+                    // nesse momento, nós deixamos registrado todos os terminais que acompanham os selos inseridos para não serem contabilizados na qtde de terminais parametrizados na maquina.
+                    this.resultado.SetTerminaisComSelos();
+#warning verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
+
+                    Util.bAtivaRegraModel = true;
+
+                    // INCLUI CABOS QUE FAZEM REFERENCIA COM CABOS QUE TEM SELOS.
+                    if (this.resultado.param.lseloEsq.Count() > 0 && this.resultado.param.lseloDir.Count() > 0)
+                        if (!this.resultado.Ultrapassou())
+                            this.IncludeAutomaticosBySelos();
+                }
+                else
+                    Util.bAtivaRegraModel = true;
+
+
+                if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                {
+                    // AUTOMÁTICOS.
+                    this.IncludeAutomaticosLado_A_B();
+                }
+
+
+                if (this.resultado.TotalTerminalDireitoFaltante > 0)
+                {
+                    this.IncludeManualAutimatico(); // Y-2
+                }
+                if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
+                {
+                    this.IncludeAutomaticoManual(); // 2-Y
+                }
+
+                if (this.resultado.Ultrapassou())
+                    this.AnalisedeQuantidade();
+
+                this._lDadosParaAssignacao = new List<PlanilhaModel>();
+                foreach (var item in this.resultado)
+                {
+                    this._lDadosParaAssignacao.Add(this.DesvinculaItemCollectionGenerica(item));
+                }
+
+                //crio uma Lista para saber quais itens estão sendo utilizados nessa máquina, para posteriormente desvincular.
+                foreach (PlanilhaModel item in this._lDadosParaAssignacao)
+                {
+                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel);
+                }
+
+                this._lDadosParaAssignacao = Util.GroupList(this._lDadosParaAssignacao);
+
+                YazakiList.ParametrosLista param = this.resultado.GetParametro();
+                this.resultado = new YazakiList();
+                this.resultado.param = param;
+                BeginAssignacao();
+
+                // MANUAIS - MANUAIS
+                this.IncludeCabosManuais();
+
+
+                var dadosYY = this.resultado.Where(c => c.COD_DD == "Y" && c.COD_DI == "Y").ToList();
+                foreach (var item in dadosYY)
+                {
+                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel); // insiro os manuais que até então nao se encontravam na lista.
+                    this.resultado.Remove(item);
+                }
+                dadosYY = Util.GroupListYY(dadosYY);
+                foreach (var itemYYtoAdd in dadosYY)
+                {
+                    this.resultado.Add(itemYYtoAdd);
+                }
+
+                // metodo que escreve os dados em xls e salva.
+                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// Método que faz a assignação de todos os registros que recebe como parametro, sem analisar nenhum parametro de máquina
+        /// </summary>
+        /// <param name="lDadosPlanilha_"></param>
+        public void OrganizacaoRestante(List<PlanilhaModel> lDadosPlanilha_)
+        {
+            try
+            {
+                this.SetParametros();
+                this._lDadosParaAssignacao = new List<PlanilhaModel>();
+                foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false))
+                {
+                    this.lUtilizadosSemAgrupamento.Add(item);
+                    this._lDadosParaAssignacao.Add(item);
+                }
+                BeginAssignacao();
+                // metodo que escreve os dados em xls e salva.
+                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
 
         /// <summary>
@@ -129,13 +283,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
         }
 
+        /// <summary>
+        /// Método responsável por incluir todos os selos parametrizados na máquina.
+        /// </summary>
         private void IncludeSelos()
         {
             try
             {
                 this.lSelos = new List<PlanilhaModel>();
-
-
 
                 // Verifica se existe algum selo no outro lado para mudar de lado.
                 foreach (var seloe in this.resultado.param.lseloEsq)
@@ -201,7 +356,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Método recursivo, responsavel por encontrar possíveis combinações entre terminais com selos e sem selos.
+        /// O método varre a lista de terminais com selos, verificando se existe o mesmo terminal, só que sem selo.
+        /// </summary>
         private void IncludeAutomaticosBySelos()
         {
             try
@@ -366,7 +524,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 throw ex;
             }
         }
-
+        /// <summary>
+        /// Método responsável por buscar as combinações de terminais até atingir o parametro de terminais maquina.
+        /// Método A->B
+        /// Regra de negócio simples: 
+        /// a.	(1 – 5) um do lado A para no máximo 5 do lado B
+        /// b.	(3 – 1) um do lado B para no máximo 3 do lado A, até terminar as combinações anteriores do anterior “1-5”
+        /// c.	Terminando as combinações anteriores, verificar no Lado A, o que menos se repete e trazer para incluir na máquina, e voltar nas regras iniciais desse bloco.
+        /// </summary>
+        /// <param name="sTerm"></param>
         private void IncludeAutomaticosLado_A_B(string sTerm = "")
         {
             try
@@ -487,6 +653,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
 
         }
+        /// <summary>
+        /// Método B <- A
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="lDadosIncluosos"></param>
         private void IncludeTerminalDireito_B_A(PlanilhaModel item, List<PlanilhaModel> lDadosIncluosos)
         {
             try
@@ -545,7 +716,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
-        private void IncludeSelosManuais()
+        /// <summary>
+        /// Método responsável por buscar a quantidade de cabos manuais parametrizados na máquina.
+        /// </summary>
+        private void IncludeCabosManuais()
         {
             try
             {
@@ -597,127 +771,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     }
 
                     if ((this.resultado.GetVolumeTotalManualByLista() < this.resultado.param.volumeYY) && (this.resultado.GetVolumeTotalManualByLista() != dTotalYYparaAnalise))
-                        this.IncludeSelosManuais();
+                        this.IncludeCabosManuais();
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void OrganizacaoRestante(List<PlanilhaModel> lDadosPlanilha_)
-        {
-            try
-            {
-                this.SetParametros();
-                this._lDadosParaAssignacao = new List<PlanilhaModel>();
-                foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false))
-                {
-                    this.lUtilizadosSemAgrupamento.Add(item);
-                    this._lDadosParaAssignacao.Add(item);
-                }
-                BeginAssignacao();
-                // metodo que escreve os dados em xls e salva.
-                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        /// <summary>
-        /// Método que irá chamar irá fazer a organização e salvar o arquivo em excel.
-        /// </summary>
-        /// <param name="lDadosPlanilha_"></param>
-        public void IniciaOrganizacao(List<PlanilhaModel> lDadosPlanilha_)
-        {
-            try
-            {
-                this.SetParametros();
-
-                this._lDadosPlanilha = new List<PlanilhaModel>();
-                foreach (var item in lDadosPlanilha_.Where(c => (Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) >= this.resultado.param.bitolaMin
-                                                            && Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) <= this.resultado.param.bitolaMax)
-                                                            && c.bUtilizado == false).ToList())
-                {
-                    item.bUtilizado = false;
-                    item.id = null;
-                    this._lDadosPlanilha.Add(item);
-                }
-
-                if (this.resultado.param.IsSelos)
-                {
-                    // INCLUI SELOS
-                    this.IncludeSelos();
-                    this.resultado.SetListaComSelos(); // verificar se os terminais inclusos juntamente com os cabos que fazem combinação com cabos que tem selos serão validos, para contagem de terminais.
-                    Util.bAtivaRegraModel = true;
-
-                    // INCLUI CABOS QUE FAZEM REFERENCIA COM CABOS QUE TEM SELOS.
-                    if (this.resultado.param.lseloEsq.Count() > 0 && this.resultado.param.lseloDir.Count() > 0)
-                        if (!this.resultado.Ultrapassou())
-                            this.IncludeAutomaticosBySelos();
-                }
-                else
-                    Util.bAtivaRegraModel = true;
-
-                if (this.resultado.TotalTerminalDireitoFaltante > 0 && this.resultado.TotalTerminalEsquerdoFaltante > 0)
-                {
-                    // AUTOMÁTICOS.
-                    this.IncludeAutomaticosLado_A_B();
-                }
-
-
-                if (this.resultado.TotalTerminalDireitoFaltante > 0)
-                {
-                    this.IncludeManualAutimatico(); // Y-2
-                }
-                if (this.resultado.TotalTerminalEsquerdoFaltante > 0)
-                {
-                    this.IncludeAutomaticoManual(); // 2-Y
-                }
-
-                if (this.resultado.Ultrapassou())
-                    this.AnalisedeQuantidade();
-
-                this._lDadosParaAssignacao = new List<PlanilhaModel>();
-                foreach (var item in this.resultado)
-                {
-                    this._lDadosParaAssignacao.Add(this.DesvinculaItemCollectionGenerica(item));
-                }
-
-                //crio uma Lista para saber quais itens estão sendo utilizados nessa máquina, para posteriormente desvincular.
-                foreach (PlanilhaModel item in this._lDadosParaAssignacao)
-                {
-                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel);
-                }
-
-                this._lDadosParaAssignacao = Util.GroupList(this._lDadosParaAssignacao);
-
-                YazakiList.ParametrosLista param = this.resultado.GetParametro();
-                this.resultado = new YazakiList();
-                this.resultado.param = param;
-                BeginAssignacao();
-
-                // MANUAIS - MANUAIS
-                this.IncludeSelosManuais();
-
-
-                var dadosYY = this.resultado.Where(c => c.COD_DD == "Y" && c.COD_DI == "Y").ToList();
-                foreach (var item in dadosYY)
-                {
-                    lUtilizadosSemAgrupamento.Add(item.Clone() as PlanilhaModel); // insiro os manuais que até então nao se encontravam na lista.
-                    this.resultado.Remove(item);
-                }
-                dadosYY = Util.GroupListYY(dadosYY);
-                foreach (var itemYYtoAdd in dadosYY)
-                {
-                    this.resultado.Add(itemYYtoAdd);
-                }
-
-                // metodo que escreve os dados em xls e salva.
-                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
             }
             catch (Exception ex)
             {
@@ -812,9 +867,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
-
-
-
         /// <summary>
         /// Retorna o objeto clonado
         /// </summary>
@@ -847,13 +899,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
         }
 
 
+        /// <summary>
+        /// Método recursivo que analisa o volume total da máquina e se necessário remove dos maiores até dar o volume parametrizado.
+        /// </summary>
         private void AnalisedeQuantidade()
         {
             try
             {
-
                 var item = this.resultado.OrderByDescending(c => c.PERCENTUAL).FirstOrDefault();
-
                 item.SubtraiPercentual(1);
                 bool bValida = this.resultado.ValidaPorcentagemGeral();
                 if (bValida == false)
@@ -866,8 +919,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 throw ex;
             }
         }
-
-
 
         /// <summary>
         /// Método responsável por selecionar o lado e o terminal que será analisádo.
@@ -1117,11 +1168,5 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
 
         }
         #endregion
-
     }
-
-
-
-
-
 }

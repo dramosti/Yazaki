@@ -21,17 +21,24 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
 {
     public class ProjetoController : BaseController
     {
+
         public ActionResult Home()
         {
             return View();
         }
 
+        
         public ActionResult FindXml()
         {
             base.SessionProjetoModel = new ProjetoModel();
             return View();
         }
 
+        /// <summary>
+        /// Action que lista todos os projetos já salvo na base de dados
+        /// </summary>
+        /// <param name="page"></param>
+        /// <returns></returns>
         public ActionResult Listar(int? page)
         {
             TB_PROJETO_Repository projetoRepository = new TB_PROJETO_Repository();
@@ -248,7 +255,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return RedirectToAction(actionName: "Listar", controllerName: "Maquina");
         }
 
-        // GET: /Projeto/
         public ActionResult FindXmlWithSelectedProject(int id)
         {
             ProjetoModel objProjeto = new ProjetoModel();
