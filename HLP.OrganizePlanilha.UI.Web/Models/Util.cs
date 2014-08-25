@@ -210,6 +210,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             return c;
         }
 
+        /// <summary>
+        /// Ao ativar essa propriedade, algumas regras de negócio da classe PlanilhaModel são ativadas, para um melhor agrupamento dos dados na assignação.
+        /// </summary>
         public static bool bAtivaRegraModel { get; set; }
         public static string fileLocation { get; set; }
     }

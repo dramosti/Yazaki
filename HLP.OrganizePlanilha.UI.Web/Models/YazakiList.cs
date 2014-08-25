@@ -125,8 +125,11 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         private List<string> TerminaisComSeloEsq = new List<string>();
         private List<string> TerminaisComSeloDir = new List<string>();
 
-
-        public void SetListaComSelos()
+        /// <summary>
+        /// Método responsavel por armazenar todos os terminais que contem selo.
+        /// Deixamos registrado todos os terminais que acompanham os selos inseridos para não serem contabilizados na qtde de terminais parametrizados na maquina.
+        /// </summary>
+        public void SetTerminaisComSelos()
         {
             this.TerminaisComSeloEsq = this.lista.Where(c => c.TERM_IZQ != "").Select(c => c.TERM_IZQ).Distinct().ToList();
             this.TerminaisComSeloDir = this.lista.Where(c => c.TERM_DER != "").Select(c => c.TERM_DER).Distinct().ToList();

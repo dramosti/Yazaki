@@ -9,7 +9,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
     public sealed class ProjetoBO
     {
 
-        // Carrega parametros dos terminais e selos.
+        /// <summary>
+        ///Método responsavel por carregar os parametros dos terminais e selos.
+        /// </summary>
+        /// <param name="objProjetoModel"></param>
         public static void OrganizeDadosParaParametroInicial(ProjetoModel objProjetoModel)
         {
             try
