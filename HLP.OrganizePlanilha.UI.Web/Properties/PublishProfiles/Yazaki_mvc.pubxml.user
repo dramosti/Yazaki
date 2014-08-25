@@ -16,7 +16,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 13:53:59</publishTime>
     </File>
     <File Include="bin/HLP.OrganizePlanilha.UI.Web.dll">
-      <publishTime>08/20/2014 16:24:25</publishTime>
+      <publishTime>08/22/2014 11:30:09</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>07/08/2013 14:15:08</publishTime>
@@ -382,7 +382,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:29</publishTime>
     </File>
     <File Include="Views/Maquina/Listar.cshtml">
-      <publishTime>08/20/2014 13:45:12</publishTime>
+      <publishTime>08/22/2014 11:08:48</publishTime>
     </File>
     <File Include="Views/Projeto/FindXml.cshtml">
       <publishTime>08/20/2014 15:46:37</publishTime>

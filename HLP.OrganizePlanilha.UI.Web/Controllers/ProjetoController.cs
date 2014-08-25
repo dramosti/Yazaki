@@ -25,7 +25,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             return View();
         }
-
         public ActionResult FindXml()
         {
             base.SessionProjetoModel = new ProjetoModel();
@@ -161,24 +160,40 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         [HttpPost]
         public ActionResult OrganizarTudo()
         {
-            ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            MaquinaModel m = new MaquinaModel();
-            m.CALIBRE = "0.1-100";
-            if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
+            try
             {
-                m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
-                base.aviso = "Arquivos organizados com sucesso.";
-            }
-            objProjetoModel.ldadosPlanilhaFinal = m.BusinessMaquina.resultado.ToList();
-            objProjetoModel.fileLocationCompleted = m.BusinessMaquina.fileLocation;
+                ProjetoModel objProjetoModel = base.SessionProjetoModel;
+                MaquinaModel m = new MaquinaModel();
+                m.CALIBRE = "0.1-100";
+                if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
+                {
+                    m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
+                    base.aviso = "Arquivos organizados com sucesso.";
+                }
+                objProjetoModel.ldadosPlanilhaFinal = m.BusinessMaquina.resultado.ToList();
+                objProjetoModel.fileLocationCompleted = m.BusinessMaquina.fileLocation;
 
-            // Retorna os itens ao estado de não utilizados.
-            foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
-            {
-                PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
-                itemPlanilha.bUtilizado = false;
+                // Retorna os itens ao estado de não utilizados.
+                foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
+                {
+                    PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
+                    itemPlanilha.bUtilizado = false;
+                }
+                return RedirectToAction("Listar", "Maquina");
+
             }
-            return RedirectToAction("Listar", "Maquina");
+            catch (Exception ex)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\inetpub\wwwroot\Yazaki\log.txt"))
+                {
+                    file.WriteLine(ex.Message);
+                    if (ex.InnerException != null)
+                    {
+                        file.WriteLine(ex.InnerException.ToString());
+                    }
+                }
+                throw ex;
+            }
         }
 
         public FileResult Download()
@@ -270,7 +285,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 objProjeto.ldadosPlanilhaOriginal = planilhaRepository.getPlanilhasByIdProjeto(idProjeto: id);
             }
 
-            
+
 
             base.SessionProjetoModel = objProjeto;
             //ProjetoBO.OrganizeDadosParaParametroInicial(base.SessionProjetoModel);
