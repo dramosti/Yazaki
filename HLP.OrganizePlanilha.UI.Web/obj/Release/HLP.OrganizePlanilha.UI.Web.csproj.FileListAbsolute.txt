@@ -62,6 +62,6 @@ D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Release\HLP.OrganizePlanilh
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Release\HLP.OrganizePlanilha.UI.Web.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\obj\Release\HLP.OrganizePlanilha.UI.Web.pdb
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.dll
-D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.xml
+D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.dll
 D:\GitHub\HLP\Yazaki\HLP.OrganizePlanilha.UI.Web\bin\PagedList.Mvc.xml

@@ -30,16 +30,5 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
                 }
             }
         }
-
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            Exception e = filterContext.Exception;
-            //Log Exception e
-            filterContext.ExceptionHandled = true;
-            filterContext.Result = new ViewResult()
-            {
-                ViewName = "Error"
-            };
-        }
     }
 }

@@ -197,6 +197,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             string se = c.ACC_01_I; // selo esquerdo
             string codDI = c.COD_DI; // tipo de aplicador
             string codDD = c.COD_DD; // tipo de aplicador
+            string cod01_I = c.COD_01_I;
+            string cod01_D = c.COD_01_D;
 
 
             // muda-se os lados.
@@ -206,6 +208,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             c.ACC_01_I = sd;
             c.COD_DI = codDD;
             c.COD_DD = codDI;
+            c.COD_01_I = cod01_D;
+            c.COD_01_D = cod01_I;
 
             return c;
         }

@@ -32,6 +32,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                  c.CANTIDAD
                              }).Distinct();
 
+
                 foreach (var item in dados)
                 {
                     ldadosParametroTemp.Add(new ParametrosModel
@@ -53,6 +54,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     decimal.TryParse(item.CANTIDAD, out dqtde);
                     objProjetoModel.qTotal += dqtde;
                 }
+
                 string[] param = { "D", "U", "PU" };
                 objProjetoModel.ldadosParametroTempDistinct = (from p in ldadosParametroTemp
                                                                where param.Contains(p.COD_01)
@@ -72,17 +74,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                                    TERM = v.Key.TERM
                                                                }).ToList();
 
-                var TESTE = ldadosParametroTemp.Where(p => param.Contains(p.COD_01)).Distinct();
 
-                var teste2 = objProjetoModel.ldadosParametroTempDistinct.Where(c => c.TERM == "7116-8202-02");
-
-                var teste3 = objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_IZQ == "7116-8202-02");
-
-                var teste4 = objProjetoModel.ldadosPlanilhaOriginal.Where(c => c.TERM_DER == "7116-8202-02");
-
-
-
-
+                
                 int icount = 1;
                 foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
                 {

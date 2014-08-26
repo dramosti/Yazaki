@@ -16,7 +16,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 13:53:59</publishTime>
     </File>
     <File Include="bin/HLP.OrganizePlanilha.UI.Web.dll">
-      <publishTime>08/22/2014 11:30:09</publishTime>
+      <publishTime>08/26/2014 09:19:33</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>07/08/2013 14:15:08</publishTime>
@@ -106,7 +106,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/19/2014 17:21:32</publishTime>
     </File>
     <File Include="Content/PagedList.css">
-      <publishTime>08/19/2014 17:21:32</publishTime>
+      <publishTime>08/26/2014 09:18:34</publishTime>
     </File>
     <File Include="Content/Site.css">
       <publishTime>08/18/2014 08:15:28</publishTime>
@@ -316,7 +316,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:28</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>08/20/2014 08:04:07</publishTime>
+      <publishTime>08/26/2014 09:18:34</publishTime>
     </File>
     <File Include="Scripts/bootbox.js">
       <publishTime>08/18/2014 08:15:28</publishTime>
@@ -382,7 +382,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:29</publishTime>
     </File>
     <File Include="Views/Maquina/Listar.cshtml">
-      <publishTime>08/22/2014 11:08:48</publishTime>
+      <publishTime>08/26/2014 09:02:50</publishTime>
     </File>
     <File Include="Views/Projeto/FindXml.cshtml">
       <publishTime>08/20/2014 15:46:37</publishTime>
@@ -409,7 +409,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:29</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>08/20/2014 16:24:27</publishTime>
+      <publishTime>08/26/2014 09:05:48</publishTime>
     </File>
   </ItemGroup>
 </Project>

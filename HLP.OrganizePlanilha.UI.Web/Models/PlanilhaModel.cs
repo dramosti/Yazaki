@@ -47,7 +47,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string COD_DI
         {
             get { return _COD_DI; }
-            set { 
+            set
+            {
                 _COD_DI = value;
 
             }
@@ -84,9 +85,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string COD_DD
         {
             get { return _COD_DD; }
-            set { 
-                _COD_DD = value; 
-            
+            set
+            {
+                _COD_DD = value;
+
             }
         }
 
@@ -96,7 +98,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public string TERM_DER
         {
             get { return Util.bAtivaRegraModel ? (this.COD_DD != "Y" ? _TERM_DER : "") : _TERM_DER; }
-            set { _TERM_DER = value; }
+            set
+            {
+                _TERM_DER = value;
+            }
         }
 
 
@@ -152,8 +157,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         [Coluna(isColuna = false)]
         public decimal PERCENTUAL { get; set; }
-               
-        
+
+
 
         public void SubtraiPercentual(decimal dPercentual)
         {
