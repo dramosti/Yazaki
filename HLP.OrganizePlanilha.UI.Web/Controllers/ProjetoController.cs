@@ -58,6 +58,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         [HttpPost]
         public ActionResult UploadFile(ProjetoModel projeto)
         {
+
+
             if (Request.Files["FileUpload"].ContentLength > 0)
             {
                 Util.bAtivaRegraModel = false;

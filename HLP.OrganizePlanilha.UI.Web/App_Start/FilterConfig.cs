@@ -7,7 +7,7 @@ namespace HLP.OrganizePlanilha.UI.Web
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            //filters.Add(new HandleErrorAttribute());
         }
     }
 }

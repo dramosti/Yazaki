@@ -9,6 +9,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <_PublishTargetUrl>\\hlpsrvweb\inetpub\wwwroot\Yazaki</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
+    <File Include="bin/Antlr3.Runtime.dll">
+      <publishTime>08/27/2014 10:28:59</publishTime>
+    </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>08/18/2014 13:53:59</publishTime>
     </File>
@@ -16,13 +19,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 13:53:59</publishTime>
     </File>
     <File Include="bin/HLP.OrganizePlanilha.UI.Web.dll">
-      <publishTime>08/26/2014 09:19:33</publishTime>
+      <publishTime>08/27/2014 11:30:42</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
-      <publishTime>07/08/2013 14:15:08</publishTime>
+      <publishTime>08/27/2014 10:28:47</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
-      <publishTime>10/02/2013 11:10:10</publishTime>
+      <publishTime>08/27/2014 10:28:59</publishTime>
     </File>
     <File Include="bin/PagedList.dll">
       <publishTime>08/19/2014 17:24:25</publishTime>
@@ -31,31 +34,37 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/19/2014 17:24:25</publishTime>
     </File>
     <File Include="bin/System.Net.Http.Formatting.dll">
-      <publishTime>07/09/2013 10:04:28</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.Helpers.dll">
-      <publishTime>07/09/2013 10:05:10</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.Http.dll">
-      <publishTime>07/09/2013 10:04:28</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.Http.WebHost.dll">
-      <publishTime>07/09/2013 10:04:28</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.Mvc.dll">
-      <publishTime>07/09/2013 10:04:28</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
+    </File>
+    <File Include="bin/System.Web.Optimization.dll">
+      <publishTime>08/27/2014 10:28:59</publishTime>
     </File>
     <File Include="bin/System.Web.Razor.dll">
-      <publishTime>07/09/2013 10:05:12</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.WebPages.Deployment.dll">
-      <publishTime>07/09/2013 10:05:12</publishTime>
+      <publishTime>08/27/2014 10:29:05</publishTime>
     </File>
     <File Include="bin/System.Web.WebPages.dll">
-      <publishTime>07/09/2013 10:05:12</publishTime>
+      <publishTime>08/27/2014 10:29:06</publishTime>
     </File>
     <File Include="bin/System.Web.WebPages.Razor.dll">
-      <publishTime>07/09/2013 10:05:12</publishTime>
+      <publishTime>08/27/2014 10:29:06</publishTime>
+    </File>
+    <File Include="bin/WebGrease.dll">
+      <publishTime>08/27/2014 10:28:59</publishTime>
     </File>
     <File Include="Content/bootstrap-theme.css">
       <publishTime>08/18/2014 08:15:28</publishTime>
@@ -297,6 +306,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/themes/base/minified/jquery.ui.tooltip.min.css">
       <publishTime>08/18/2014 08:15:28</publishTime>
     </File>
+    <File Include="Content/themes/pepper-grinder.css">
+      <publishTime>08/27/2014 11:29:37</publishTime>
+    </File>
     <File Include="Dao/Contexts/Yazaki_DataBase.edmx.diagram">
       <publishTime>08/20/2014 08:18:38</publishTime>
     </File>
@@ -316,7 +328,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:28</publishTime>
     </File>
     <File Include="packages.config">
-      <publishTime>08/26/2014 09:18:34</publishTime>
+      <publishTime>08/27/2014 10:29:08</publishTime>
     </File>
     <File Include="Scripts/bootbox.js">
       <publishTime>08/18/2014 08:15:28</publishTime>
@@ -375,6 +387,9 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/moment.min.js">
       <publishTime>08/18/2014 08:15:29</publishTime>
     </File>
+    <File Include="Views/Error/NotFound.cshtml">
+      <publishTime>08/27/2014 10:07:50</publishTime>
+    </File>
     <File Include="Views/Maquina/Cadastrar.cshtml">
       <publishTime>08/20/2014 15:53:28</publishTime>
     </File>
@@ -399,8 +414,11 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Projeto/_PlanilhaOriginal.cshtml">
       <publishTime>08/19/2014 17:21:32</publishTime>
     </File>
+    <File Include="Views/Shared/Error.cshtml">
+      <publishTime>08/27/2014 10:09:53</publishTime>
+    </File>
     <File Include="Views/Shared/_LayoutPadrao.cshtml">
-      <publishTime>08/20/2014 14:35:49</publishTime>
+      <publishTime>08/27/2014 11:30:28</publishTime>
     </File>
     <File Include="Views/Shared/_PartialAviso.cshtml">
       <publishTime>08/18/2014 08:15:29</publishTime>
@@ -409,7 +427,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>08/18/2014 08:15:29</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>08/26/2014 09:05:48</publishTime>
+      <publishTime>08/27/2014 11:30:43</publishTime>
     </File>
   </ItemGroup>
 </Project>
