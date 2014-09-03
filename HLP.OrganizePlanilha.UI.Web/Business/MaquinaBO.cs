@@ -77,6 +77,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             {
                 this.SetParametros();
 
+
                 this._lDadosPlanilha = new List<PlanilhaModel>();
                 //Inserimos todos os cabos possíveis a serem analisados.
                 foreach (var item in lDadosPlanilha_.Where(c => (Convert.ToDecimal(c.CALIBRE.Replace(".", ",")) >= this.resultado.param.bitolaMin
@@ -114,6 +115,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     this.IncludeAutomaticosLado_A_B();
                 }
 
+                // Incluimos os Terminais que são Y-2 ou 2-Y onde o Terminal já se encontra na Lista
+                IncludeManualAutimatico_AutomaticoManual();
+
 
                 if (this.resultado.TotalTerminalDireitoFaltante > 0)
                 {
@@ -149,7 +153,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 // MANUAIS - MANUAIS
                 this.IncludeCabosManuais();
 
-
                 var dadosYY = this.resultado.Where(c => c.COD_DD == "Y" && c.COD_DI == "Y").ToList();
                 foreach (var item in dadosYY)
                 {
@@ -163,7 +166,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 }
 
                 // metodo que escreve os dados em xls e salva.
-                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
+                this.fileLocation = Util.WriteOne<PlanilhaModel>(this.resultado.ToList());
+                this._maquina.bAssigacao = true;
             }
             catch (Exception ex)
             {
@@ -184,11 +188,17 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                 foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false))
                 {
                     this.lUtilizadosSemAgrupamento.Add(item);
-                    this._lDadosParaAssignacao.Add(item);
+                    this._lDadosParaAssignacao.Add(item.Clone() as PlanilhaModel);
                 }
                 BeginAssignacao();
+
+
+                foreach (var item in lDadosPlanilha_.Where(c => c.bUtilizado == false && c.COD_DI == "Y" && c.COD_DD == "Y").ToList())
+                {
+                    this.resultado.Add(item);
+                }
                 // metodo que escreve os dados em xls e salva.
-                this.fileLocation = Util.WriteTsv<PlanilhaModel>(this.resultado.ToList());
+                this.fileLocation = Util.WriteOne<PlanilhaModel>(this.resultado.ToList());
             }
             catch (Exception ex)
             {
@@ -622,7 +632,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         foreach (var item in dados)
                         {
                             if (this.resultado.TotalTerminalDireitoFaltante > 0)
-                                this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
+                                //if (item.COD_DD == "2")
+                                    this.IncludeTerminalDireito_B_A(item, lDadosIncluosos);
                         }
 
 
@@ -736,6 +747,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     var dadosYY = from c in this._lDadosPlanilha
                                   where c.COD_DI == "Y"
                                         && c.COD_DD == "Y"
+                                        && c.CANTIDAD != "0"
+                                        && c.bUtilizado == false
                                         && cabosAtuais.Contains(new { c.CALIBRE, c.TIPO })
                                   select c;
 
@@ -744,12 +757,15 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                         dadosYY = from c in this._lDadosPlanilha
                                   where c.COD_DI == "Y"
                                         && c.COD_DD == "Y"
+                                        && c.CANTIDAD != "0"
+                                        && c.bUtilizado == false
                                   select c;
                     }
 
                     decimal dTotalYYparaAnalise = this.resultado.GetVolumeTotalManualByLista();
                     foreach (var item in dadosYY)
                     {
+
                         if ((item.CANTIDAD.ToDecimal() + this.resultado.GetVolumeTotalManualByLista()) > this.resultado.param.volumeYY)
                         {
                             decimal dvalorToRemove = (item.CANTIDAD.ToDecimal() + this.resultado.GetVolumeTotalManualByLista()) - this.resultado.param.volumeYY;
@@ -763,7 +779,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                             item.id = PosicaoItem.id;
                         }
                         this.resultado.Add(this.DesvinculaItemCollectionGenerica(item));
-
+                      
                         if (this.resultado.GetVolumeTotalManualByLista() >= this.resultado.param.volumeYY)
                         {
                             break;
@@ -788,6 +804,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             int iCountValidador = this.resultado.Count();
             var dados = (from c in this._lDadosPlanilha
                          where c.COD_DI == "2"
+                         && c.ACC_01_I == ""
                          && c.COD_DD == "Y"
                          && c.bUtilizado == false
                          select c).ToList();
@@ -824,6 +841,103 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             }
         }
 
+
+        private void IncludeManualAutimatico_AutomaticoManual()
+        {
+            var lTermEsq = this.resultado.Where(c => c.COD_DI == "2").Select(c => c.TERM_IZQ).Distinct().ToArray();
+            var lTermDir = this.resultado.Where(c => c.COD_DD == "2").Select(c => c.TERM_DER).Distinct().ToArray();
+
+            bool bInvertLado = false;
+
+            foreach (var item in lTermEsq)
+            {
+                if (!this.resultado.Ultrapassou())
+                {
+                    bInvertLado = false;
+                    var objResult = (from c in this._lDadosPlanilha
+                                     where c.TERM_IZQ == item.ToString()
+                                     && c.ACC_01_I == ""
+                                     && c.COD_DD == "Y"
+                                     && c.bUtilizado == false
+                                     select c);
+                    if (objResult.Count() == 0)
+                    {
+                        objResult = from c in this._lDadosPlanilha
+                                    where c.TERM_DER == item.ToString()
+                                    && c.ACC_01_D == ""
+                                    && c.COD_DI == "Y"
+                                    && c.bUtilizado == false
+                                    select c;
+                        if (objResult.Count() > 0)
+                        {
+                            bInvertLado = true;
+                        }
+                    }
+
+                    foreach (var itemAdd in objResult)
+                    {
+                        if (!this.resultado.Ultrapassou())
+                        {
+                            if (bInvertLado)
+                                Util.InverteLado(itemAdd);
+                            itemAdd.bUtilizado = true;
+                            this.resultado.Add(itemAdd);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            foreach (var item in lTermDir)
+            {
+                if (!this.resultado.Ultrapassou())
+                {
+                    bInvertLado = false;
+
+                    var objResult = from c in this._lDadosPlanilha
+                                    where c.TERM_DER == item.ToString()
+                                    && c.ACC_01_D == ""
+                                    && c.COD_DI == "Y"
+                                    && c.bUtilizado == false
+                                    select c;
+
+                    if (objResult.Count() == 0)
+                    {
+                        objResult = (from c in this._lDadosPlanilha
+                                     where c.TERM_IZQ == item.ToString()
+                                     && c.ACC_01_I == ""
+                                     && c.COD_DD == "Y"
+                                     && c.bUtilizado == false
+                                     select c);
+                        if (objResult.Count() > 0)
+                        {
+                            bInvertLado = true;
+                        }
+                    }
+
+                    foreach (var itemAdd in objResult)
+                    {
+                        if (!this.resultado.Ultrapassou())
+                        {
+                            if (bInvertLado)
+                                Util.InverteLado(itemAdd);
+                            itemAdd.bUtilizado = true;
+                            this.resultado.Add(itemAdd);
+                        }
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+
+
         /// <summary>
         /// inclui Y-2
         /// </summary>
@@ -832,6 +946,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
             int iCountValidador = this.resultado.Count();
             var dados = (from c in this._lDadosPlanilha
                          where c.COD_DD == "2"
+                         && c.ACC_01_D == ""
                          && c.COD_DI == "Y"
                          && c.bUtilizado == false
                          select c).ToList();

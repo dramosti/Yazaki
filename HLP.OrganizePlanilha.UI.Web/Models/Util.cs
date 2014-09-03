@@ -13,12 +13,12 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
     public class Util
     {
         /// <summary>
-        /// Método  que salva a planilha em excel e retorna o nome do arquivo.
+        /// Método  que salva o resultado de apenas uma máquina
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static string WriteTsv<T>(List<T> data)
+        public static string WriteOne<T>(List<T> data)
         {
             List<PlanilhaModel> ldata = data as List<PlanilhaModel>;
 
@@ -72,30 +72,73 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
                         }
                         output.WriteLine();
                     }
-
-                    //foreach (PropertyDescriptor prop in props)
-                    //{
-                    //    cl = lProperties.FirstOrDefault(c => c.Name == prop.DisplayName).GetCustomAttributes(true).FirstOrDefault(i => i.GetType() == typeof(Coluna));
-                    //    bool isColuna = false;
-                    //    if (cl != null)
-                    //        isColuna = (cl as Coluna).isColuna;
-                    //    if (isColuna)
-                    //    {
-                    //        output.Write("");
-                    //        output.Write("\t");
-                    //    }
-                    //}
-
-                    //String sValue = "";
-                    //sValue = ldata.Where(c => c.G == G).Sum(c => Convert.ToDecimal(c.CANTIDAD.Replace(".", ","))).ToString("#0.00");
-                    //output.Write(sValue);
-                    //output.Write("\t");
-
-                    //output.WriteLine();
                 }
             }
             return fileLocation;
         }
+
+
+        public static string WriteList<T>(Dictionary<int, List<T>> data)
+        {
+            Dictionary<int, List<PlanilhaModel>> lMaquinas = data as Dictionary<int, List<PlanilhaModel>>;
+
+            object cl;
+
+            string fileLocation = string.Format("{0}/{1}", HttpContext.Current.Server.MapPath("~/App_Data/ExcelFiles")
+                                                        , string.Format("AllProject_{0}.xls", DateTime.Now.ToString("ddMMyyHHmmss")));
+
+            if (System.IO.File.Exists(fileLocation))
+            {
+                System.IO.File.Delete(fileLocation);
+            }
+
+            using (TextWriter output = File.CreateText(fileLocation))
+            {
+                List<PropertyInfo> lProperties = typeof(T).GetProperties().ToList();
+                PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
+                foreach (PropertyDescriptor prop in props)
+                {
+                    cl = lProperties.FirstOrDefault(c => c.Name == prop.DisplayName).GetCustomAttributes(true).FirstOrDefault(i => i.GetType() == typeof(Coluna));
+                    bool isColuna = false;
+                    if (cl != null)
+                        isColuna = (cl as Coluna).isColuna;
+                    if (isColuna)
+                    {
+                        output.Write(prop.DisplayName); // header
+                        output.Write("\t");
+                    }
+                }
+                output.WriteLine();
+                foreach (var ldata in lMaquinas.OrderBy(c => c.Key))
+                {
+                    foreach (var G in ldata.Value.Select(c => c.G).Distinct())
+                    {
+                        foreach (var item in ldata.Value.Where(c => c.G == G))
+                        {
+                            foreach (PropertyDescriptor prop in props)
+                            {
+                                cl = lProperties.FirstOrDefault(c => c.Name == prop.DisplayName).GetCustomAttributes(true).FirstOrDefault(i => i.GetType() == typeof(Coluna));
+                                bool isColuna = false;
+                                if (cl != null)
+                                    isColuna = (cl as Coluna).isColuna;
+                                if (isColuna)
+                                {
+                                    output.Write(prop.Converter.ConvertToString(
+                                         prop.GetValue(item)));
+                                    output.Write("\t");
+                                }
+                            }
+                            output.WriteLine();
+                        }
+                    }
+                    output.WriteLine();
+                }
+            }
+            return fileLocation;
+        }
+
+
+
 
         public static List<PlanilhaModel> GroupList(List<PlanilhaModel> dados)
         {

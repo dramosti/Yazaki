@@ -55,9 +55,9 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                     objProjetoModel.qTotal += dqtde;
                 }
 
-                string[] param = { "D", "U", "PU" };
+                //   string[] param = { "D", "U", "PU" };
                 objProjetoModel.ldadosParametroTempDistinct = (from p in ldadosParametroTemp
-                                                               where param.Contains(p.COD_01)
+                                                               //  where param.Contains(p.COD_01)
                                                                group p by new
                                                                {
                                                                    p.TERM,
@@ -72,10 +72,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Business
                                                                    COD_01 = v.Key.COD_01,
                                                                    COD_D = v.Key.COD_D,
                                                                    TERM = v.Key.TERM
-                                                               }).ToList();
+                                                               }).ToList().OrderBy(c => c.TERM).ToList();
 
 
-                
+
                 int icount = 1;
                 foreach (var item in objProjetoModel.ldadosParametroTempDistinct)
                 {

@@ -110,25 +110,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
         {
             ProjetoBO.AlteraParametroTerminal(base.SessionProjetoModel, id);
             return Json(new { Msg = "OK", Id = id });
-        }
+        }       
 
-        public ActionResult Organizar(Int32 id)
-        {
-            ProjetoModel objProjetoModel = base.SessionProjetoModel;
-            MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
-
-            if (m != null)
-            {
-                if (m.BusinessMaquina.lUtilizadosSemAgrupamento.Count() == 0)
-                {
-                    m.BusinessMaquina.IniciaOrganizacao(objProjetoModel.ldadosPlanilhaOriginal);
-                    base.aviso = "Arquivos organizados com sucesso.";
-                }
-            }
-            return RedirectToAction("Listar", "Maquina");
-        }
-
-
+        /// <summary>
+        /// Método para download da planilha individual - Não está sendo utilizado.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public FileResult DonwloadPlanilha(string id)
         {
             try
@@ -159,50 +147,67 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return PartialView("_PlanilhaOriginal", base.SessionProjetoModel);
         }
 
-        [HttpPost]
-        public ActionResult OrganizarTudo()
-        {
-            try
-            {
-                ProjetoModel objProjetoModel = base.SessionProjetoModel;
-                MaquinaModel m = new MaquinaModel();
-                m.CALIBRE = "0.1-100";
-                if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
-                {
-                    m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
-                    base.aviso = "Arquivos organizados com sucesso.";
-                }
-                objProjetoModel.ldadosPlanilhaFinal = m.BusinessMaquina.resultado.ToList();
-                objProjetoModel.fileLocationCompleted = m.BusinessMaquina.fileLocation;
+        //[HttpPost]
+        //public ActionResult OrganizarTudo()
+        //{
+        //    try
+        //    {
+        //        ProjetoModel objProjetoModel = base.SessionProjetoModel;
+        //        MaquinaModel m = new MaquinaModel();
+        //        m.CALIBRE = "0.1-100";
+        //        if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
+        //        {
+        //            m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
+        //            base.aviso = "Arquivos organizados com sucesso.";
+        //        }
+        //        objProjetoModel.ResultadoFinal.Add(9999, m.BusinessMaquina.resultado.ToList());
+        //        objProjetoModel.fileLocationCompleted = m.BusinessMaquina.fileLocation;
 
-                // Retorna os itens ao estado de não utilizados.
-                foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
-                {
-                    PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
-                    itemPlanilha.bUtilizado = false;
-                }
-                return RedirectToAction("Listar", "Maquina");
+        //        // Retorna os itens ao estado de não utilizados.
+        //        foreach (var itemUtilizado in m.BusinessMaquina.lUtilizadosSemAgrupamento)
+        //        {
+        //            PlanilhaModel itemPlanilha = base.SessionProjetoModel.ldadosPlanilhaOriginal.FirstOrDefault(c => c.idPLANILHA == itemUtilizado.idPLANILHA);
+        //            itemPlanilha.bUtilizado = false;
+        //        }
+        //        return RedirectToAction("Listar", "Maquina");
 
-            }
-            catch (Exception ex)
-            {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\inetpub\wwwroot\Yazaki\log.txt"))
-                {
-                    file.WriteLine(ex.Message);
-                    if (ex.InnerException != null)
-                    {
-                        file.WriteLine(ex.InnerException.ToString());
-                    }
-                }
-                throw ex;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\inetpub\wwwroot\Yazaki\log.txt"))
+        //        {
+        //            file.WriteLine(ex.Message);
+        //            if (ex.InnerException != null)
+        //            {
+        //                file.WriteLine(ex.InnerException.ToString());
+        //            }
+        //        }
+        //        throw ex;
+        //    }
+        //}
 
         public FileResult Download()
         {
             try
             {
                 ProjetoModel objProjetoModel = base.SessionProjetoModel;
+                objProjetoModel.ResultadoFinal = new Dictionary<int, List<PlanilhaModel>>();
+
+                foreach (var item in objProjetoModel.ldadosMaquina.OrderBy(c => c.idMAQUINA))
+                {
+                    objProjetoModel.ResultadoFinal.Add(item.idMAQUINA, item.BusinessMaquina.resultado.ToList());
+                }
+
+                MaquinaModel m = new MaquinaModel();
+                m.CALIBRE = "0.1-999";
+                if (string.IsNullOrEmpty(m.BusinessMaquina.fileLocation))
+                {
+                    m.BusinessMaquina.OrganizacaoRestante(objProjetoModel.ldadosPlanilhaOriginal);
+                    objProjetoModel.ResultadoFinal.Add(9999, m.BusinessMaquina.resultado.ToList());
+                }
+
+                objProjetoModel.fileLocationCompleted = Util.WriteList<PlanilhaModel>(objProjetoModel.ResultadoFinal);
+
                 string ContentType = "application/vnd.ms-excel";
                 if (!string.IsNullOrEmpty(objProjetoModel.fileLocationCompleted))
                 {
@@ -327,6 +332,22 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             }
 
             return RedirectToAction(actionName: "Listar");
+        }
+
+        public ActionResult AssignarMaquina(Int32 id)
+        {
+            ProjetoModel objProjetoModel = base.SessionProjetoModel;
+            MaquinaModel m = objProjetoModel.ldadosMaquina.Where(c => c.idMAQUINA == Convert.ToInt32(id)).FirstOrDefault();
+
+            if (m != null)
+            {
+                if (m.BusinessMaquina.lUtilizadosSemAgrupamento.Count() == 0)
+                {
+                    m.BusinessMaquina.IniciaOrganizacao(objProjetoModel.ldadosPlanilhaOriginal);
+                    //base.aviso = "Arquivos organizados com sucesso.";
+                }
+            }
+            return RedirectToAction("Listar", "Maquina");
         }
     }
 }

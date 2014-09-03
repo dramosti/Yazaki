@@ -65,8 +65,9 @@
                 <legend>
                     Ações
                 </legend>
-                <input type="button" class="btn btn-primary btn-xs" id="btnOrganizar" name="btnOrganizar" value="Organizar registros restantes" onclick="OrganizaInformacoes()" />
-                <a class="btn btn-primary btn-xs" href="../../Projeto/Download/">Download</a>
+                @*<input type="button" class="btn btn-primary btn-xs" id="btnOrganizar" name="btnOrganizar" value="Organizar registros restantes" onclick="OrganizaInformacoes()" />*@
+                <p>Todas as máquinas devem estar assignadas !!</p>
+                <a class="btn btn-primary btn-xs" href="../../Projeto/Download/">Download do projeto completo</a>
                 <img id="loader1" src="~/Content/Images/loader.GIF" style="text-align:center; display:none;" />
             </fieldset>
             <br />
@@ -91,7 +92,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var maquina in Model.ldadosMaquina)
+                        @foreach (var maquina in Model.ldadosMaquina.OrderBy(c => c.idMAQUINA))
                         {
                             <tr>
                                 <td>
@@ -113,7 +114,7 @@
                                 <td>@maquina.QTDE_CAPACIDADE</td>
                                 <td>@maquina.YY</td>
                                 <td>
-                                    <a href="~/Projeto/Organizar/@maquina.idMAQUINA">Assignar</a>
+                                    <a href="~/Projeto/AssignarMaquina/@maquina.idMAQUINA">Assignar</a>
                                 </td>
                                 <td>
                                     <a href="~/Maquina/LimparMaquina/@maquina.idMAQUINA">
@@ -121,9 +122,15 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="~/Projeto/DonwloadPlanilha/@maquina.idMAQUINA">
-                                        <img src="~/Content/Images/download.png" />
-                                    </a>
+                                    @if (maquina.bAssigacao == true)
+                                    {
+                                        <img src="~/Content/Images/ok.png" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Images/badMark.png" />
+                                    }
+
                                 </td>
                             </tr>
                         }

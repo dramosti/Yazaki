@@ -189,6 +189,8 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\badMark.png" />
+    <Content Include="Content\Images\ok.png" />
     <Content Include="Content\Images\clear.png" />
     <Content Include="Content\Images\download.png" />
     <Content Include="Content\Images\edit.png" />
@@ -324,7 +326,6 @@
     <Content Include="Views\Shared\_PartialAviso.cshtml" />
     <Content Include="Views\Maquina\Cadastrar.cshtml" />
     <Content Include="Views\Maquina\Listar.cshtml" />
-    <Content Include="Views\Maquina\Editar.cshtml" />
     <Content Include="Views\Projeto\_PlanilhaOriginal.cshtml" />
     <Content Include="Views\Projeto\Listar.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />

@@ -1,28 +1,48 @@
 ﻿@using HLP.OrganizePlanilha.UI.Web.Models
 @model ProjetoModel
 
-<table id="tableDadosOrig" class="table table-hover">
-    <thead>
-        <tr>
-            <td>COD_DI</td>
-            <td>TERM_IZQ</td>
-            <td>ACC_01_I</td>
-            <td>COD_DD</td>
-            <td>TERM_DER</td>
-            <td>ACC_01_D</td>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.ldadosPlanilhaFinal)
-        {
-            <tr>
-                <td>@item.COD_DI</td>
-                <td>@item.TERM_IZQ</td>
-                <td>@item.ACC_01_I</td>
-                <td>@item.COD_DD</td>
-                <td>@item.TERM_DER</td>
-                <td>@item.ACC_01_D</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-8 column">
+            <table id="tableDadosOrig" class="table table-hover">
+                <thead>
+                    <tr>
+                        <td>TIPO</td>
+                        <td>CALIBRE</td>
+                        <td>CANTD</td>
+                        <td>COD_DI</td>
+                        <td>TERM_IZQ</td>
+                        <td>ACC_01_I</td>
+                        <td>COD_DD</td>
+                        <td>TERM_DER</td>
+                        <td>ACC_01_D</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ldadosPlanilhaFinal)
+                    {
+                        <tr>
+                            <td>@item.TIPO</td>
+                            <td>@item.CALIBRE</td>
+                            <td>@item.CANTIDAD</td>
+                            <td>@item.COD_DI</td>
+                            <td>@item.TERM_IZQ</td>
+                            <td>@item.ACC_01_I</td>
+                            <td>@item.COD_DD</td>
+                            <td>@item.TERM_DER</td>
+                            <td>@item.ACC_01_D</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            Total: @Model.ldadosPlanilhaFinal.Sum(c => Convert.ToDecimal(c.CANTIDAD))
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+

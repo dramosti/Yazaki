@@ -25,22 +25,22 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         public ProjetoModel()
         {
             this.ldadosMaquina = new List<MaquinaModel>();
-            this.ldadosPlanilhaFinal = new List<PlanilhaModel>();
+            this.ResultadoFinal = new Dictionary<int, List<PlanilhaModel>>();
             this.ldadosPlanilhaOriginal = new List<PlanilhaModel>();
             painel = new PainelModel();
         }
-                
+
         public List<ParametrosModel> ldadosParametroTempDistinct { get; set; }
         public List<MaquinaModel> ldadosMaquina { get; set; }
         public List<PlanilhaModel> ldadosPlanilhaOriginal { get; set; }
-        public List<PlanilhaModel> ldadosPlanilhaFinal { get; set; }
+        public Dictionary<int, List<PlanilhaModel>> ResultadoFinal { get; set; }
         public PainelModel painel { get; set; }
         public List<BitolaModel> bitolas { get; set; }
 
         public string fileLocationCompleted { get; set; }
-      
 
-     
+
+
 
 
 

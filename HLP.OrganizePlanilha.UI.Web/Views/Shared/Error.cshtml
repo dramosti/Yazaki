@@ -1,0 +1,59 @@
+﻿@model System.Web.Mvc.HandleErrorInfo
+@{
+    ViewBag.Title = "..:: Erro ::..";
+    Layout = "~/Views/Shared/_LayoutPadrao.cshtml";
+}
+
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-6 column">
+            <blockquote>
+                <p>
+                    <strong>:( , </strong>Ocorreu um erro inesperado.
+                </p> <small>Favor entrar em contato com o administrador do sistema e informar os detalhes listados abaixo.</small>
+            </blockquote>
+        </div>
+    </div>
+    @if (Model != null)
+    {
+        <div class="row clearfix">
+            <div class="col-md-6 column">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <b>Exception:</b> @Model.Exception.Message<br />
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <b>Controller:</b> @Model.ControllerName<br />
+                    </div>
+                    <div class="panel-footer">
+                        <b>Action:</b> @Model.ActionName
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 column">
+            </div>
+        </div>
+    }
+    @if (Model != null)
+    {
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="panel-group" id="panel-854537">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <a class="panel-title" data-toggle="collapse" data-parent="#panel-854537" href="#panel-element-778388">Detalhe do erro:</a>
+                        </div>
+                        <div id="panel-element-778388" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                @Model.Exception.StackTrace
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

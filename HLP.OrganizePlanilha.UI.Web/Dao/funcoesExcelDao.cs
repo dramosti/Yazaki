@@ -23,6 +23,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
             conn = new conexaoDao(sPathArquivo);
         }
 
+       
         public List<PlanilhaModel> GetAllInfo()
         {
             try
@@ -62,7 +63,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                                 TERM_DER = reader.GetValue(8).ToString(),
                                 COD_DI = reader.GetValue(5).ToString() != "2" ? "Y" : "2",
                                 COD_DD = reader.GetValue(7).ToString() != "2" ? "Y" : "2",
-                                COD_01_I = reader.GetValue(9).ToString(),
+                                COD_01_I = reader.GetValue(9).ToString().ToUpper(),
                                 COD_01_D = reader.GetValue(10).ToString(),
                                 ACC_01_I = (lSelosAtivos.Where(c => reader.GetValue(11).ToString().Contains(c)).Count() > 0) ? reader.GetValue(11).ToString() : "",
                                 ACC_01_D = (lSelosAtivos.Where(c => reader.GetValue(12).ToString().Contains(c)).Count() > 0) ? reader.GetValue(12).ToString() : ""
@@ -193,8 +194,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Dao
                 throw ex;
             }
         }
-
-
 
     }
 }

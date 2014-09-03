@@ -134,6 +134,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             return m;
         }
 
+        
 
         [HttpPost]
         public ActionResult Editar(MaquinaModel maquina)
@@ -181,7 +182,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Controllers
             base.SessionProjetoModel.ldadosMaquina.Remove(m);
             TB_MAQUINA_Repository rep = new TB_MAQUINA_Repository();
             base.SessionProjetoModel.ldadosMaquina.Add(rep.getMaquinaByIdMaquina(m.idMAQUINA));
-            base.aviso = "Limpeza concluída.";
+            //base.aviso = "Limpeza concluída.";
+            m.bAssigacao = false;
             return RedirectToAction("Listar");
         }
 

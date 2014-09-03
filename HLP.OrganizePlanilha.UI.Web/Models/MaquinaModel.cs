@@ -10,6 +10,13 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
     public sealed class MaquinaModel
     {
 
+        private bool _bAssigacao = false;
+
+        public bool bAssigacao
+        {
+            get { return _bAssigacao; }
+            set { _bAssigacao = value; }
+        }
         public MaquinaModel()
         {
             BusinessMaquina = new MaquinaBO(maquina_: this);
@@ -67,7 +74,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         [Required(ErrorMessage = "Campo é obrigatório.")]
         [Display(Name = "Tolerância")]
-        public string QTDE_TOLERANCIA { get; set; }       
+        public string QTDE_TOLERANCIA { get; set; }
 
     }
 }

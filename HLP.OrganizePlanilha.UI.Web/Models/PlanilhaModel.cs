@@ -12,10 +12,10 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
 
         }
 
-        [Coluna(isColuna = true)]
+        [Coluna(isColuna = false)]
         public int idPLANILHA { get; set; }
 
-        [Coluna(isColuna = true)]
+        [Coluna(isColuna = false)]
         public int idProjeto { get; set; }
 
         [Coluna(isColuna = true)]
@@ -74,8 +74,8 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set
             {
                 _ACC_01_I = value;
-                if (value != "")
-                    this.COD_DI = "2";
+                //if (value != "")
+                //    this.COD_DI = "2";
             }
         }
 
@@ -116,14 +116,14 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
             set
             {
                 _ACC_01_D = value;
-                if (value != "")
-                    this.COD_DD = "2";
+                //if (value != "")
+                //    this.COD_DD = "2";
             }
         }
 
 
         private string _COD_01_I;
-        [Coluna(isColuna = false)]
+        [Coluna(isColuna = true)]
         public string COD_01_I
         {
             get { return _COD_01_I; }
@@ -131,7 +131,7 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         }
 
         private string _COD_01_D;
-        [Coluna(isColuna = false)]
+        [Coluna(isColuna = true)]
         public string COD_01_D
         {
             get { return _COD_01_D; }
@@ -158,8 +158,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         [Coluna(isColuna = false)]
         public decimal PERCENTUAL { get; set; }
 
-
-
         public void SubtraiPercentual(decimal dPercentual)
         {
             decimal valorRelativo = Math.Round(((this.CANTIDAD.ToDecimal() * dPercentual) / this.PERCENTUAL), 2);
@@ -170,7 +168,6 @@ namespace HLP.OrganizePlanilha.UI.Web.Models
         {
             this.dRestante += dValor;
         }
-
 
         public object Clone()
         {
